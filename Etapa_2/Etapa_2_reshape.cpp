@@ -1,8 +1,4 @@
-﻿// Etapa1.cpp
-// Fichero principal 
-////////////////////////////////////////////////////
-
-#include <GL/freeglut.h>
+﻿#include <GL/freeglut.h>
 
 const int W_WIDTH = 500; // Tamaño incial de la ventana
 const int W_HEIGHT = 500;
@@ -88,8 +84,8 @@ void Idle(void)
 	// Indicamos que es necesario repintar la pantalla
 	
 	glutReshapeFunc(Reshape); // Etapa 2 nuevo subprograma.
-	glutSwapBuffers(); // Etapa  2 añade la instruccion.
 	glutPostRedisplay();
+	glutSwapBuffers(); // Etapa  2 añade la instruccion.
 }
 
 // Funcion principal
@@ -110,7 +106,7 @@ int main(int argc, char** argv)
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
 
-	// El color de fondo ser� el negro (RGBA, RGB + Alpha channel)
+	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
 
