@@ -13,8 +13,8 @@ GLfloat fAngulo4 = 0.0f; //Abrir y cerrar Mano.
 // Constantes para dibujar los circulos.
 const GLfloat pi = M_PI;
 const GLint polygon_points = 360;
-const GLfloat radius_arm= 0.025f;
-const GLfloat radius_hand = 0.01f;
+const GLdouble radius_arm= 0.025d;
+const GLdouble radius_hand = 0.01d;
 
 //variables para el control de giro de los ángulos.
 const GLint tiempo = 10;
@@ -27,6 +27,9 @@ GLboolean sentido_horario4 = GL_FALSE;
 const GLint W_WIDTH = 800;
 const GLint W_HEIGHT = 800;
 const GLint W_RATIO = W_WIDTH / W_HEIGHT;
+
+
+// Matriz de transformación
 
 
 // Función que visualiza la escena OpenGL.
@@ -246,21 +249,47 @@ void draw2DScene() {
 
 void draw3DScene(){
 
-    glPushMatrix();
+	glPushMatrix();
     glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-    glRotatef(25,1.0f, 0.0f, 0.0f);
-    glRotatef(25,0.0f, 1.0f, 0.0f);
+	glTranslatef(-(0.4 - cos(toRadians(fAngulo1+25)) * 0.4), sin(toRadians(fAngulo1)) * 0.4, sin(toRadians(25)) * 0.4);
 
-    glColor3f(1.0f,0.0f,0.0f);
-    glutWireCube(0.5d);
+	glTranslatef(-0.8f + 0.4f, -0.2f, 0.0f);
 
-    glColor3f(0.0f,0.0f, 1.0f);
-    glutSolidCube(0.5d);
+	glRotatef(25,1.0f, 0.0f, 0.0f);
+	glRotatef(90 + 25,0.0f, 1.0f, 0.0f);
+
+	glRotatef(fAngulo2, 0.0f, 0.0f, 1.0f);
+
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glutWireCylinder(radius_arm, 0.4f, 50, 50);
+
+    glColor3f(0.0f,0.0f, 0.0f);
+	glutWireSphere(radius_arm,50,50);
 
     glPopMatrix();
-    
+
+	// Brazo
+	glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glTranslatef(-0.8f, -0.2f, 0.0f);
+
+	glRotatef(25,1.0f, 0.0f, 0.0f);
+	glRotatef(90 + 25, 0.0f, 1.0f, 0.0f);
+
+	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
+
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glutWireCylinder(radius_arm, 0.4f, 50, 50);
+
+    glColor3f(0.0f,0.0f, 0.0f);
+    glutWireSphere(radius_arm,50,50);
+
+    glPopMatrix();
+
 }
 
 void Display(void)
@@ -381,7 +410,7 @@ int main(int argc, char** argv)
 	glutReshapeFunc(MyReshape);
 
 	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 
 	// Comienza la ejecución del core de GLUT
