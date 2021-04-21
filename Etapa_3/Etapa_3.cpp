@@ -407,66 +407,136 @@ void MyReshape(GLint width, GLint height)
 
 void Timer(GLint t) {
 
-	// Control Angulo1
-	if (fAngulo1 <= -45)
-		sentido_horario1 = GL_TRUE;
-	if (fAngulo1 >= 100)
-		sentido_horario1 = GL_FALSE;
-	if (sentido_horario1) {
-		fAngulo1 += 0.5f;
+	//// Control Angulo1
+	//if (fAngulo1 <= -45)
+	//	sentido_horario1 = GL_TRUE;
+	//if (fAngulo1 >= 100)
+	//	sentido_horario1 = GL_FALSE;
+	//if (sentido_horario1) {
+	//	fAngulo1 += 0.5f;
+	//}
+	//else {
+	//	fAngulo1 -= 0.5f;
+	//}
+
+	//// Control Angulo2
+	//if (fAngulo2 <= -30)
+	//	sentido_horario2 = GL_TRUE;
+	//if (fAngulo2 >= 60)
+	//	sentido_horario2 = GL_FALSE;
+	//if (sentido_horario2) {
+	//	fAngulo2 += 1.0f;
+	//}
+	//else {
+	//	fAngulo2 -= 1.0f;
+	//}
+
+	//// Control Angulo3
+	//if (fAngulo3 <= -45)
+	//	sentido_horario3 = GL_TRUE;
+	//if (fAngulo3 >= 45)
+	//	sentido_horario3 = GL_FALSE;
+	//if (sentido_horario3) {
+	//	fAngulo3 += 0.5f;
+	//}
+	//else {
+	//	fAngulo3 -= 0.5f;
+	//}
+
+	//// Control Angulo4
+	//if ((GetKeyState(VK_LBUTTON) & 0x8000) != 0) {
+	//	if (fAngulo4 < 45)
+	//	{
+	//		fAngulo4 += 1.0f;
+	//	}
+	//}
+	//else {
+	//	if (fAngulo4 > 0)
+	//	{
+	//		fAngulo4 -= 1.0f;
+	//	}
+	//}
+
+	//// Control Angulo5
+	//if (fAngulo5 <= -90)
+	//	sentido_horario5 = GL_TRUE;
+	//if (fAngulo5 >= 90)
+	//	sentido_horario5 = GL_FALSE;
+	//if (sentido_horario5) {
+	//	fAngulo5 += 0.5f;
+	//}
+	//else {
+	//	fAngulo5 -= 0.5f;
+	//}
+
+	// Control Angulo1 Q - A
+	if ((GetKeyState(0x51) & 0x8000) != 0) {
+		if (fAngulo1 < 100)
+		{
+			fAngulo1 += 1.0f;
+		}
 	}
-	else {
-		fAngulo1 -= 0.5f;
+	if ((GetKeyState(0x41) & 0x8000) != 0) {
+		if (fAngulo1 > -45)
+		{
+			fAngulo1 -= 1.0f;
+		}
 	}
 
-	// Control Angulo2
-	if (fAngulo2 <= -30)
-		sentido_horario2 = GL_TRUE;
-	if (fAngulo2 >= 60)
-		sentido_horario2 = GL_FALSE;
-	if (sentido_horario2) {
-		fAngulo2 += 1.0f;
+	// Control Angulo2 W - S
+	if ((GetKeyState(0x57) & 0x8000) != 0) {
+		if (fAngulo2 < 45)
+		{
+			fAngulo2 += 1.0f;
+		}
 	}
-	else {
-		fAngulo2 -= 1.0f;
-	}
-
-	// Control Angulo3
-	if (fAngulo3 <= -45)
-		sentido_horario3 = GL_TRUE;
-	if (fAngulo3 >= 45)
-		sentido_horario3 = GL_FALSE;
-	if (sentido_horario3) {
-		fAngulo3 += 0.5f;
-	}
-	else {
-		fAngulo3 -= 0.5f;
+	if ((GetKeyState(0x53) & 0x8000) != 0) {
+		if (fAngulo2 > -50)
+		{
+			fAngulo2 -= 1.0f;
+		}
 	}
 
-	// Control Angulo4
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) != 0) {
+	// Control Angulo3 E - D
+	if ((GetKeyState(0x45) & 0x8000) != 0) {
+		if (fAngulo3 < 30)
+		{
+			fAngulo3 += 1.0f;
+		}
+	}
+	if ((GetKeyState(0x44) & 0x8000) != 0) {
+		if (fAngulo3 > -30)
+		{
+			fAngulo3 -= 1.0f;
+		}
+	}
+
+	// Control Angulo4 R - F
+	if ((GetKeyState(0x52) & 0x8000) != 0) {
 		if (fAngulo4 < 45)
 		{
-			fAngulo4 += 2.0f;
+			fAngulo4 += 1.0f;
 		}
 	}
-	else {
+	if ((GetKeyState(0x46) & 0x8000) != 0) {
 		if (fAngulo4 > 0)
 		{
-			fAngulo4 -= 2.0f;
+			fAngulo4 -= 1.0f;
 		}
 	}
 
-	// Control Angulo5
-	if (fAngulo5 <= -90)
-		sentido_horario5 = GL_TRUE;
-	if (fAngulo5 >= 90)
-		sentido_horario5 = GL_FALSE;
-	if (sentido_horario5) {
-		fAngulo5 += 0.5f;
+	// Control Angulo5 T - G
+	if ((GetKeyState(0x54) & 0x8000) != 0) {
+		if (fAngulo5 < 100)
+		{
+			fAngulo5 += 1.0f;
+		}
 	}
-	else {
-		fAngulo5 -= 0.5f;
+	if ((GetKeyState(0x47) & 0x8000) != 0) {
+		if (fAngulo5 > -100)
+		{
+			fAngulo5 -= 1.0f;
+		}
 	}
 
 	glutPostRedisplay();
