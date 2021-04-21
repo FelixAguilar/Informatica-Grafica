@@ -251,6 +251,26 @@ GLfloat toRadians(GLfloat i)
 
 void draw3DScene() {
 
+	// Dibujamos los ejes.
+	glPushMatrix();
+
+	glEnable(GL_LINE_SMOOTH);
+	glBegin(GL_LINES);
+	glLineWidth(1);
+	glColor3f(0.0f, 0.0f, 0.0f);
+
+	glVertex3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+
+
+	glVertex3f(0.0f, -1.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+
+	glVertex3f(0.0f, 0.0f, -1.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+
+	glEnd();
+
 	// Mano Superior
 	glPushMatrix();
 	glMatrixMode(GL_MODELVIEW);
@@ -373,6 +393,11 @@ void Display(void)
 
 	//draw2DScene();
 	draw3DScene();
+
+	glPushMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glFrustum(-1.0d, 1.0d, -1.0d, 1.0d, 0.5d, 500.0d);
+	glPopMatrix();
 
 	glFlush();
 	glutSwapBuffers();
