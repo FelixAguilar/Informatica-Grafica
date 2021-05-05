@@ -26,8 +26,8 @@ GLboolean sentido_horario4 = GL_FALSE;
 GLboolean sentido_horario5 = GL_FALSE;
 
 // Constantes de la ventana.
-const GLint W_WIDTH = 800;
-const GLint W_HEIGHT = 800;
+const GLint W_WIDTH = 600;
+const GLint W_HEIGHT = 600;
 const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 
 // UP vector for camera.
@@ -66,7 +66,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.8f, -0.2f, 0.0f);
+	glTranslatef(-0.4f, -0.2f, -1.0f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -103,7 +103,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.8f, -0.2f, 0.0f);
+	glTranslatef(-0.4f, -0.2f, -1.0f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -136,7 +136,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.8f, -0.2f, 0.0f);
+	glTranslatef(-0.4f, -0.2f, -1.0f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4, sin(toRadians(fAngulo1)) * 0.4, 0);
@@ -156,7 +156,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.8f, -0.2f, 0.0f);
+	glTranslatef(-0.4f, -0.2f, -1.0f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
@@ -181,20 +181,20 @@ void Display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-    glPushMatrix();
-	glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    // glPushMatrix();
+	// glMatrixMode(GL_PROJECTION);
+    // glLoadIdentity();
 	//glFrustum(-1.0d, 1.0d, -1.0d, 1.0d, 0.5d, 500.0d);
-    gluPerspective(45.0d, 1.0d, 0.5d, 500.0d);
-	glPopMatrix();
+    // gluPerspective(45.0d, 1.0d, 0.5d, 500.0d);
+	// glPopMatrix();
 
 	draw3DScene();
 
-    glPushMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0d,0.0d,0.0d, 0.0d,0.0d,0.0d, up_vector[0], up_vector[1], up_vector[2]);
-    glPopMatrix();
+    // glPushMatrix();
+    // glMatrixMode(GL_MODELVIEW);
+    // glLoadIdentity();
+    // gluLookAt(0.0d,0.0d,0.0d, 0.0d,0.0d,0.0d, up_vector[0], up_vector[1], up_vector[2]);
+    // glPopMatrix();
 
 	glFlush();
 	glutSwapBuffers();
@@ -216,28 +216,32 @@ void MyReshape(GLint width, GLint height)
 
 	// Cambio de aspect ratio.
 	if (new_ratio >= W_RATIO) {
-		glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, 1.0, -1.0);
+		glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, -5.0, 500.0);
+		//glFrustum(-1.5d * new_ratio, 1.5d * new_ratio, -1.5d, 1.5d, 0.5d, 10.0d);
+		gluPerspective(55.0d,1.0d,0.5d,10.0d);
 	}
 	else {
 		GLfloat aux = 1 / new_ratio;
-		glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, 1.0, -1.0);
+		glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, -5.0, 500.0);
+		//glFrustum(-1.5d, 1.5d, -1.5d * aux, 1.5d * aux, 0.5d, 10.0d);
+		gluPerspective(55.0d,1.0d,0.5d,10.0d);
 	}
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
-void camera_set(int key, int x, int y){
-    if (key == GLUT_KEY_UP) {
-        up_vector[0] = 1;
-    } else if (key == GLUT_KEY_DOWN){
-        //up_vector[] = 0;
-    } else if (key == GLUT_KEY_RIGHT){
-        up_vector[1] = 1;
-    } else if (key == GLUT_KEY_LEFT){
-        //up_vector[] = 0;
-    }
-}
+// void camera_set(int key, int x, int y){
+//     if (key == GLUT_KEY_UP) {
+//         up_vector[0] = 1;
+//     } else if (key == GLUT_KEY_DOWN){
+//         //up_vector[] = 0;
+//     } else if (key == GLUT_KEY_RIGHT){
+//         up_vector[1] = 1;
+//     } else if (key == GLUT_KEY_LEFT){
+//         //up_vector[] = 0;
+//     }
+// }
 
 void Timer(GLint t) {
 
@@ -303,7 +307,7 @@ void Timer(GLint t) {
 	//	fAngulo5 -= 0.5f;
 	//}
 
-	// Control Angulo1 Q - A
+	// Control Angulo1 teclas Q - A
 	if ((GetKeyState(0x51) & 0x8000) != 0) {
 		if (fAngulo1 < 100)
 		{
@@ -317,7 +321,7 @@ void Timer(GLint t) {
 		}
 	}
 
-	// Control Angulo2 W - S
+	// Control Angulo2 teclas W - S
 	if ((GetKeyState(0x57) & 0x8000) != 0) {
 		if (fAngulo2 < 45)
 		{
@@ -331,7 +335,7 @@ void Timer(GLint t) {
 		}
 	}
 
-	// Control Angulo3 E - D
+	// Control Angulo3 teclas E - D
 	if ((GetKeyState(0x45) & 0x8000) != 0) {
 		if (fAngulo3 < 30)
 		{
@@ -345,7 +349,7 @@ void Timer(GLint t) {
 		}
 	}
 
-	// Control Angulo4 R - F
+	// Control Angulo4 teclas R - F
 	if ((GetKeyState(0x52) & 0x8000) != 0) {
 		if (fAngulo4 < 45)
 		{
@@ -359,7 +363,7 @@ void Timer(GLint t) {
 		}
 	}
 
-	// Control Angulo5 T - G
+	// Control Angulo5 teclas T - G
 	if ((GetKeyState(0x54) & 0x8000) != 0) {
 		if (fAngulo5 < 100)
 		{
@@ -389,21 +393,21 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
 	// Creamos la nueva ventana
-	glutCreateWindow("Mi primera Ventana");
+	glutCreateWindow("Etapa_4");
 
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutTimerFunc(tiempo, Timer, 0.0f);
 
     // función de direccionamiento d cámara
-    glutSpecialFunc(camera_set);
+    //glutSpecialFunc(camera_set);
 
 	//Ajuste de proporciones
 	glutReshapeFunc(MyReshape);
 
 	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+	//glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
