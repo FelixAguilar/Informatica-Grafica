@@ -44,6 +44,8 @@ void draw3DScene() {
 	// Dibujamos los ejes.
 	glPushMatrix();
 
+	glTranslatef(-0.4f, -0.2f, -1.5f);
+
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINES);
 	glLineWidth(1);
@@ -66,33 +68,33 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.0f);
+	glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
 
 	glColor3f(0.0f, 0.0f, 0.0f);
-	glutWireSphere(radius_arm, 50, 50);
+	glutSolidSphere(radius_arm, 50, 50);
 
 	glRotatef(45 + fAngulo3 + fAngulo4, 0.0f, 0.0f, 1.0f);
 	glTranslatef(0.0f, 0.013f, 0.0f);
 	glRotatef(90, 0.0f, 1.0f, 0.0f);
 	glColor3f(1.0f, 0.0f, 0.0f);
-	glutWireCylinder(radius_hand, 0.2f, 50, 50);
+	glutSolidCylinder(radius_hand, 0.2f, 50, 50);
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
 	glColor3f(0.0f, 0.0f, 0.0f);
-	glutWireSphere(radius_hand, 50, 50);
+	glutSolidSphere(radius_hand, 50, 50);
 
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
 	glColor3f(1.0f, 0.0f, 0.0f);
-	glutWireCylinder(radius_hand, 0.2f, 50, 50);
+	glutSolidCylinder(radius_hand, 0.2f, 50, 50);
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
 	glColor3f(0.0f, 0.0f, 0.0f);
-	glutWireSphere(radius_hand, 50, 50);
+	glutSolidSphere(radius_hand, 50, 50);
 
 
 	glPopMatrix();
@@ -103,7 +105,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.0f);
+	glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -113,21 +115,21 @@ void draw3DScene() {
 	glTranslatef(0.0f, -0.013f, 0.0f);
 	glRotatef(90, 0.0f, 1.0f, 0.0f);
 	glColor3f(1.0f, 0.0f, 0.0f);
-	glutWireCylinder(radius_hand, 0.2f, 50, 50);
+	glutSolidCylinder(radius_hand, 0.2f, 50, 50);
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
 	glColor3f(0.0f, 0.0f, 0.0f);
-	glutWireSphere(radius_hand, 50, 50);
+	glutSolidSphere(radius_hand, 50, 50);
 
 	glRotatef(-90, 1.0f, 0.0f, 0.0f);
 	glColor3f(1.0f, 0.0f, 0.0f);
-	glutWireCylinder(radius_hand, 0.2f, 50, 50);
+	glutSolidCylinder(radius_hand, 0.2f, 50, 50);
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
 	glColor3f(0.0f, 0.0f, 0.0f);
-	glutWireSphere(radius_hand, 50, 50);
+	glutSolidSphere(radius_hand, 50, 50);
 
 	glPopMatrix();
 
@@ -136,7 +138,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.0f);
+	glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4, sin(toRadians(fAngulo1)) * 0.4, 0);
@@ -144,10 +146,10 @@ void draw3DScene() {
 	glRotatef(90, 0.0f, 1.0f, 0.0f);
 
 	glColor3f(1.0f, 0.0f, 0.0f);
-	glutWireCylinder(radius_arm, 0.4f, 50, 50);
+	glutSolidCylinder(radius_arm, 0.4f, 50, 50);
 
 	glColor3f(0.0f, 0.0f, 0.0f);
-	glutWireSphere(radius_arm, 50, 50);
+	glutSolidSphere(radius_arm, 50, 50);
 
 	glPopMatrix();
 
@@ -156,7 +158,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.0f);
+	glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
@@ -164,10 +166,10 @@ void draw3DScene() {
 
 
 	glColor3f(1.0f, 0.0f, 0.0f);
-	glutWireCylinder(radius_arm, 0.4f, 50, 50);
+	glutSolidCylinder(radius_arm, 0.4f, 50, 50);
 
 	glColor3f(0.0f, 0.0f, 0.0f);
-	glutWireSphere(radius_arm, 50, 50);
+	glutSolidSphere(radius_arm, 50, 50);
 
 	glPopMatrix();
 
@@ -216,15 +218,15 @@ void MyReshape(GLint width, GLint height)
 
 	// Cambio de aspect ratio.
 	if (new_ratio >= W_RATIO) {
-		glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, -5.0, 500.0);
-		//glFrustum(-1.5d * new_ratio, 1.5d * new_ratio, -1.5d, 1.5d, 0.5d, 10.0d);
-		gluPerspective(55.0d,1.0d,0.5d,10.0d);
+		//glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, -5.0, 500.0);
+		glFrustum(-1.5d * new_ratio, 1.5d * new_ratio, -1.5d, 1.0d, 0.4d, 50.0d);
+		//gluPerspective(55.0d,1.0d,0.5d,150.0d);
 	}
 	else {
 		GLfloat aux = 1 / new_ratio;
-		glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, -5.0, 500.0);
-		//glFrustum(-1.5d, 1.5d, -1.5d * aux, 1.5d * aux, 0.5d, 10.0d);
-		gluPerspective(55.0d,1.0d,0.5d,10.0d);
+		//glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, -5.0, 500.0);
+		glFrustum(-1.5d, 1.5d, -1.5d * aux, 1.5d * aux, 0.4d, 50.0d);
+		//gluPerspective(55.0d,1.0d,0.5d,150.0d);
 	}
 
 	glMatrixMode(GL_MODELVIEW);
