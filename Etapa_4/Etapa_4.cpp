@@ -215,14 +215,24 @@ void MyReshape(GLint width, GLint height)
 }
 
  void camera_set(){
-     if ((GetKeyState(0x26) & 0x8000) != 0) {
-         eye_vector[2] += -0.01;
-     } else if ((GetKeyState(0x28) & 0x8000) != 0){
-         eye_vector[2] += 0.01;
-     } else if ((GetKeyState(0x27) & 0x8000) != 0){
-         eye_vector[0] += 0.01;
-     } else if ((GetKeyState(0x25) & 0x8000) != 0){
-         eye_vector[0] += -0.01;
+	 if ((GetKeyState(0x26) & 0x8000) != 0) {
+
+		 center_vector[1] += 0.025;
+	 }
+
+	 if ((GetKeyState(0x28) & 0x8000) != 0) {
+
+		 center_vector[1] += -0.025;
+	 }
+
+	 if ((GetKeyState(0x27) & 0x8000) != 0) {
+
+		 center_vector[0] += 0.025;
+	 }
+
+     if ((GetKeyState(0x25) & 0x8000) != 0){
+
+         center_vector[0] += -0.025;
      }
  }
 
