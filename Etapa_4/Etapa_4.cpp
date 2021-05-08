@@ -7,9 +7,11 @@
 
 GLfloat fAngulo1 = 0.0f; //Subir y Bajar el Brazo.
 GLfloat fAngulo2 = 0.0f; //Subir y bajar Antebrazo.
-GLfloat fAngulo3 = 0.0f; // Subir y bajar Mu√±eca.
+GLfloat fAngulo3 = 0.0f; // Subir y bajar MuÒeca.
 GLfloat fAngulo4 = 0.0f; //Abrir y cerrar Mano.
 GLfloat fAngulo5 = 45.0f; //Giro de la Mano.
+
+GLdouble new_ratio;
 
 // Constantes para dibujar los circulos.
 const GLfloat pi = M_PI;
@@ -17,7 +19,7 @@ const GLint polygon_points = 360;
 const GLdouble radius_arm = 0.05;
 const GLdouble radius_hand = 0.025;
 
-//variables para el control de giro de los √°ngulos.
+//variables para el control de giro de los ·ngulos.
 const GLint tiempo = 10;
 GLboolean sentido_horario1 = GL_FALSE;
 GLboolean sentido_horario2 = GL_TRUE;
@@ -40,6 +42,15 @@ GLfloat toRadians(GLfloat i)
 }
 
 void draw3DScene() {
+
+	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
+	glLoadIdentity();
+
+	// Cambio de aspect ratio.
+	gluPerspective(55.0, new_ratio, 0.2, 150.0);
+	gluLookAt(eye_vector[0], eye_vector[1], eye_vector[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+	glMatrixMode(GL_MODELVIEW);
 
 	// Dibujamos los ejes.
 	glPushMatrix();
@@ -197,23 +208,13 @@ void Display(void)
 
 void MyReshape(GLint width, GLint height)
 {
-	GLdouble new_ratio;
 	if (height != 0) {
 		new_ratio = (GLdouble)width / (GLdouble)height;
 	}
 	else {
 		new_ratio = width;
 	}
-
 	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
-	glLoadIdentity();
-
-	// Cambio de aspect ratio.
-	gluPerspective(55.0, new_ratio, 0.2, 150.0);
-	gluLookAt(eye_vector[0], eye_vector[1], eye_vector[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	
-	glMatrixMode(GL_MODELVIEW);
 }
 
  void camera_set(){
@@ -305,10 +306,10 @@ void Timer(GLint t) {
 	glutTimerFunc(tiempo, Timer, 0.0f);
 }
 
-// Funci√≥n principal
+// FunciÛn principal
 int main(int argc, char** argv)
 {
-	// Inicializamos la librer√≠a GLUT
+	// Inicializamos la librerÌa GLUT
 	glutInit(&argc, argv);
 
 	// Indicamos como ha de ser la nueva ventana
@@ -323,17 +324,17 @@ int main(int argc, char** argv)
 	glutDisplayFunc(Display);
 	glutTimerFunc(tiempo, Timer, 0.0f);
 
-	// funci√≥n de direccionamiento d c√°mara
+	// funciÛn de direccionamiento d c·mara
 	//glutSpecialFunc(camera_set);
 
 	//Ajuste de proporciones
 	glutReshapeFunc(MyReshape);
 
-	// El color de fondo ser√° el negro (RGBA, RGB + Alpha channel)
+	// El color de fondo ser· el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	//glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 
-	// Comienza la ejecuci√≥n del core de GLUT
+	// Comienza la ejecuciÛn del core de GLUT
 	glutMainLoop();
 	return 0;
 }
