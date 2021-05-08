@@ -42,6 +42,8 @@ void draw3DScene() {
 	// Dibujamos los ejes.
 	glPushMatrix();
 
+	glTranslatef(-0.4f, -0.2f, -1.5f);
+
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINES);
 	glLineWidth(1);
@@ -64,7 +66,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.0f);
+	glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -100,7 +102,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.0f);
+	glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -133,7 +135,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.0f);
+	glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4, sin(toRadians(fAngulo1)) * 0.4, 0);
@@ -153,7 +155,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.0f);
+	glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
@@ -200,13 +202,13 @@ void MyReshape(GLint width, GLint height)
 
 	// Cambio de aspect ratio.
 	if (new_ratio >= W_RATIO) {
-		glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, -5.0, 500.0);
-		glFrustum(-1.5d * new_ratio, 1.5d * new_ratio, -1.5d, 1.5d, 0.5d, 10.0d);
+		//glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, -5.0, 500.0);
+		glFrustum(-1.5 * new_ratio, 1.5 * new_ratio, -1.5, 1.5, 0.6, 150.0);
 	}
 	else {
 		GLfloat aux = 1 / new_ratio;
-		glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, -5.0, 500.0);
-		glFrustum(-1.5d, 1.5d, -1.5d * aux, 1.5d * aux, 0.5d, 10.0d);
+		//glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, -5.0, 500.0);
+		glFrustum(-1.5, 1.5, -1.5 * aux, 1.5 * aux, 0.6, 150.0);
 	}
 
 	glMatrixMode(GL_MODELVIEW);

@@ -183,13 +183,6 @@ void Display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-    // glPushMatrix();
-	// glMatrixMode(GL_PROJECTION);
-    // glLoadIdentity();
-	//glFrustum(-1.0d, 1.0d, -1.0d, 1.0d, 0.5d, 500.0d);
-    // gluPerspective(45.0d, 1.0d, 0.5d, 500.0d);
-	// glPopMatrix();
-
 	draw3DScene();
 
     // glPushMatrix();
@@ -204,9 +197,9 @@ void Display(void)
 
 void MyReshape(GLint width, GLint height)
 {
-	GLfloat new_ratio;
+	GLdouble new_ratio;
 	if (height != 0) {
-		new_ratio = (GLfloat)width / (GLfloat)height;
+		new_ratio = (GLdouble)width / (GLdouble)height;
 	}
 	else {
 		new_ratio = width;
@@ -217,17 +210,7 @@ void MyReshape(GLint width, GLint height)
 	glLoadIdentity();
 
 	// Cambio de aspect ratio.
-	if (new_ratio >= W_RATIO) {
-		//glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, -5.0, 500.0);
-		glFrustum(-1.5d * new_ratio, 1.5d * new_ratio, -1.5d, 1.0d, 0.4d, 50.0d);
-		//gluPerspective(55.0d,1.0d,0.5d,150.0d);
-	}
-	else {
-		GLfloat aux = 1 / new_ratio;
-		//glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, -5.0, 500.0);
-		glFrustum(-1.5d, 1.5d, -1.5d * aux, 1.5d * aux, 0.4d, 50.0d);
-		//gluPerspective(55.0d,1.0d,0.5d,150.0d);
-	}
+	gluPerspective(55.0,new_ratio,0.2,150.0);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -246,68 +229,6 @@ void MyReshape(GLint width, GLint height)
 // }
 
 void Timer(GLint t) {
-
-	//// Control Angulo1
-	//if (fAngulo1 <= -45)
-	//	sentido_horario1 = GL_TRUE;
-	//if (fAngulo1 >= 100)
-	//	sentido_horario1 = GL_FALSE;
-	//if (sentido_horario1) {
-	//	fAngulo1 += 0.5f;
-	//}
-	//else {
-	//	fAngulo1 -= 0.5f;
-	//}
-
-	//// Control Angulo2
-	//if (fAngulo2 <= -30)
-	//	sentido_horario2 = GL_TRUE;
-	//if (fAngulo2 >= 60)
-	//	sentido_horario2 = GL_FALSE;
-	//if (sentido_horario2) {
-	//	fAngulo2 += 1.0f;
-	//}
-	//else {
-	//	fAngulo2 -= 1.0f;
-	//}
-
-	//// Control Angulo3
-	//if (fAngulo3 <= -45)
-	//	sentido_horario3 = GL_TRUE;
-	//if (fAngulo3 >= 45)
-	//	sentido_horario3 = GL_FALSE;
-	//if (sentido_horario3) {
-	//	fAngulo3 += 0.5f;
-	//}
-	//else {
-	//	fAngulo3 -= 0.5f;
-	//}
-
-	//// Control Angulo4
-	//if ((GetKeyState(VK_LBUTTON) & 0x8000) != 0) {
-	//	if (fAngulo4 < 45)
-	//	{
-	//		fAngulo4 += 1.0f;
-	//	}
-	//}
-	//else {
-	//	if (fAngulo4 > 0)
-	//	{
-	//		fAngulo4 -= 1.0f;
-	//	}
-	//}
-
-	//// Control Angulo5
-	//if (fAngulo5 <= -90)
-	//	sentido_horario5 = GL_TRUE;
-	//if (fAngulo5 >= 90)
-	//	sentido_horario5 = GL_FALSE;
-	//if (sentido_horario5) {
-	//	fAngulo5 += 0.5f;
-	//}
-	//else {
-	//	fAngulo5 -= 0.5f;
-	//}
 
 	// Control Angulo1 teclas Q - A
 	if ((GetKeyState(0x51) & 0x8000) != 0) {
