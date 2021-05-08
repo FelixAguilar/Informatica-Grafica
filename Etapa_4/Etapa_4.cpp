@@ -33,6 +33,9 @@ const GLint W_HEIGHT = 600;
 const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 
 // UP vector for camera.
+GLdouble angulo_y = 0;
+GLdouble angulo_x = 0;
+GLdouble radio = 2;
 GLdouble eye_vector[3] = {0.0,0.0,1.0};
 GLdouble up_vector[3] = {0.0,1.0,0.0};
 GLdouble center_vector[3] = {0.0,0.0,0.0};
@@ -215,25 +218,30 @@ void MyReshape(GLint width, GLint height)
 }
 
  void camera_set(){
+
 	 if ((GetKeyState(0x26) & 0x8000) != 0) {
 
-		 center_vector[1] += 0.025;
+		 angulo_x += 0.5;
 	 }
 
 	 if ((GetKeyState(0x28) & 0x8000) != 0) {
 
-		 center_vector[1] += -0.025;
+		 angulo_x -= 0.5;
 	 }
 
 	 if ((GetKeyState(0x27) & 0x8000) != 0) {
 
-		 center_vector[0] += 0.025;
+		 angulo_y += 0.5;
 	 }
 
      if ((GetKeyState(0x25) & 0x8000) != 0){
 
-         center_vector[0] += -0.025;
+		 angulo_y -= 0.5;
      }
+	 eye_vector[0] = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y));
+	 eye_vector[1] = radio * sin(toRadians(angulo_x));
+	 eye_vector[2] = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y));
+
  }
 
 void Timer(GLint t) {
