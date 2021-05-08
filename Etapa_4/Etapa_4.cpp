@@ -34,6 +34,8 @@ const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 
 // UP vector for camera.
 GLdouble eye_vector[3] = {0.0,0.0,1.0};
+GLdouble up_vector[3] = {0.0,1.0,0.0};
+GLdouble center_vector[3] = {0.0,0.0,0.0};
 
 GLfloat toRadians(GLfloat i)
 {
@@ -43,19 +45,10 @@ GLfloat toRadians(GLfloat i)
 
 void draw3DScene() {
 
-	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
-	glLoadIdentity();
-
-	// Cambio de aspect ratio.
-	gluPerspective(55.0, new_ratio, 0.2, 150.0);
-	gluLookAt(eye_vector[0], eye_vector[1], eye_vector[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-	glMatrixMode(GL_MODELVIEW);
-
 	// Dibujamos los ejes.
 	glPushMatrix();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINES);
@@ -79,7 +72,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -116,7 +109,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -149,7 +142,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4, sin(toRadians(fAngulo1)) * 0.4, 0);
@@ -169,7 +162,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
@@ -196,11 +189,15 @@ void Display(void)
 
 	draw3DScene();
 
-	// glPushMatrix();
-	// glMatrixMode(GL_MODELVIEW);
-	// glLoadIdentity();
-	// gluLookAt(0.0d,0.0d,0.0d, 0.0d,0.0d,0.0d, up_vector[0], up_vector[1], up_vector[2]);
-	// glPopMatrix();
+	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
+	glLoadIdentity();
+
+	// Cambio de aspect ratio.
+	gluPerspective(55.0, new_ratio, 0.2, 150.0);
+	gluLookAt(eye_vector[0], eye_vector[1], eye_vector[2], center_vector[0], center_vector[1], center_vector[2], up_vector[0], up_vector[1], up_vector[2]);
+
+	glMatrixMode(GL_MODELVIEW);
+
 
 	glFlush();
 	glutSwapBuffers();
