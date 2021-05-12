@@ -35,12 +35,15 @@ const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 // UP vector for camera.
 GLdouble angulo_y = 0;
 GLdouble angulo_x = 0;
+GLdouble angulo_t = 0;
+GLdouble angulo_p = 0;
 GLdouble radio = 2;
 GLdouble x = 0;
 GLdouble y = 0;
 GLdouble eye_vector[3] = {0.0,0.0,1.0};
 GLdouble up_vector[3] = {0.0,1.0,0.0};
 GLdouble center_vector[3] = {0.0,0.0,0.0};
+GLdouble movement_vector[3] = {0.0,0.0,0.0};
 
 GLfloat toRadians(GLfloat i)
 {
@@ -221,59 +224,104 @@ void MyReshape(GLint width, GLint height)
 
  void camera_set(){
 
-	 if ((GetKeyState(0x26) & 0x8000) != 0) {
+	 if ((GetKeyState(0x26) & 0x8000) != 0) { //Arrow_UP
 
 		 angulo_x += 0.5;
 	 }
 
-	 if ((GetKeyState(0x28) & 0x8000) != 0) {
+	 if ((GetKeyState(0x28) & 0x8000) != 0) { //Arrow_Down
 
 		 angulo_x -= 0.5;
 	 }
 
-	 if ((GetKeyState(0x27) & 0x8000) != 0) {
+	 if ((GetKeyState(0x27) & 0x8000) != 0) { //Arrow_Right
 
 		 angulo_y += 0.5;
 	 }
 
-     if ((GetKeyState(0x25) & 0x8000) != 0){
+     if ((GetKeyState(0x25) & 0x8000) != 0){ //Arrow_Left
 
 		 angulo_y -= 0.5;
      }
 
-	 if ((GetKeyState(0x4E) & 0x8000) != 0) {
+	 if ((GetKeyState(0x4E) & 0x8000) != 0) { //M
 
 		 radio += 0.01;
 	 }
 
-	 if ((GetKeyState(0x4D) & 0x8000) != 0) {
+	 if ((GetKeyState(0x4D) & 0x8000) != 0) { //N
 
 		 radio -= 0.01;
 	 }
 
-	 if ((GetKeyState(0x4C) & 0x8000) != 0) {
+	 if ((GetKeyState(0x55) & 0x8000) != 0) { //U
 
-		 y += 0.01;
+		 movement_vector[0] += 0.01;
 	 }	 
-	 if ((GetKeyState(0x4A) & 0x8000) != 0) {
+	 if ((GetKeyState(0x4A) & 0x8000) != 0) { //J
 
-		 y -= 0.01;
+		 movement_vector[0] -= 0.01;
 	 }
 
-	 if ((GetKeyState(0x49) & 0x8000) != 0) {
+	 if ((GetKeyState(0x49) & 0x8000) != 0) { //I
 
-		 x += 0.01;
+		 movement_vector[1] += 0.01;
 	 }
 
-	 if ((GetKeyState(0x4B) & 0x8000) != 0) {
+	 if ((GetKeyState(0x4B) & 0x8000) != 0) { //K
 
-		 x -= 0.01;
+		 movement_vector[1] -= 0.01;
 	 }
 
+	 if ((GetKeyState(0x4F) & 0x8000) != 0) { //O
 
-	 eye_vector[0] = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y));
-	 eye_vector[1] = radio * sin(toRadians(angulo_x));
-	 eye_vector[2] = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y));
+		 movement_vector[2] += 0.01;
+	 }
+
+	 if ((GetKeyState(0x4C) & 0x8000) != 0) { //L
+
+		 movement_vector[2] -= 0.01;
+	 }
+	
+	 if ((GetKeyState(0x58) & 0x8000) != 0) { //X
+
+		 angulo_p += 0.5;
+	 }
+
+	 if ((GetKeyState(0x43) & 0x8000) != 0) { //C
+
+		 angulo_p -= 0.5;
+	 }
+	 
+	 if ((GetKeyState(0x56) & 0x8000) != 0) { //V
+
+		 angulo_t += 0.5;
+	 }
+
+	 if ((GetKeyState(0x42) & 0x8000) != 0) { //B
+
+		 angulo_t -= 0.5;
+	 }
+	 
+	 if ((GetKeyState(0x50) & 0x8000) != 0) { //B
+
+		 movement_vector[0] = 0;
+		 movement_vector[1] = 0;
+		 movement_vector[2] = 0;
+		 angulo_y = 0;
+		 angulo_x = 0;
+		 angulo_p = 0;
+		 angulo_t = 0;
+	 }
+	 
+	 center_vector[0] = movement_vector[0]; // +(radio * -cos(toRadians(angulo_p)) * -cos(toRadians(angulo_t)));
+	 center_vector[1] = movement_vector[1]; // +(radio * -sin(toRadians(angulo_p)));
+	 center_vector[2] = movement_vector[2]; // +(radio * -cos(toRadians(angulo_p)) * -sin(toRadians(angulo_t)));
+	 eye_vector[0] = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y)) + movement_vector[0];
+	 eye_vector[1] = radio * sin(toRadians(angulo_x)) + movement_vector[1];
+	 eye_vector[2] = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y)) + movement_vector[2];
+
+	
 
  }
 
