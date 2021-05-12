@@ -17,6 +17,9 @@ const GLint polygon_points = 360;
 const GLdouble radius_arm = 0.05;
 const GLdouble radius_hand = 0.025;
 
+// aspect ratio
+GLdouble new_ratio;
+
 //variables para el control de giro de los ángulos.
 const GLint tiempo = 10;
 GLboolean sentido_horario1 = GL_FALSE;
@@ -30,8 +33,10 @@ const GLint W_WIDTH = 600;
 const GLint W_HEIGHT = 600;
 const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 
-// UP vector for camera.
-GLdouble up_vector[3] = {0.0d,0.0d,0.0d};
+// Vector for camera.
+GLdouble eye_vector[3] = {0.0,0.0,1.0};
+GLdouble up_vector[3] = {0.0,1.0,0.0};
+GLdouble center_vector[3] = {0.0,0.0,0.0};
 
 GLfloat toRadians(GLfloat i)
 {
@@ -39,12 +44,13 @@ GLfloat toRadians(GLfloat i)
 	return r;
 }
 
-void draw3DScene() {
+void draw3DScene() 
+{
 
 	// Dibujamos los ejes.
 	glPushMatrix();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINES);
@@ -68,7 +74,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -105,7 +111,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -138,7 +144,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4, sin(toRadians(fAngulo1)) * 0.4, 0);
@@ -158,7 +164,7 @@ void draw3DScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
@@ -185,6 +191,17 @@ void Display(void)
 
 	draw3DScene();
 
+	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
+	glLoadIdentity();
+
+	// Cambio de aspect ratio.
+	gluPerspective(55.0, new_ratio, 0.2, 150.0);
+	gluLookAt(	eye_vector[0], eye_vector[1], eye_vector[2], 
+				center_vector[0], center_vector[1], center_vector[2], 
+				up_vector[0], up_vector[1], up_vector[2]);
+
+	glMatrixMode(GL_MODELVIEW);
+
     // glPushMatrix();
     // glMatrixMode(GL_MODELVIEW);
     // glLoadIdentity();
@@ -197,7 +214,6 @@ void Display(void)
 
 void MyReshape(GLint width, GLint height)
 {
-	GLdouble new_ratio;
 	if (height != 0) {
 		new_ratio = (GLdouble)width / (GLdouble)height;
 	}
@@ -206,14 +222,14 @@ void MyReshape(GLint width, GLint height)
 	}
 
 	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
-	glLoadIdentity();
+	// glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
+	// glLoadIdentity();
 
-	// Cambio de aspect ratio.
-	gluPerspective(55.0,new_ratio,0.2,150.0);
+	// // Cambio de aspect ratio.
+	// gluPerspective(55.0,new_ratio,0.2,150.0);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	// glMatrixMode(GL_MODELVIEW);
+	// glLoadIdentity();
 }
 
 // void camera_set(int key, int x, int y){
@@ -228,7 +244,22 @@ void MyReshape(GLint width, GLint height)
 //     }
 // }
 
-void Timer(GLint t) {
+void camera_set()
+{
+    if ((GetKeyState(0x26) & 0x8000) != 0) { 		//arriba
+        eye_vector[2] += -0.01;
+    } else if ((GetKeyState(0x28) & 0x8000) != 0){	//abajo
+        eye_vector[2] += 0.01;
+    } else if ((GetKeyState(0x27) & 0x8000) != 0){	//derecha
+        eye_vector[0] += 0.01;
+    } else if ((GetKeyState(0x25) & 0x8000) != 0){	//izquierda
+        eye_vector[0] += -0.01;
+	}
+}
+
+void Timer(GLint t) 
+{
+	camera_set();
 
 	// Control Angulo1 teclas Q - A
 	if ((GetKeyState(0x51) & 0x8000) != 0) {
@@ -330,7 +361,6 @@ int main(int argc, char** argv)
 
 	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
