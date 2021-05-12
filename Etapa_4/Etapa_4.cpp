@@ -36,6 +36,8 @@ const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 GLdouble angulo_y = 0;
 GLdouble angulo_x = 0;
 GLdouble radio = 2;
+GLdouble x = 0;
+GLdouble y = 0;
 GLdouble eye_vector[3] = {0.0,0.0,1.0};
 GLdouble up_vector[3] = {0.0,1.0,0.0};
 GLdouble center_vector[3] = {0.0,0.0,0.0};
@@ -238,6 +240,37 @@ void MyReshape(GLint width, GLint height)
 
 		 angulo_y -= 0.5;
      }
+
+	 if ((GetKeyState(0x4E) & 0x8000) != 0) {
+
+		 radio += 0.01;
+	 }
+
+	 if ((GetKeyState(0x4D) & 0x8000) != 0) {
+
+		 radio -= 0.01;
+	 }
+
+	 if ((GetKeyState(0x4C) & 0x8000) != 0) {
+
+		 y += 0.01;
+	 }	 
+	 if ((GetKeyState(0x4A) & 0x8000) != 0) {
+
+		 y -= 0.01;
+	 }
+
+	 if ((GetKeyState(0x49) & 0x8000) != 0) {
+
+		 x += 0.01;
+	 }
+
+	 if ((GetKeyState(0x4B) & 0x8000) != 0) {
+
+		 x -= 0.01;
+	 }
+
+
 	 eye_vector[0] = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y));
 	 eye_vector[1] = radio * sin(toRadians(angulo_x));
 	 eye_vector[2] = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y));
