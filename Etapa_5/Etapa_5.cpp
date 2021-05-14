@@ -47,13 +47,16 @@ GLdouble center_vector[3] = {0.0,0.0,0.0};
 const GLfloat param_AMB[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 const GLfloat param_DIFF[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 const GLfloat param_SPEC[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-const GLfloat param_POSIT[4] = {0.0f, 0.0f, 1.0f, 0.0f};
+const GLfloat param_POSIT[4] = {2.0f, 2.0f, 2.0f, 0.0f};
 const GLfloat param_SPOT_DIR[3] = {0.0f, 0.0f, -1.0f};
 const GLfloat param_SPOT_EXP[3] = {90.0f, 90.0f, 90.0f};
 const GLfloat param_SPOT_CUT[3] = {45.0f, 45.0f, 45.0f};
 const GLfloat param_CONST_ATT[3] = {1.0f, 0.0f, 0.0f};
 const GLfloat param_LIN_ATT[3] = {1.0f, 0.0f, 0.0f};
 const GLfloat param_QUAD_ATT[3] = {1.0f, 0.0f, 0.0f};
+GLboolean smooth_shade = true;
+GLboolean light_up = true;
+const GLfloat param_SHINE[4] = {120.0f, 120.0f, 120.0f, 120.0f};
 
 GLfloat toRadians(GLfloat i)
 {
@@ -72,17 +75,18 @@ void draw3DScene()
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINES);
 	glLineWidth(1);
-	glColor3f(0.0f, 0.0f, 0.0f);
+	
+	glColor3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(-2.0f, 0.0f, 0.0f);
+	glVertex3f(2.0f, 0.0f, 0.0f);
 
-	glVertex3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.0f, 0.0f);
-
-
-	glVertex3f(0.0f, -1.0f, 0.0f);
+	glColor3f(0.0f, 0.6f, 0.0f);
+	glVertex3f(0.0f, -0.9f, 0.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 
-	glVertex3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(0.0f, 0.0f, 1.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, -2.0f);
+	glVertex3f(0.0f, 0.0f, 2.0f);
 
 	glEnd();
 
@@ -227,16 +231,19 @@ void draw3DScene()
 	// plano
 	glColor3f(0.4f, 0.4f, 0.4f);
 	glBegin(GL_QUADS);
-	//glNormal3fv({1.0f, 0.0f, 0.0f});
+	//glMaterialfv(GL_FRONT, GL_SHININESS, param_SHINE);
+	//glMaterialfv(GL_BACK, GL_AMBIENT, param_AMB);
+	//glNormal3f(0.0f, 1.0f, 0.0f);
+	
 	glVertex3f(-2.0f, 0.0f, -2.0f);
 
-	//glNormal3fv({1.0f, 0.0f, 0.0f});
+	//glNormal3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(2.0f, 0.0f, -2.0f);
 
-	//glNormal3fv({1.0f, 0.0f, 0.0f});
+	//glNormal3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(2.0f, 0.0f, 2.0f);
 
-	//glNormal3fv({1.0f, 0.0f, 0.0f});
+	//glNormal3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(-2.0f, 0.0f, 2.0f);
 	glEnd();
 
@@ -250,25 +257,43 @@ void Display(void)
 	glEnable(GL_DEPTH_TEST);
 	//Habilitamos renderizado con luz
 	glEnable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
+	// efecto de luz en materiales por color
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	//Insertado de luz movible
-	glEnable(GL_LIGHT0);
+	glEnable(GL_COLOR_MATERIAL);
+	
+	// glEnable(GL_LIGHT1);
+	// glEnable(GL_LIGHT2);
+	// glEnable(GL_LIGHT3);
+	// glEnable(GL_LIGHT4);
+	// glEnable(GL_LIGHT5);
+	// glEnable(GL_LIGHT6);
+	// glEnable(GL_LIGHT7);
+	//glEnable(GL_LIGHT8);
+	//glEnable(GL_LIGHT09);
 
-	//glLightf(0,GL_AMBIENT, *param_AMB);
+	glLightf(0,GL_AMBIENT, *param_AMB);
 	glLightf(0,GL_DIFFUSE, *param_DIFF);
-	// glLightf(0,GL_SPECULAR, *param_SPEC);
-	// glLightf(0,GL_POSITION, *param_POSIT);
-	// glLightf(0,GL_SPOT_DIRECTION, *param_SPOT_DIR);
-	// glLightf(0,GL_SPOT_EXPONENT, *param_SPOT_EXP);
-	// glLightf(0,GL_SPOT_CUTOFF, *param_SPOT_CUT);
-	// glLightf(0,GL_CONSTANT_ATTENUATION, *param_CONST_ATT);
-	// glLightf(0,GL_LINEAR_ATTENUATION, *param_LIN_ATT);
-	// glLightf(0,GL_QUADRATIC_ATTENUATION, *param_QUAD_ATT);
+ 	glLightf(0,GL_SPECULAR, *param_SPEC);
+	glLightf(0,GL_POSITION, *param_POSIT);
+	glLightf(0,GL_SPOT_DIRECTION, *param_SPOT_DIR);
+	glLightf(0,GL_SPOT_EXPONENT, *param_SPOT_EXP);
+	glLightf(0,GL_SPOT_CUTOFF, *param_SPOT_CUT);
+	glLightf(0,GL_CONSTANT_ATTENUATION, *param_CONST_ATT);
+	glLightf(0,GL_LINEAR_ATTENUATION, *param_LIN_ATT);
+	glLightf(0,GL_QUADRATIC_ATTENUATION, *param_QUAD_ATT);
 
-	//Eleción de sombreado
-	//glShadeModel(GL_FLAT);
-	glShadeModel(GL_SMOOTH);
+	//Insertado de luz movible
+	if (light_up) {
+		glEnable(GL_LIGHT0);
+	} else {
+		glDisable(GL_LIGHT0);
+	}
+
+	if(smooth_shade) {
+		glShadeModel(GL_SMOOTH);
+	} else {
+		glShadeModel(GL_FLAT);
+	}
 
 	//cambio normal de superficie definida
 	//glNormal();
@@ -286,9 +311,9 @@ void Display(void)
 
 	// Cambio de aspect ratio.
 	gluPerspective(55.0, new_ratio, 0.2, 150.0);
-	gluLookAt(	eye_vector[0], eye_vector[1], eye_vector[2], 
-				center_vector[0], center_vector[1], center_vector[2], 
-				up_vector[0], up_vector[1], up_vector[2]);
+	gluLookAt(	eye_vector[0], 		eye_vector[1], 		eye_vector[2], 
+				center_vector[0], 	center_vector[1], 	center_vector[2], 
+				up_vector[0], 		up_vector[1], 		up_vector[2]);
 
 	glMatrixMode(GL_MODELVIEW);
 
@@ -334,6 +359,28 @@ void MyReshape(GLint width, GLint height)
 //     }
 // }
 
+void light_set() {
+
+
+
+	//Eleción de sombreado
+	if ((GetKeyState(0x20) & 0x8000) != 0) {
+		if (smooth_shade) {
+			smooth_shade = false;
+		} else {
+			smooth_shade = true;
+		}
+	}
+
+	if ((GetKeyState(0x4C) & 0x8000) != 0) {
+		if (light_up) {
+			light_up = false;
+		} else {
+			light_up = true;
+		}
+	}
+}
+
 void camera_set()
 {
     if ((GetKeyState(0x26) & 0x8000) != 0) { 		//arriba
@@ -375,6 +422,8 @@ void camera_set()
 void Timer(GLint t) 
 {
 	camera_set();
+
+	light_set();
 
 	// Control Angulo1 teclas Q - A
 	if ((GetKeyState(0x51) & 0x8000) != 0) {
@@ -445,6 +494,7 @@ void Timer(GLint t)
 			fAngulo5 -= 1.0f;
 		}
 	}
+	
 
 	glutPostRedisplay();
 	glutTimerFunc(tiempo, Timer, 0.0f);
