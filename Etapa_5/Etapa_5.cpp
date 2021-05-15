@@ -83,9 +83,8 @@ void draw3DScene()
 
 	//Luz
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
+	glLightf(0, GL_POSITION, *param_POSIT);
 	glTranslatef(param_POSIT[0], param_POSIT[1], param_POSIT[2]);
 
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -95,8 +94,6 @@ void draw3DScene()
 
 	// Dibujamos los ejes.
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 
 	glEnable(GL_LINE_SMOOTH);
@@ -116,18 +113,17 @@ void draw3DScene()
 	glVertex3f(0.0f, 0.0f, 2.0f);
 
 	glEnd();
+	glPopMatrix();
 
 	// Mano Superior
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.4f, 0.4f, 0.4f);
 	glutSolidSphere(radius_arm, 50, 50);
 
 	glRotatef(45 + fAngulo3 + fAngulo4, 0.0f, 0.0f, 1.0f);
@@ -138,7 +134,7 @@ void draw3DScene()
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.4f, 0.4f, 0.4f);
 	glutSolidSphere(radius_hand, 50, 50);
 
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
@@ -147,16 +143,13 @@ void draw3DScene()
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.4f, 0.4f, 0.4f);
 	glutSolidSphere(radius_hand, 50, 50);
 
 	glPopMatrix();
 
 	// Mano inferior.
-
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
@@ -180,15 +173,13 @@ void draw3DScene()
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.4f, 0.4f, 0.4f);
 	glutSolidSphere(radius_hand, 50, 50);
 
 	glPopMatrix();
 
 	// Antebrazo
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
@@ -200,15 +191,13 @@ void draw3DScene()
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glutSolidCylinder(radius_arm, 0.4f, 50, 50);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.4f, 0.4f, 0.4f);
 	glutSolidSphere(radius_arm, 50, 50);
 
 	glPopMatrix();
 
 	// Brazo
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
@@ -219,15 +208,13 @@ void draw3DScene()
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glutSolidCylinder(radius_arm, 0.4f, 50, 50);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.4f, 0.4f, 0.4f);
 	glutSolidSphere(radius_arm, 50, 50);
 
 	glPopMatrix();
 
 	// Plano
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	glTranslatef(0.0f, -1.0f, 0.0f);
 
@@ -254,8 +241,8 @@ void draw3DScene()
 	// plano
 	glColor3f(0.4f, 0.4f, 0.4f);
 	glBegin(GL_QUADS);
-	//glMaterialfv(GL_FRONT, GL_SHININESS, param_SHINE);
-	//glMaterialfv(GL_BACK, GL_AMBIENT, param_AMB);
+	//glMaterialf(GL_FRONT, GL_SHININESS, param_mat_SHINE);
+	//glMaterialf(GL_BACK, GL_AMBIENT, param_mat_AMB);
 	//glNormal3f(0.0f, 1.0f, 0.0f);
 
 	glVertex3f(-2.0f, 0.0f, -2.0f);
@@ -294,7 +281,7 @@ void Display(void)
 	glLightf(0, GL_AMBIENT, *param_AMB);
 	glLightf(0, GL_DIFFUSE, *param_DIFF);
 	glLightf(0, GL_SPECULAR, *param_SPEC);
-	glLightf(0, GL_POSITION, *param_POSIT);
+	//glLightf(0, GL_POSITION, *param_POSIT);
 	glLightf(0, GL_SPOT_DIRECTION, *param_SPOT_DIR);
 	glLightf(0, GL_SPOT_EXPONENT, param_SPOT_EXP);
 	glLightf(0, GL_SPOT_CUTOFF, param_SPOT_CUT);
@@ -328,26 +315,20 @@ void Display(void)
 
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-
-	draw3DScene();
 
 	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
 	glLoadIdentity();
 
 	// Cambio de aspect ratio.
-	gluPerspective(55.0, new_ratio, 0.2, 150.0);
+	gluPerspective(55.0, new_ratio, 0.2, 10.0);
+	
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	gluLookAt(eye_vector[0], eye_vector[1], eye_vector[2],
 			  center_vector[0], center_vector[1], center_vector[2],
 			  up_vector[0], up_vector[1], up_vector[2]);
-
-	glMatrixMode(GL_MODELVIEW);
-
-	// glPushMatrix();
-	// glMatrixMode(GL_MODELVIEW);
-	// glLoadIdentity();
-	// gluLookAt(0.0d,0.0d,0.0d, 0.0d,0.0d,0.0d, up_vector[0], up_vector[1], up_vector[2]);
-	// glPopMatrix();
+	draw3DScene();
 
 	glFlush();
 	glutSwapBuffers();

@@ -58,7 +58,6 @@ void draw3DScene()
 
 	// Dibujamos los ejes.
 	glPushMatrix();
-
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 
 	glEnable(GL_LINE_SMOOTH);
@@ -79,8 +78,6 @@ void draw3DScene()
 
 	// Mano Superior
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
@@ -113,10 +110,7 @@ void draw3DScene()
 	glPopMatrix();
 
 	// Mano inferior.
-
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
@@ -147,8 +141,6 @@ void draw3DScene()
 
 	// Antebrazo
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
@@ -167,8 +159,6 @@ void draw3DScene()
 
 	// Brazo
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
@@ -191,26 +181,20 @@ void Display(void)
 	glEnable(GL_DEPTH_TEST);
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-
-	draw3DScene();
 
 	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
 	glLoadIdentity();
 
 	// Cambio de aspect ratio.
 	gluPerspective(55.0, new_ratio, 0.2, 150.0);
+	
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	gluLookAt(eye_vector[0], eye_vector[1], eye_vector[2],
 			  center_vector[0], center_vector[1], center_vector[2],
 			  up_vector[0], up_vector[1], up_vector[2]);
-
-	glMatrixMode(GL_MODELVIEW);
-
-	// glPushMatrix();
-	// glMatrixMode(GL_MODELVIEW);
-	// glLoadIdentity();
-	// gluLookAt(0.0d,0.0d,0.0d, 0.0d,0.0d,0.0d, up_vector[0], up_vector[1], up_vector[2]);
-	// glPopMatrix();
+	draw3DScene();
 
 	glFlush();
 	glutSwapBuffers();
@@ -228,27 +212,7 @@ void MyReshape(GLint width, GLint height)
 	}
 
 	glViewport(0, 0, width, height);
-	// glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
-	// glLoadIdentity();
-
-	// // Cambio de aspect ratio.
-	// gluPerspective(55.0,new_ratio,0.2,150.0);
-
-	// glMatrixMode(GL_MODELVIEW);
-	// glLoadIdentity();
 }
-
-// void camera_set(int key, int x, int y){
-//     if (key == GLUT_KEY_UP) {
-//         up_vector[0] = 1;
-//     } else if (key == GLUT_KEY_DOWN){
-//         //up_vector[] = 0;
-//     } else if (key == GLUT_KEY_RIGHT){
-//         up_vector[1] = 1;
-//     } else if (key == GLUT_KEY_LEFT){
-//         //up_vector[] = 0;
-//     }
-// }
 
 void camera_set()
 {
