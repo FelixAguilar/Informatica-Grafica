@@ -4,7 +4,6 @@
 #include <GL/freeglut.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <cmath>
 
 GLfloat fAngulo1 = 0.0f; //Subir y Bajar el Brazo.
 GLfloat fAngulo2 = 0.0f; //Subir y bajar Antebrazo.
@@ -34,17 +33,14 @@ const GLint W_HEIGHT = 600;
 const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 
 // UP vector for camera.
+GLdouble movement_vector[3] = { 0.0,0.0,0.0 };
+GLdouble tilt_vector[2] = { 0.0,0.0 };
 GLdouble angulo_y = 0;
 GLdouble angulo_x = 0;
-GLdouble angulo_t = 0;
-GLdouble angulo_p = 0;
 GLdouble radio = 2;
-GLdouble x = 0;
-GLdouble y = 0;
 GLdouble eye_vector[3] = {0.0,0.0,1.0};
 GLdouble up_vector[3] = {0.0,1.0,0.0};
 GLdouble center_vector[3] = {0.0,0.0,0.0};
-GLdouble movement_vector[3] = {0.0,0.0,0.0};
 
 GLfloat toRadians(GLfloat i)
 {
@@ -203,10 +199,11 @@ void Display(void)
 
 	// Cambio de aspect ratio.
 	gluPerspective(55.0, new_ratio, 0.2, 150.0);
+
 	gluLookAt(eye_vector[0], eye_vector[1], eye_vector[2], center_vector[0], center_vector[1], center_vector[2], up_vector[0], up_vector[1], up_vector[2]);
 
 	glMatrixMode(GL_MODELVIEW);
-
+	
 
 	glFlush();
 	glutSwapBuffers();
@@ -255,8 +252,44 @@ void MyReshape(GLint width, GLint height)
 
 			 movement_vector[1] += 0.01;
 		 }
+
+		 if ((GetKeyState(0x50) & 0x8000) != 0) { //B
+
+			 movement_vector[0] = 0;
+			 movement_vector[1] = 0;
+			 movement_vector[2] = 0;
+
+		 }
 	 }
-	 else {
+	 else if ((GetKeyState(0x11) & 0x8000) != 0) {
+		 if ((GetKeyState(0x26) & 0x8000) != 0) { //Arrow_UP
+
+			 tilt_vector[1] += 0.01;
+		 }
+
+		 if ((GetKeyState(0x28) & 0x8000) != 0) { //Arrow_Down
+
+			 tilt_vector[1] -= 0.01;
+		 }
+
+		 if ((GetKeyState(0x27) & 0x8000) != 0) { //Arrow_Right
+
+			 tilt_vector[0] -= 0.01;
+		 }
+
+		 if ((GetKeyState(0x25) & 0x8000) != 0) { //Arrow_Left
+
+			 tilt_vector[0] += 0.01;
+		 }
+
+		 if ((GetKeyState(0x50) & 0x8000) != 0) { //B
+
+			 tilt_vector[0] = 0;
+			 tilt_vector[1] = 0;
+
+		 }
+	 }
+	 else{
 		 if ((GetKeyState(0x26) & 0x8000) != 0) { //Arrow_UP
 
 			 angulo_x += 0.5;
@@ -286,61 +319,37 @@ void MyReshape(GLint width, GLint height)
 
 			 radio -= 0.01;
 		 }
-	 }
-	
-	 //if ((GetKeyState(0x58) & 0x8000) != 0) { //X
 
-		// angulo_p += 0.5;
-	 //}
+		 if ((GetKeyState(0x50) & 0x8000) != 0) { //B
 
-	 //if ((GetKeyState(0x43) & 0x8000) != 0) { //C
-
-		// angulo_p -= 0.5;
-	 //}
-	 //
-	 //if ((GetKeyState(0x56) & 0x8000) != 0) { //V
-
-		// angulo_t += 0.5;
-	 //}
-
-	 //if ((GetKeyState(0x42) & 0x8000) != 0) { //B
-
-		// angulo_t -= 0.5;
-	 //}
-	 
-	 if ((GetKeyState(0x50) & 0x8000) != 0) { //B
-
-		 movement_vector[0] = 0;
-		 movement_vector[1] = 0;
-		 movement_vector[2] = 0;
-		 angulo_y = 0;
-		 angulo_x = 0;
-		 angulo_p = 0;
-		 angulo_t = 0;
-		 radio = 2;
+			 angulo_y = 0;
+			 angulo_x = 0;
+			 radio = 2;
+		 }
 	 }
 
 	 GLdouble eye_x = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y));
 	 GLdouble eye_y = radio * sin(toRadians(angulo_x));
 	 GLdouble eye_z = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y));
 
+	 GLdouble center_x = movement_vector[0] * cos(toRadians(angulo_y)) - movement_vector[2] * sin(toRadians(angulo_y));
+	 GLdouble center_y = movement_vector[1];
+	 GLdouble center_z = movement_vector[2] * cos(toRadians(angulo_y)) + movement_vector[0] * sin(toRadians(angulo_y));
 
-	 GLdouble aux_x = radio * cos(toRadians(angulo_p - angulo_x)) * cos(toRadians(angulo_t - angulo_y));
-	 GLdouble aux_y = radio * sin(toRadians(angulo_p - angulo_x));
-	 GLdouble aux_z = radio * cos(toRadians(angulo_p - angulo_x)) * sin(toRadians(angulo_t - angulo_y));
+	 GLdouble camera_x = - tilt_vector[0] * sin(toRadians(angulo_y));
+	 GLdouble camera_y = tilt_vector[1];
+	 GLdouble camera_z = tilt_vector[0] * cos(toRadians(angulo_y));
 
-	 aux_x = 0; //aux_x - abs(eye_x);
-	 aux_y = 0; //aux_y - abs(eye_y);
-	 aux_z = 0; //aux_z - abs(eye_z);
+	 camera_y = camera_z * sin(toRadians(angulo_x)) + camera_y * cos(toRadians(angulo_x));
+	 camera_z = camera_z * cos(toRadians(angulo_x)) - camera_y * sin(toRadians(angulo_x));
 
-	 center_vector[0] = aux_x + movement_vector[0] * cos(toRadians(angulo_y)) - movement_vector[2] * sin(toRadians(angulo_y));
-	 center_vector[1] = aux_y + movement_vector[1];
-	 center_vector[2] = aux_z + movement_vector[2] * cos(toRadians(angulo_y)) + movement_vector[0] * sin(toRadians(angulo_y));
+	 center_vector[0] = camera_x + center_x;
+	 center_vector[1] = camera_y + center_y;
+	 center_vector[2] = camera_z + center_z;
 
-	 eye_vector[0] = eye_x + movement_vector[0] * cos(toRadians(angulo_y)) - movement_vector[2] * sin(toRadians(angulo_y));
-	 eye_vector[1] = eye_y + movement_vector[1];
-	 eye_vector[2] = eye_z + movement_vector[2] * cos(toRadians(angulo_y)) + movement_vector[0] * sin(toRadians(angulo_y));
-	
+	 eye_vector[0] = eye_x + center_x;
+	 eye_vector[1] = eye_y + center_y;
+	 eye_vector[2] = eye_z + center_z;
 
  }
 
