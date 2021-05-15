@@ -4,6 +4,7 @@
 #include <GL/freeglut.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cmath>
 
 GLfloat fAngulo1 = 0.0f; //Subir y Bajar el Brazo.
 GLfloat fAngulo2 = 0.0f; //Subir y bajar Antebrazo.
@@ -224,84 +225,88 @@ void MyReshape(GLint width, GLint height)
 
  void camera_set(){
 
-	 if ((GetKeyState(0x26) & 0x8000) != 0) { //Arrow_UP
+	 if ((GetKeyState(0x10) & 0x8000) != 0) {
+		 if ((GetKeyState(0x26) & 0x8000) != 0) { //Arrow_UP
 
-		 angulo_x += 0.5;
+			 movement_vector[0] -= 0.01;
+		 }
+
+		 if ((GetKeyState(0x28) & 0x8000) != 0) { //Arrow_Down
+
+			 movement_vector[0] += 0.01;
+		 }
+
+		 if ((GetKeyState(0x27) & 0x8000) != 0) { //Arrow_Right
+
+			 movement_vector[2] -= 0.01;
+		 }
+
+		 if ((GetKeyState(0x25) & 0x8000) != 0) { //Arrow_Left
+
+			 movement_vector[2] += 0.01;
+		 }
+
+		 if ((GetKeyState(0x4E) & 0x8000) != 0) { //M
+
+			 movement_vector[1] -= 0.01;
+		 }
+
+		 if ((GetKeyState(0x4D) & 0x8000) != 0) { //N
+
+			 movement_vector[1] += 0.01;
+		 }
 	 }
+	 else {
+		 if ((GetKeyState(0x26) & 0x8000) != 0) { //Arrow_UP
 
-	 if ((GetKeyState(0x28) & 0x8000) != 0) { //Arrow_Down
+			 angulo_x += 0.5;
+		 }
 
-		 angulo_x -= 0.5;
-	 }
+		 if ((GetKeyState(0x28) & 0x8000) != 0) { //Arrow_Down
 
-	 if ((GetKeyState(0x27) & 0x8000) != 0) { //Arrow_Right
+			 angulo_x -= 0.5;
+		 }
 
-		 angulo_y += 0.5;
-	 }
+		 if ((GetKeyState(0x27) & 0x8000) != 0) { //Arrow_Right
 
-     if ((GetKeyState(0x25) & 0x8000) != 0){ //Arrow_Left
+			 angulo_y += 0.5;
+		 }
 
-		 angulo_y -= 0.5;
-     }
+		 if ((GetKeyState(0x25) & 0x8000) != 0) { //Arrow_Left
 
-	 if ((GetKeyState(0x4E) & 0x8000) != 0) { //M
+			 angulo_y -= 0.5;
+		 }
 
-		 radio += 0.01;
-	 }
+		 if ((GetKeyState(0x4E) & 0x8000) != 0) { //M
 
-	 if ((GetKeyState(0x4D) & 0x8000) != 0) { //N
+			 radio += 0.01;
+		 }
 
-		 radio -= 0.01;
-	 }
+		 if ((GetKeyState(0x4D) & 0x8000) != 0) { //N
 
-	 if ((GetKeyState(0x55) & 0x8000) != 0) { //U
-
-		 movement_vector[0] += 0.01;
-	 }	 
-	 if ((GetKeyState(0x4A) & 0x8000) != 0) { //J
-
-		 movement_vector[0] -= 0.01;
-	 }
-
-	 if ((GetKeyState(0x49) & 0x8000) != 0) { //I
-
-		 movement_vector[1] += 0.01;
-	 }
-
-	 if ((GetKeyState(0x4B) & 0x8000) != 0) { //K
-
-		 movement_vector[1] -= 0.01;
-	 }
-
-	 if ((GetKeyState(0x4F) & 0x8000) != 0) { //O
-
-		 movement_vector[2] += 0.01;
-	 }
-
-	 if ((GetKeyState(0x4C) & 0x8000) != 0) { //L
-
-		 movement_vector[2] -= 0.01;
+			 radio -= 0.01;
+		 }
 	 }
 	
-	 if ((GetKeyState(0x58) & 0x8000) != 0) { //X
+	 //if ((GetKeyState(0x58) & 0x8000) != 0) { //X
 
-		 angulo_p += 0.5;
-	 }
+		// angulo_p += 0.5;
+	 //}
 
-	 if ((GetKeyState(0x43) & 0x8000) != 0) { //C
+	 //if ((GetKeyState(0x43) & 0x8000) != 0) { //C
 
-		 angulo_p -= 0.5;
-	 }
-	 
-	 if ((GetKeyState(0x56) & 0x8000) != 0) { //V
+		// angulo_p -= 0.5;
+	 //}
+	 //
+	 //if ((GetKeyState(0x56) & 0x8000) != 0) { //V
 
-		 angulo_t += 0.5;
-	 }
+		// angulo_t += 0.5;
+	 //}
 
-	 if ((GetKeyState(0x42) & 0x8000) != 0) { //B
+	 //if ((GetKeyState(0x42) & 0x8000) != 0) { //B
 
-		 angulo_t -= 0.5;
-	 }
+		// angulo_t -= 0.5;
+	 //}
 	 
 	 if ((GetKeyState(0x50) & 0x8000) != 0) { //B
 
@@ -312,15 +317,29 @@ void MyReshape(GLint width, GLint height)
 		 angulo_x = 0;
 		 angulo_p = 0;
 		 angulo_t = 0;
+		 radio = 2;
 	 }
-	 
-	 center_vector[0] = movement_vector[0]; // +(radio * -cos(toRadians(angulo_p)) * -cos(toRadians(angulo_t)));
-	 center_vector[1] = movement_vector[1]; // +(radio * -sin(toRadians(angulo_p)));
-	 center_vector[2] = movement_vector[2]; // +(radio * -cos(toRadians(angulo_p)) * -sin(toRadians(angulo_t)));
-	 eye_vector[0] = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y)) + movement_vector[0];
-	 eye_vector[1] = radio * sin(toRadians(angulo_x)) + movement_vector[1];
-	 eye_vector[2] = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y)) + movement_vector[2];
 
+	 GLdouble eye_x = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y));
+	 GLdouble eye_y = radio * sin(toRadians(angulo_x));
+	 GLdouble eye_z = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y));
+
+
+	 GLdouble aux_x = radio * cos(toRadians(angulo_p - angulo_x)) * cos(toRadians(angulo_t - angulo_y));
+	 GLdouble aux_y = radio * sin(toRadians(angulo_p - angulo_x));
+	 GLdouble aux_z = radio * cos(toRadians(angulo_p - angulo_x)) * sin(toRadians(angulo_t - angulo_y));
+
+	 aux_x = 0; //aux_x - abs(eye_x);
+	 aux_y = 0; //aux_y - abs(eye_y);
+	 aux_z = 0; //aux_z - abs(eye_z);
+
+	 center_vector[0] = aux_x + movement_vector[0] * cos(toRadians(angulo_y)) - movement_vector[2] * sin(toRadians(angulo_y));
+	 center_vector[1] = aux_y + movement_vector[1];
+	 center_vector[2] = aux_z + movement_vector[2] * cos(toRadians(angulo_y)) + movement_vector[0] * sin(toRadians(angulo_y));
+
+	 eye_vector[0] = eye_x + movement_vector[0] * cos(toRadians(angulo_y)) - movement_vector[2] * sin(toRadians(angulo_y));
+	 eye_vector[1] = eye_y + movement_vector[1];
+	 eye_vector[2] = eye_z + movement_vector[2] * cos(toRadians(angulo_y)) + movement_vector[0] * sin(toRadians(angulo_y));
 	
 
  }
