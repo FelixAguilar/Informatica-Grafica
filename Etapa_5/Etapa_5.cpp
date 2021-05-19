@@ -29,8 +29,8 @@ GLboolean sentido_horario4 = GL_FALSE;
 GLboolean sentido_horario5 = GL_FALSE;
 
 // Constantes de la ventana.
-const GLint W_WIDTH = 600;
-const GLint W_HEIGHT = 600;
+const GLint W_WIDTH = 800;
+const GLint W_HEIGHT = 800;
 const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 
 // Vector for camera.
@@ -164,7 +164,7 @@ void draw3DScene()
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.4f, 0.4f, 0.4f);
 	glutSolidSphere(radius_hand, 50, 50);
 
 	glRotatef(-90, 1.0f, 0.0f, 0.0f);
