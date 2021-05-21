@@ -48,13 +48,14 @@ GLdouble movement_vector[3] = { 0.0, 0.0, 0.0 };
 GLdouble tilt_vector[2] = { 0.0, 0.0 };
 
 // Light params values
-GLfloat param_AMB[4] = { 0.0f, 0.0f, 0.0f, 1.0f };   //GL_AMBIENT				[-1,1]
-GLfloat param_DIFF[4] = { 1.0f, 1.0f, 1.0f, 1.0f };  //GL_DIFFUSE				[-1,1]
+GLfloat param_AMB[4] = { 0.4f, 0.4f, 0.4f, 1.0f };   //GL_AMBIENT				[-1,1]
+GLfloat param_DIFF[4] = { .8f, .8f, .8f, 1.0f };  //GL_DIFFUSE				[-1,1]
 GLfloat param_SPEC[4] = { 1.0f, 1.0f, 1.0f, 1.0f };  //GL_SPECULAR				[-1,1]
-GLfloat param_POSIT[4] = { 2.0f, 2.0f, 2.0f, 1.0f }; //GL_POSITION				?
+GLfloat param_POSIT[4] = { 0.0f, 1.0f, 0.0f, 1.0f }; 	//GL_POSITION				?
+GLfloat static_param_POSIT[4] = { 0.,0.,0.,1. };		//GL_POSITION en el origen
 GLfloat param_SPOT_DIR[3] = { 0.0f, 0.0f, -1.0f };   //GL_SPOT_DIRECTION			?
 GLfloat param_SPOT_EXP = 0.0f;					   //GL_SPOT_EXPONENT			[0,128]
-GLfloat param_SPOT_CUT = 0.0f;					   //SPOT_CUTOFF				[0,90]U{180}
+GLfloat param_SPOT_CUT = 45.0f;					   //SPOT_CUTOFF				[0,90]U{180}
 GLfloat param_CONST_ATT = 0.0f;					   //GL_CONSTANT_ATTENUATION	[0,1]
 GLfloat param_LIN_ATT = 0.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
 GLfloat param_QUAD_ATT = 0.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
@@ -62,10 +63,14 @@ GLfloat param_QUAD_ATT = 0.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
 // material param values
 GLfloat param_mat_AMB[4] = { 0.2f, 0.2f, 0.2f, 1.0f };   //GL_AMBIENT				[-1,1]
 GLfloat param_mat_DIFF[4] = { 0.8f, 0.8f, 0.8f, 1.0f };  //GL_DIFFUSE				[-1,1]
-GLfloat param_mat_SPEC[4] = { 0.0f, 0.0f, 0.0f, 1.0f };  //GL_SPECULAR			[-1,1]
+GLfloat param_mat_SPEC[4] = { 1.0f, 1.0f, 1.0f, 1.0f };  //GL_SPECULAR			[-1,1]
 GLfloat param_mat_EMISS[4] = { 0.0f, 0.0f, 0.0f, 1.0f }; //GL_EMISSION			[-1,1]
-GLfloat param_mat_SHINE = 100.0f;					   //GL_SHINENESS			[0,128]
+GLfloat param_mat_SHINE = 50.0f;					   //GL_SHINENESS			[0,128]
 GLfloat param_mat_COL_INDX[3] = { 0.0f, 0.0f, 0.0f };	   //GL_COLOR_INDEXES		?
+
+//Button checks
+bool light = false;
+bool shadow = false;
 
 GLboolean smooth_shade = true;
 GLboolean light_up = true;
@@ -80,15 +85,20 @@ GLfloat toRadians(GLfloat i)
 
 void draw3DScene()
 {
-
 	//Luz
 	glPushMatrix();
 
-
 	glTranslatef(param_POSIT[0], param_POSIT[1], param_POSIT[2]);
 
+	glLightfv(GL_LIGHT0, GL_POSITION, static_param_POSIT);
+
+	glDisable(GL_LIGHTING);
+
+	//imagen foco
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glutSolidSphere(radius_arm, 50, 50);
+
+	glEnable(GL_LIGHTING);
 
 	glPopMatrix();
 
@@ -96,23 +106,28 @@ void draw3DScene()
 	glPushMatrix();
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 
+	glDisable(GL_LIGHTING);
+
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINES);
 	glLineWidth(1);
 
-	glColor3f(1.0f, 1.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 0.0f); 	//verde - Y
 	glVertex3f(-2.0f, 0.0f, 0.0f);
 	glVertex3f(2.0f, 0.0f, 0.0f);
 
-	glColor3f(0.0f, 0.6f, 0.0f);
+	glColor3f(0.0f, 0.6f, 0.0f);	//amarillo - Z
 	glVertex3f(0.0f, -0.9f, 0.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 
-	glColor3f(0.0f, 0.0f, 1.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);	//azul - X
 	glVertex3f(0.0f, 0.0f, -2.0f);
 	glVertex3f(0.0f, 0.0f, 2.0f);
 
 	glEnd();
+
+	glEnable(GL_LIGHTING);
+
 	glPopMatrix();
 
 	// Mano Superior
@@ -219,45 +234,45 @@ void draw3DScene()
 	glTranslatef(0.0f, -1.0f, 0.0f);
 
 	//borde del plano
-	glEnable(GL_LINE_SMOOTH);
-	glBegin(GL_LINES);
-	glLineWidth(2);
-	glColor3f(0.0f, 0.0f, 0.0f);
+	// glEnable(GL_LINE_SMOOTH);
+	// glBegin(GL_LINES);
+	// glLineWidth(2);
+	// glColor3f(0.0f, 0.0f, 0.0f);
 
-	glVertex3f(-2.0f, 0.0f, -2.0f);
-	glVertex3f(2.0f, 0.0f, -2.0f);
+	// glVertex3f(-2.0f, 0.0f, -2.0f);
+	// glVertex3f(2.0f, 0.0f, -2.0f);
 
-	glVertex3f(2.0f, 0.0f, -2.0f);
-	glVertex3f(2.0f, 0.0f, 2.0f);
+	// glVertex3f(2.0f, 0.0f, -2.0f);
+	// glVertex3f(2.0f, 0.0f, 2.0f);
 
-	glVertex3f(2.0f, 0.0f, 2.0f);
-	glVertex3f(-2.0f, 0.0f, 2.0f);
+	// glVertex3f(2.0f, 0.0f, 2.0f);
+	// glVertex3f(-2.0f, 0.0f, 2.0f);
 
-	glVertex3f(-2.0f, 0.0f, 2.0f);
-	glVertex3f(-2.0f, 0.0f, -2.0f);
+	// glVertex3f(-2.0f, 0.0f, 2.0f);
+	// glVertex3f(-2.0f, 0.0f, -2.0f);
 
-	glEnd();
+	// glEnd();
 
 	// plano
+	glColor3f(0.4f, 0.4f, 0.4f);
 
-	for (GLfloat i = -2.0; i < 2; i = i + 0.2){
-		for (GLfloat j = -2.0; j < 2; j = j + 0.2) {
-			glColor3f(0.4f, 0.4f, 0.4f);
+	GLfloat inc = 0.02;
+
+	for (GLfloat i = -2.0; i < 2; i = i + inc) {
+		for (GLfloat j = -2.0; j < 2; j = j + inc) {
 			glBegin(GL_QUADS);
-			glMaterialf(GL_FRONT, GL_SHININESS, param_mat_SHINE);
-			//glMaterialf(GL_BACK, GL_AMBIENT, param_mat_AMB);
-			glNormal3f(0.0f, 1.0f, 0.0f);
+			glNormal3f(.0f, 1.0f, .0f);
 
 			glVertex3f(j, 0.0f, i);
 
-			//glNormal3f(0.0f, 1.0f, 0.0f);
-			glVertex3f(j + 0.2, 0.0f, i);
+			glNormal3f(.0f, 1.0f, .0f);
+			glVertex3f(j + inc, 0.0f, i);
 
-			//glNormal3f(0.0f, 1.0f, 0.0f);
-			glVertex3f(j + 0.2, 0.0f, i + 0.2);
+			glNormal3f(.0f, 1.0f, .0f);
+			glVertex3f(j + inc, 0.0f, i + inc);
 
-			//glNormal3f(0.0f, 1.0f, 0.0f);
-			glVertex3f(j, 0.0f, i + 0.2);
+			glNormal3f(.0f, 1.0f, .0f);
+			glVertex3f(j, 0.0f, i + inc);
 			glEnd();
 		}
 	}
@@ -275,6 +290,10 @@ void Display(void)
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, param_mat_SHINE);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, param_mat_AMB);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, param_mat_SPEC);
+
 	// glEnable(GL_LIGHT1);
 	// glEnable(GL_LIGHT2);
 	// glEnable(GL_LIGHT3);
@@ -283,16 +302,16 @@ void Display(void)
 	// glEnable(GL_LIGHT6);
 	// glEnable(GL_LIGHT7);
 
-	glLightf(0, GL_AMBIENT, *param_AMB);
-	glLightf(0, GL_DIFFUSE, *param_DIFF);
-	glLightf(0, GL_SPECULAR, *param_SPEC);
-	glLightf(0, GL_POSITION, *param_POSIT);
-	glLightf(0, GL_SPOT_DIRECTION, *param_SPOT_DIR);
-	glLightf(0, GL_SPOT_EXPONENT, param_SPOT_EXP);
-	glLightf(0, GL_SPOT_CUTOFF, param_SPOT_CUT);
-	glLightf(0, GL_CONSTANT_ATTENUATION, param_CONST_ATT);
-	glLightf(0, GL_LINEAR_ATTENUATION, param_LIN_ATT);
-	glLightf(0, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT);
+	//glLightfv(GL_LIGHT0, GL_POSITION, static_array);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, param_AMB);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, param_DIFF);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, param_SPEC);
+	// glLightf(GL_LIGHT0, GL_SPOT_DIRECTION, *param_SPOT_DIR);
+	// glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, param_SPOT_EXP);
+	// glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, param_SPOT_CUT);
+	// glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, param_CONST_ATT);
+	// glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, param_LIN_ATT);
+	// glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT);
 
 	//Insertado de luz movible
 	if (light_up)
@@ -325,12 +344,11 @@ void Display(void)
 	glLoadIdentity();
 
 	// Cambio de aspect ratio.
-	gluPerspective(55.0, new_ratio, 0.2, 10.0);
+	gluPerspective(55.0, new_ratio, 0.2, 100.0);
 
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glLightf(0, GL_POSITION, *param_POSIT);
 	gluLookAt(eye_vector[0], eye_vector[1], eye_vector[2],
 		center_vector[0], center_vector[1], center_vector[2],
 		up_vector[0], up_vector[1], up_vector[2]);
@@ -358,8 +376,9 @@ void light_set()
 {
 
 	//Eleción de sombreado -SPACEBAR
-	if ((GetKeyState(0x20) & 0x8000) != 0)
+	if ((GetKeyState(0x20) & 0x8000) != 0 && !shadow)
 	{
+		shadow = true;
 		if (smooth_shade)
 		{
 			smooth_shade = false;
@@ -369,10 +388,14 @@ void light_set()
 			smooth_shade = true;
 		}
 	}
+	if ((GetKeyState(0x20) & 0x8000) == 0) {
+		shadow = false;
+	}
 
-	// switch luz on/off -B
-	if ((GetKeyState(0x4C) & 0x8000) != 0)
+	// switch luz on/off -L
+	if ((GetKeyState(0x4C) & 0x8000) != 0 && !light)
 	{
+		light = true;
 		if (light_up)
 		{
 			light_up = false;
@@ -381,6 +404,9 @@ void light_set()
 		{
 			light_up = true;
 		}
+	}
+	if ((GetKeyState(0x4C) & 0x8000) == 0) {
+		light = false;
 	}
 
 	// movimiento de luz
