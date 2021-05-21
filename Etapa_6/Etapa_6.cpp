@@ -14,11 +14,14 @@ GLfloat fAngulo3 = 0.0f;  // Subir y bajar Muñeca.
 GLfloat fAngulo4 = 0.0f;  //Abrir y cerrar Mano.
 GLfloat fAngulo5 = 45.0f; //Giro de la Mano.
 
-// Constantes para dibujar los circulos.
+// Constantes para dibujar el brazo entero.
 const GLfloat pi = M_PI;
 const GLint polygon_points = 360;
 const GLdouble radius_arm = 0.05;
+const GLdouble radius_joints = 0.072;
 const GLdouble radius_hand = 0.025;
+const GLdouble base_radius = 0.1;
+const GLdouble desp = 0.05;
 
 // aspect ratio
 GLdouble new_ratio;
@@ -50,11 +53,12 @@ GLdouble center_vector[3] = {0.0, 0.0, 0.0};
 GLdouble movement_vector[3] = {0.0, 0.0, 0.0};
 GLdouble tilt_vector[2] = {0.0, 0.0};
 
-// Light params values
+// Light0 params values
 GLfloat param_AMB[4] = {0.4f, 0.4f, 0.4f, 1.0f};   //GL_AMBIENT				[-1,1]
 GLfloat param_DIFF[4] = {.8f, .8f, .8f, 1.0f};  //GL_DIFFUSE				[-1,1]
 GLfloat param_SPEC[4] = {1.0f, 1.0f, 1.0f, 1.0f};  //GL_SPECULAR				[-1,1]
-GLfloat param_POSIT[4] = {0.0f, 1.0f, 0.0f, 1.0f}; 	//GL_POSITION				?
+GLfloat param_POSIT_1[4] = {0.0f, 1.0f, 0.0f, 1.0f}; 	//GL_POSITION				?
+GLfloat param_POSIT_2[4] = {-1.0f, 1.0f, -1.0f, 1.0f};
 GLfloat static_param_POSIT[4]  = {0.,0.,0.,1.};		//GL_POSITION en el origen
 GLfloat param_SPOT_DIR[3] = {0.0f, 0.0f, -1.0f};   //GL_SPOT_DIRECTION			?
 GLfloat param_SPOT_EXP = 0.0f;					   //GL_SPOT_EXPONENT			[0,128]
@@ -62,6 +66,11 @@ GLfloat param_SPOT_CUT = 45.0f;					   //SPOT_CUTOFF				[0,90]U{180}
 GLfloat param_CONST_ATT = 0.0f;					   //GL_CONSTANT_ATTENUATION	[0,1]
 GLfloat param_LIN_ATT = 0.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
 GLfloat param_QUAD_ATT = 0.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
+
+// Light2 params values
+GLfloat param_AMB_2[4] = {0.7f, 0.0f, 0.0f, 1.0f};
+GLfloat param_DIFF_2[4] = {0.7f, 0.0f, 0.0f, 1.0f}; 	
+GLfloat param_SPEC_2[4] = {0.7f, 0.0f, 0.0f, 1.0f}; 
 
 // material param values
 GLfloat param_mat_AMB[4] = {0.2f, 0.2f, 0.2f, 1.0f};   //GL_AMBIENT				[-1,1]
@@ -72,19 +81,34 @@ GLfloat param_mat_SHINE = 50.0f;					   //GL_SHINENESS			[0,128]
 GLfloat param_mat_COL_INDX[3] = {0.0f, 0.0f, 0.0f};	   //GL_COLOR_INDEXES		?
 
 GLboolean smooth_shade = true;
-GLboolean light_up = true;
+GLboolean light_up_1 = true;
+GLboolean light_up_2 = false;
 
-GLfloat light_moving_vector[3] = {};
+//Button checks
+bool light = false;
+bool shadow = false;
 
 GLuint atlas_1;
 GLuint atlas_2;
+GLuint atlas_3;
 
+GLUquadric *cyl_0 = gluNewQuadric();
 GLUquadric *cyl_1 = gluNewQuadric();
 GLUquadric *cyl_2 = gluNewQuadric();
 GLUquadric *cyl_3 = gluNewQuadric();
 GLUquadric *cyl_4 = gluNewQuadric();
 GLUquadric *cyl_5 = gluNewQuadric();
 GLUquadric *cyl_6 = gluNewQuadric();
+GLUquadric *cyl_7 = gluNewQuadric();
+
+GLUquadric *sphere_1 = gluNewQuadric();
+GLUquadric *sphere_2 = gluNewQuadric();
+GLUquadric *sphere_3 = gluNewQuadric();
+GLUquadric *sphere_4 = gluNewQuadric();
+
+GLUquadric *sphere_5 = gluNewQuadric();
+GLUquadric *sphere_6 = gluNewQuadric();
+GLUquadric *sphere_7 = gluNewQuadric();
 
 GLfloat toRadians(GLfloat i)
 {
@@ -94,10 +118,27 @@ GLfloat toRadians(GLfloat i)
 
 void draw3DScene()
 {
-	//Luz
+	//Luz 2
 	glPushMatrix();
 	
-	glTranslatef(param_POSIT[0], param_POSIT[1], param_POSIT[2]);
+	glTranslatef(param_POSIT_2[0], param_POSIT_2[1], param_POSIT_2[2]);
+	
+	glLightfv(GL_LIGHT2, GL_POSITION, static_param_POSIT);
+
+	glDisable(GL_LIGHTING);
+	
+	//imagen foco
+	glColor3f(0.7f, 0.0f, 0.0f);
+	glutSolidSphere(radius_arm, 50, 50);
+
+	glEnable(GL_LIGHTING);
+
+	glPopMatrix();
+
+	//Luz 1
+	glPushMatrix();
+	
+	glTranslatef(param_POSIT_1[0], param_POSIT_1[1], param_POSIT_1[2]);
 	
 	glLightfv(GL_LIGHT0, GL_POSITION, static_param_POSIT);
 
@@ -121,11 +162,11 @@ void draw3DScene()
 	glBegin(GL_LINES);
 	glLineWidth(1);
 
-	glColor3f(1.0f, 1.0f, 0.0f); 	//verde - Y
+	glColor3f(1.0f, 1.0f, 0.0f); 	//amarillo - Z
 	glVertex3f(-2.0f, 0.0f, 0.0f);
 	glVertex3f(2.0f, 0.0f, 0.0f);
 
-	glColor3f(0.0f, 0.6f, 0.0f);	//amarillo - Z
+	glColor3f(0.0f, 0.6f, 0.0f);	//verde - Y
 	glVertex3f(0.0f, -0.9f, 0.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 
@@ -145,10 +186,14 @@ void draw3DScene()
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
-	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4 + desp, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
+
+	glBindTexture(GL_TEXTURE_2D, atlas_3);
 
 	glColor3f(0.4f, 0.4f, 0.4f);
-	glutSolidSphere(radius_arm, 50, 50);
+	// glutSolidSphere(radius_joints, 50, 50);
+
+	gluSphere(sphere_7, radius_joints, 50, 50);
 
 	glRotatef(45 + fAngulo3 + fAngulo4, 0.0f, 0.0f, 1.0f);
 	glTranslatef(0.0f, 0.013f, 0.0f);
@@ -162,10 +207,10 @@ void draw3DScene()
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	// glColor3f(0.4f, 0.4f, 0.4f);
+	// glutSolidSphere(radius_hand, 50, 50);
 
-	glColor3f(0.4f, 0.4f, 0.4f);
-	glutSolidSphere(radius_hand, 50, 50);
+	gluSphere(sphere_1, radius_hand, 50, 50);
 
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
 	// glColor3f(1.0f, 0.0f, 0.0f);
@@ -177,10 +222,14 @@ void draw3DScene()
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	glBindTexture(GL_TEXTURE_2D, atlas_2);
 
-	glColor3f(0.4f, 0.4f, 0.4f);
-	glutSolidSphere(radius_hand, 50, 50);
+	// glColor3f(0.4f, 0.4f, 0.4f);
+	// glutSolidSphere(radius_hand, 50, 50);
+
+	gluSphere(sphere_2, radius_hand, 50, 50);
+
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
 	glPopMatrix();
 
@@ -190,7 +239,7 @@ void draw3DScene()
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
-	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4 + desp, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
 
 	glBindTexture(GL_TEXTURE_2D, atlas_1);
 
@@ -204,25 +253,30 @@ void draw3DScene()
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	glBindTexture(GL_TEXTURE_2D, atlas_1);
 
-	glColor3f(0.4f, 0.4f, 0.4f);
-	glutSolidSphere(radius_hand, 50, 50);
+	// glColor3f(0.4f, 0.4f, 0.4f);
+	// glutSolidSphere(radius_hand, 50, 50);
+
+	gluSphere(sphere_3, radius_hand, 50, 50);
 
 	glRotatef(-90, 1.0f, 0.0f, 0.0f);
 	// glColor3f(1.0f, 0.0f, 0.0f);
 	// glutSolidCylinder(radius_hand, 0.2f, 50, 50);
 
-	glBindTexture(GL_TEXTURE_2D, atlas_1);
+	//glBindTexture(GL_TEXTURE_2D, atlas_1);
 
 	gluCylinder(cyl_3, radius_hand, radius_hand, .2f, 50, 50);
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	glBindTexture(GL_TEXTURE_2D, atlas_2);
 
-	glColor3f(0.4f, 0.4f, 0.4f);
-	glutSolidSphere(radius_hand, 50, 50);
+	// glColor3f(0.4f, 0.4f, 0.4f);
+	// glutSolidSphere(radius_hand, 50, 50);
+	gluSphere(sphere_4, radius_hand, 50, 50);
+
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
 	glPopMatrix();
 
@@ -232,7 +286,7 @@ void draw3DScene()
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
-	glTranslatef(cos(toRadians(fAngulo1)) * 0.4, sin(toRadians(fAngulo1)) * 0.4, 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + desp, sin(toRadians(fAngulo1)) * 0.4, 0);
 	glRotatef(fAngulo2, 0.0f, 0.0f, 1.0f);
 	glRotatef(90, 0.0f, 1.0f, 0.0f);
 
@@ -243,18 +297,27 @@ void draw3DScene()
 
 	gluCylinder(cyl_2, radius_arm, radius_arm, .4f, 50, 50);
 
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	glBindTexture(GL_TEXTURE_2D, atlas_3);
 
-	glColor3f(0.4f, 0.4f, 0.4f);
-	glutSolidSphere(radius_arm, 50, 50);
+	// glColor3f(0.4f, 0.4f, 0.4f);
+	// glutSolidSphere(radius_joints, 50, 50);
+	gluSphere(sphere_6, radius_joints, 50, 50);
 
 	glPopMatrix();
 
 	// Brazo
 	glPushMatrix();
 
+	glBindTexture(GL_TEXTURE_2D, atlas_3);
+
+	// glColor3f(0.4f, 0.4f, 0.4f);
+	// glutSolidSphere(radius_joints, 50, 50);
+
+	gluSphere(sphere_5, radius_joints, 50, 50);
+
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
+	glTranslatef(desp, 0.0f, 0.0f);
 
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
 	glRotatef(90, 0.0f, 1.0f, 0.0f);
@@ -268,14 +331,36 @@ void draw3DScene()
 
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
-	glColor3f(0.4f, 0.4f, 0.4f);
-	glutSolidSphere(radius_arm, 50, 50);
+	glPopMatrix();
+
+	//Soporte cilíndrico
+	glPushMatrix();
+
+	glRotatef(90, 1.0f, 0.0f, 0.0f);
+
+	glBindTexture(GL_TEXTURE_2D, atlas_1);
+
+	gluCylinder(cyl_0, radius_arm, radius_arm, 1.0f, 50, 50);
+
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+
+	glPopMatrix();
+
+	//Base cilíndrica
+	glPushMatrix();
+
+	glTranslatef(0.0f, -0.7f, 0.0f);
+	glRotatef(90, 1.0f, 0.0f, 0.0f);
+
+	glBindTexture(GL_TEXTURE_2D, atlas_1);
+
+	gluCylinder(cyl_7, radius_arm, base_radius, 0.3f, 50, 50);
+
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
 	glPopMatrix();
 
 	// Plano
-	glBindTexture(GL_TEXTURE_2D, atlas_1);
-
 	glPushMatrix();
 
 	glTranslatef(0.0f, -1.0f, 0.0f);
@@ -302,6 +387,8 @@ void draw3DScene()
 
 	// plano
 	glColor3f(0.4f, 0.4f, 0.4f);
+
+	glBindTexture(GL_TEXTURE_2D, atlas_1);
 
 	GLfloat inc = 0.02;
 
@@ -368,14 +455,28 @@ void Display(void)
 	// glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, param_LIN_ATT);
 	// glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT);
 
-	//Insertado de luz movible
-	if (light_up)
+	glLightfv(GL_LIGHT2, GL_AMBIENT, param_AMB_2);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, param_DIFF_2);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, param_SPEC_2);
+
+	//Apagado/Encendido Luz 1
+	if (light_up_1)
 	{
 		glEnable(GL_LIGHT0);
 	}
 	else
 	{
 		glDisable(GL_LIGHT0);
+	}
+
+	//Apagado/Encendido Luz 2
+	if (light_up_2)
+	{
+		glEnable(GL_LIGHT2);
+	}
+	else
+	{
+		glDisable(GL_LIGHT2);
 	}
 
 	if (smooth_shade)
@@ -431,8 +532,9 @@ void light_set()
 {
 
 	//Eleción de sombreado -SPACEBAR
-	if ((GetKeyState(0x20) & 0x8000) != 0)
+	if ((GetKeyState(0x20) & 0x8000) != 0 && !shadow)
 	{
+		shadow = true;
 		if (smooth_shade)
 		{
 			smooth_shade = false;
@@ -443,43 +545,99 @@ void light_set()
 		}
 	}
 
-	// switch luz on/off -L
-	if ((GetKeyState(0x4C) & 0x8000) != 0)
-	{
-		if (light_up)
-		{
-			light_up = false;
-		}
-		else
-		{
-			light_up = true;
-		}
+	if ((GetKeyState(0x20) & 0x8000) == 0) {
+		shadow = false;
 	}
 
-	// movimiento de luz
-	if ((GetKeyState(0x41) & 0x8000) != 0)
-	{ //A
-		param_POSIT[0] -= 0.01;
-	}
-	if ((GetKeyState(0x5A) & 0x8000) != 0)
-	{ //Z
-		param_POSIT[0] += 0.01;
-	}
-	if ((GetKeyState(0x53) & 0x8000) != 0)
-	{ //S
-		param_POSIT[2] -= 0.01;
-	}
-	if ((GetKeyState(0x58) & 0x8000) != 0)
-	{ //X
-		param_POSIT[2] += 0.01;
-	}
-	if ((GetKeyState(0x44) & 0x8000) != 0)
-	{ //D
-		param_POSIT[1] -= 0.01;
-	}
-	if ((GetKeyState(0x43) & 0x8000) != 0)
-	{ //C
-		param_POSIT[1] += 0.01;
+	if(!(GetKeyState(0x10) & 0x8000) != 0){
+		// switch luz on/off -L
+		if ((GetKeyState(0x4C) & 0x8000) != 0 && !light)
+		{
+			light = true;
+			if (light_up_1)
+			{
+				light_up_1 = false;
+			}
+			else
+			{
+				light_up_1 = true;
+			}
+		}
+
+		if ((GetKeyState(0x4C) & 0x8000) == 0) {
+			light = false;
+		}
+
+		// movimiento de luz
+		if ((GetKeyState(0x41) & 0x8000) != 0)
+		{ //A
+			param_POSIT_1[0] -= 0.01;
+		}
+		if ((GetKeyState(0x5A) & 0x8000) != 0)
+		{ //Z
+			param_POSIT_1[0] += 0.01;
+		}
+		if ((GetKeyState(0x53) & 0x8000) != 0)
+		{ //S
+			param_POSIT_1[2] -= 0.01;
+		}
+		if ((GetKeyState(0x58) & 0x8000) != 0)
+		{ //X
+			param_POSIT_1[2] += 0.01;
+		}
+		if ((GetKeyState(0x44) & 0x8000) != 0)
+		{ //D
+			param_POSIT_1[1] -= 0.01;
+		}
+		if ((GetKeyState(0x43) & 0x8000) != 0)
+		{ //C
+			param_POSIT_1[1] += 0.01;
+		}
+	}else if((GetKeyState(0x10) & 0x8000) != 0){ //SHIFT luz 2
+		// switch luz on/off -L
+		if ((GetKeyState(0x4C) & 0x8000) != 0 && !light)
+		{
+			light = true;
+			if (light_up_2)
+			{
+				light_up_2 = false;
+			}
+			else
+			{
+				light_up_2 = true;
+			}
+		}
+
+		if ((GetKeyState(0x4C) & 0x8000) == 0) {
+			light = false;
+		}
+
+		// movimiento de luz
+		if ((GetKeyState(0x41) & 0x8000) != 0)
+		{ //A
+			param_POSIT_2[0] -= 0.01;
+		}
+		if ((GetKeyState(0x5A) & 0x8000) != 0)
+		{ //Z
+			param_POSIT_2[0] += 0.01;
+		}
+		if ((GetKeyState(0x53) & 0x8000) != 0)
+		{ //S
+			param_POSIT_2[2] -= 0.01;
+		}
+		if ((GetKeyState(0x58) & 0x8000) != 0)
+		{ //X
+			param_POSIT_2[2] += 0.01;
+		}
+		if ((GetKeyState(0x44) & 0x8000) != 0)
+		{ //D
+			param_POSIT_2[1] -= 0.01;
+		}
+		if ((GetKeyState(0x43) & 0x8000) != 0)
+		{ //C
+			param_POSIT_2[1] += 0.01;
+		}
+
 	}
 }
 
@@ -746,12 +904,23 @@ int main(int argc, char **argv)
 	//cargado texturas
 	stbi_set_flip_vertically_on_load(1);
 
+	gluQuadricTexture(cyl_0, GL_TRUE);
 	gluQuadricTexture(cyl_1, GL_TRUE);
 	gluQuadricTexture(cyl_2, GL_TRUE);
 	gluQuadricTexture(cyl_3, GL_TRUE);
 	gluQuadricTexture(cyl_4, GL_TRUE);
 	gluQuadricTexture(cyl_5, GL_TRUE);
 	gluQuadricTexture(cyl_6, GL_TRUE);
+	gluQuadricTexture(cyl_7, GL_TRUE);
+
+	gluQuadricTexture(sphere_1, GL_TRUE);
+	gluQuadricTexture(sphere_2, GL_TRUE);
+	gluQuadricTexture(sphere_3, GL_TRUE);
+	gluQuadricTexture(sphere_4, GL_TRUE);
+
+	gluQuadricTexture(sphere_5, GL_TRUE);
+	gluQuadricTexture(sphere_6, GL_TRUE);
+	gluQuadricTexture(sphere_7, GL_TRUE);
 
 	{
 		int width, height, channels;
@@ -771,10 +940,26 @@ int main(int argc, char **argv)
 
 	{
 		int width, height, channels;
-    	unsigned char *data = stbi_load("./graff.png", &width, &height, &channels,
+    	unsigned char *data = stbi_load("./rubber.png", &width, &height, &channels,
         	STBI_rgb);
 		glGenTextures(1, &atlas_2);
 		glBindTexture(GL_TEXTURE_2D, atlas_2);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+			GL_UNSIGNED_BYTE, data);
+		stbi_image_free(data);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	}
+
+	{
+		int width, height, channels;
+    	unsigned char *data = stbi_load("./metal_sphere.png", &width, &height, &channels,
+        	STBI_rgb);
+		glGenTextures(1, &atlas_3);
+		glBindTexture(GL_TEXTURE_2D, atlas_3);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
 			GL_UNSIGNED_BYTE, data);
 		stbi_image_free(data);
