@@ -47,11 +47,12 @@ GLdouble center_vector[3] = {0.0, 0.0, 0.0};
 GLdouble movement_vector[3] = {0.0, 0.0, 0.0};
 GLdouble tilt_vector[2] = {0.0, 0.0};
 
-// Light params values
+// Light1 params values
 GLfloat param_AMB[4] = {0.4f, 0.4f, 0.4f, 1.0f};   //GL_AMBIENT				[-1,1]
 GLfloat param_DIFF[4] = {.8f, .8f, .8f, 1.0f};  //GL_DIFFUSE				[-1,1]
 GLfloat param_SPEC[4] = {1.0f, 1.0f, 1.0f, 1.0f};  //GL_SPECULAR				[-1,1]
-GLfloat param_POSIT[4] = {0.0f, 1.0f, 0.0f, 1.0f}; 	//GL_POSITION				?
+GLfloat param_POSIT_1[4] = {0.0f, 1.0f, 0.0f, 1.0f}; 	//GL_POSITION				?
+GLfloat param_POSIT_2[4] = {-1.0f, 1.0f, -1.0f, 1.0f};
 GLfloat static_param_POSIT[4]  = {0.,0.,0.,1.};		//GL_POSITION en el origen
 GLfloat param_SPOT_DIR[3] = {0.0f, 0.0f, -1.0f};   //GL_SPOT_DIRECTION			?
 GLfloat param_SPOT_EXP = 0.0f;					   //GL_SPOT_EXPONENT			[0,128]
@@ -59,6 +60,11 @@ GLfloat param_SPOT_CUT = 45.0f;					   //SPOT_CUTOFF				[0,90]U{180}
 GLfloat param_CONST_ATT = 0.0f;					   //GL_CONSTANT_ATTENUATION	[0,1]
 GLfloat param_LIN_ATT = 0.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
 GLfloat param_QUAD_ATT = 0.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
+
+// Light2 params values
+GLfloat param_AMB_2[4] = {1.0f, 1.0f, 0.0f, 1.0f};
+GLfloat param_DIFF_2[4] = {1.0f, 1.0f, 0.0f, 1.0f}; 	
+GLfloat param_SPEC_2[4] = {1.0f, 1.0f, 0.0f, 1.0f}; 
 
 // material param values
 GLfloat param_mat_AMB[4] = {0.2f, 0.2f, 0.2f, 1.0f};   //GL_AMBIENT				[-1,1]
@@ -69,9 +75,12 @@ GLfloat param_mat_SHINE = 50.0f;					   //GL_SHINENESS			[0,128]
 GLfloat param_mat_COL_INDX[3] = {0.0f, 0.0f, 0.0f};	   //GL_COLOR_INDEXES		?
 
 GLboolean smooth_shade = true;
-GLboolean light_up = true;
+GLboolean light_up_1 = true;
+GLboolean light_up_2 = true;
 
-GLfloat light_moving_vector[3] = {};
+//Button checks
+bool light = false;
+bool shadow = false;
 
 GLfloat toRadians(GLfloat i)
 {
@@ -81,10 +90,27 @@ GLfloat toRadians(GLfloat i)
 
 void draw3DScene()
 {
-	//Luz
+	//Luz 2
 	glPushMatrix();
 	
-	glTranslatef(param_POSIT[0], param_POSIT[1], param_POSIT[2]);
+	glTranslatef(param_POSIT_2[0], param_POSIT_2[1], param_POSIT_2[2]);
+	
+	glLightfv(GL_LIGHT2, GL_POSITION, static_param_POSIT);
+
+	glDisable(GL_LIGHTING);
+	
+	//imagen foco
+	glColor3f(1.0f, 1.0f, 0.0f);
+	glutSolidSphere(radius_arm, 50, 50);
+
+	glEnable(GL_LIGHTING);
+
+	glPopMatrix();
+
+	//Luz 1
+	glPushMatrix();
+	
+	glTranslatef(param_POSIT_1[0], param_POSIT_1[1], param_POSIT_1[2]);
 	
 	glLightfv(GL_LIGHT0, GL_POSITION, static_param_POSIT);
 
@@ -108,11 +134,11 @@ void draw3DScene()
 	glBegin(GL_LINES);
 	glLineWidth(1);
 
-	glColor3f(1.0f, 1.0f, 0.0f); 	//verde - Y
+	glColor3f(1.0f, 1.0f, 0.0f); 	//amarillo - Z
 	glVertex3f(-2.0f, 0.0f, 0.0f);
 	glVertex3f(2.0f, 0.0f, 0.0f);
 
-	glColor3f(0.0f, 0.6f, 0.0f);	//amarillo - Z
+	glColor3f(0.0f, 0.6f, 0.0f);	//verde - Y
 	glVertex3f(0.0f, -0.9f, 0.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 
@@ -309,14 +335,28 @@ void Display(void)
 	// glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, param_LIN_ATT);
 	// glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT);
 
-	//Insertado de luz movible
-	if (light_up)
+	glLightfv(GL_LIGHT2, GL_AMBIENT, param_AMB_2);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, param_DIFF_2);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, param_SPEC_2);
+
+	//Apagado/Encendido Luz 1
+	if (light_up_1)
 	{
 		glEnable(GL_LIGHT0);
 	}
 	else
 	{
 		glDisable(GL_LIGHT0);
+	}
+
+	//Apagado/Encendido Luz 2
+	if (light_up_2)
+	{
+		glEnable(GL_LIGHT2);
+	}
+	else
+	{
+		glDisable(GL_LIGHT2);
 	}
 
 	if (smooth_shade)
@@ -370,10 +410,10 @@ void MyReshape(GLint width, GLint height)
 
 void light_set()
 {
-
 	//Eleción de sombreado -SPACEBAR
-	if ((GetKeyState(0x20) & 0x8000) != 0)
+	if ((GetKeyState(0x20) & 0x8000) != 0 && !shadow)
 	{
+		shadow = true;
 		if (smooth_shade)
 		{
 			smooth_shade = false;
@@ -384,43 +424,99 @@ void light_set()
 		}
 	}
 
-	// switch luz on/off -L
-	if ((GetKeyState(0x4C) & 0x8000) != 0)
-	{
-		if (light_up)
-		{
-			light_up = false;
-		}
-		else
-		{
-			light_up = true;
-		}
+	if ((GetKeyState(0x20) & 0x8000) == 0) {
+		shadow = false;
 	}
 
-	// movimiento de luz
-	if ((GetKeyState(0x41) & 0x8000) != 0)
-	{ //A
-		param_POSIT[0] -= 0.01;
-	}
-	if ((GetKeyState(0x5A) & 0x8000) != 0)
-	{ //Z
-		param_POSIT[0] += 0.01;
-	}
-	if ((GetKeyState(0x53) & 0x8000) != 0)
-	{ //S
-		param_POSIT[2] -= 0.01;
-	}
-	if ((GetKeyState(0x58) & 0x8000) != 0)
-	{ //X
-		param_POSIT[2] += 0.01;
-	}
-	if ((GetKeyState(0x44) & 0x8000) != 0)
-	{ //D
-		param_POSIT[1] -= 0.01;
-	}
-	if ((GetKeyState(0x43) & 0x8000) != 0)
-	{ //C
-		param_POSIT[1] += 0.01;
+	if(!(GetKeyState(0x10) & 0x8000) != 0){
+		// switch luz on/off -L
+		if ((GetKeyState(0x4C) & 0x8000) != 0 && !light)
+		{
+			light = true;
+			if (light_up_1)
+			{
+				light_up_1 = false;
+			}
+			else
+			{
+				light_up_1 = true;
+			}
+		}
+
+		if ((GetKeyState(0x4C) & 0x8000) == 0) {
+			light = false;
+		}
+
+		// movimiento de luz
+		if ((GetKeyState(0x41) & 0x8000) != 0)
+		{ //A
+			param_POSIT_1[0] -= 0.01;
+		}
+		if ((GetKeyState(0x5A) & 0x8000) != 0)
+		{ //Z
+			param_POSIT_1[0] += 0.01;
+		}
+		if ((GetKeyState(0x53) & 0x8000) != 0)
+		{ //S
+			param_POSIT_1[2] -= 0.01;
+		}
+		if ((GetKeyState(0x58) & 0x8000) != 0)
+		{ //X
+			param_POSIT_1[2] += 0.01;
+		}
+		if ((GetKeyState(0x44) & 0x8000) != 0)
+		{ //D
+			param_POSIT_1[1] -= 0.01;
+		}
+		if ((GetKeyState(0x43) & 0x8000) != 0)
+		{ //C
+			param_POSIT_1[1] += 0.01;
+		}
+	}else if((GetKeyState(0x10) & 0x8000) != 0){ //SHIFT luz 2
+		// switch luz on/off -L
+		if ((GetKeyState(0x4C) & 0x8000) != 0 && !light)
+		{
+			light = true;
+			if (light_up_2)
+			{
+				light_up_2 = false;
+			}
+			else
+			{
+				light_up_2 = true;
+			}
+		}
+
+		if ((GetKeyState(0x4C) & 0x8000) == 0) {
+			light = false;
+		}
+
+		// movimiento de luz
+		if ((GetKeyState(0x41) & 0x8000) != 0)
+		{ //A
+			param_POSIT_2[0] -= 0.01;
+		}
+		if ((GetKeyState(0x5A) & 0x8000) != 0)
+		{ //Z
+			param_POSIT_2[0] += 0.01;
+		}
+		if ((GetKeyState(0x53) & 0x8000) != 0)
+		{ //S
+			param_POSIT_2[2] -= 0.01;
+		}
+		if ((GetKeyState(0x58) & 0x8000) != 0)
+		{ //X
+			param_POSIT_2[2] += 0.01;
+		}
+		if ((GetKeyState(0x44) & 0x8000) != 0)
+		{ //D
+			param_POSIT_2[1] -= 0.01;
+		}
+		if ((GetKeyState(0x43) & 0x8000) != 0)
+		{ //C
+			param_POSIT_2[1] += 0.01;
+		}
+
 	}
 }
 
