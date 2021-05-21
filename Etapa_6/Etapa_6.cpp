@@ -140,8 +140,6 @@ void draw3DScene()
 	glPopMatrix();
 
 	// Mano Superior
-	glBindTexture(GL_TEXTURE_2D, atlas_1);
-
 	glPushMatrix();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
@@ -149,12 +147,8 @@ void draw3DScene()
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
 
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
-
 	glColor3f(0.4f, 0.4f, 0.4f);
 	glutSolidSphere(radius_arm, 50, 50);
-
-	glBindTexture(GL_TEXTURE_2D, atlas_1);
 
 	glRotatef(45 + fAngulo3 + fAngulo4, 0.0f, 0.0f, 1.0f);
 	glTranslatef(0.0f, 0.013f, 0.0f);
@@ -162,7 +156,9 @@ void draw3DScene()
 	// glColor3f(1.0f, 0.0f, 0.0f);
 	// glutSolidCylinder(radius_hand, 0.2f, 50, 50);
 
-	gluCylinder(cyl_6, radius_hand, radius_hand, .2f, 50, 50);
+	glBindTexture(GL_TEXTURE_2D, atlas_1);
+
+	gluCylinder(cyl_6, radius_hand, radius_hand, 0.2f, 50, 50);
 
 	glTranslatef(0.0f, 0.0f, 0.2f);
 

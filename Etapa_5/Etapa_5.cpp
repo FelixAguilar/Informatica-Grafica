@@ -79,38 +79,6 @@ GLfloat toRadians(GLfloat i)
 	return r;
 }
 
-void light_init(){
-	glLightf(GL_LIGHT0, GL_AMBIENT, *param_AMB);
-	glLightf(GL_LIGHT0, GL_DIFFUSE, *param_DIFF);
-	glLightf(GL_LIGHT0, GL_SPECULAR, *param_SPEC);
-	//glLightf(GL_LIGHT0, GL_POSITION, *param_POSIT);
-	glLightf(GL_LIGHT0, GL_SPOT_DIRECTION, *param_SPOT_DIR);
-	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, param_SPOT_EXP);
-	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, param_SPOT_CUT);
-	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, param_CONST_ATT);
-	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, param_LIN_ATT);
-	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT);
-
-	//Insertado de luz movible
-	if (light_up)
-	{
-		glEnable(GL_LIGHT0);
-	}
-	else
-	{
-		glDisable(GL_LIGHT0);
-	}
-
-	if (smooth_shade)
-	{
-		glShadeModel(GL_SMOOTH);
-	}
-	else
-	{
-		glShadeModel(GL_FLAT);
-	}
-}
-
 void draw3DScene()
 {
 	//Luz
@@ -284,7 +252,7 @@ void draw3DScene()
 	// plano
 	glColor3f(0.4f, 0.4f, 0.4f);
 
-	GLfloat inc = .02;
+	GLfloat inc = 0.02;
 
 	for (GLfloat i = -2.0; i < 2; i = i + inc){
 		for (GLfloat j = -2.0; j < 2; j = j + inc) {
