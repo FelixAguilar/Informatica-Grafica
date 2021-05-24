@@ -92,23 +92,23 @@ GLuint atlas_1;
 GLuint atlas_2;
 GLuint atlas_3;
 
-GLUquadric *cyl_0 = gluNewQuadric();
-GLUquadric *cyl_1 = gluNewQuadric();
-GLUquadric *cyl_2 = gluNewQuadric();
-GLUquadric *cyl_3 = gluNewQuadric();
-GLUquadric *cyl_4 = gluNewQuadric();
-GLUquadric *cyl_5 = gluNewQuadric();
-GLUquadric *cyl_6 = gluNewQuadric();
-GLUquadric *cyl_7 = gluNewQuadric();
+GLUquadric *cyl_0;
+GLUquadric *cyl_1;
+GLUquadric *cyl_2;
+GLUquadric *cyl_3;
+GLUquadric *cyl_4;
+GLUquadric *cyl_5;
+GLUquadric *cyl_6;
+GLUquadric *cyl_7;
 
-GLUquadric *sphere_1 = gluNewQuadric();
-GLUquadric *sphere_2 = gluNewQuadric();
-GLUquadric *sphere_3 = gluNewQuadric();
-GLUquadric *sphere_4 = gluNewQuadric();
+GLUquadric *sphere_1;
+GLUquadric *sphere_2;
+GLUquadric *sphere_3;
+GLUquadric *sphere_4;
 
-GLUquadric *sphere_5 = gluNewQuadric();
-GLUquadric *sphere_6 = gluNewQuadric();
-GLUquadric *sphere_7 = gluNewQuadric();
+GLUquadric *sphere_5;
+GLUquadric *sphere_6;
+GLUquadric *sphere_7;
 
 GLfloat toRadians(GLfloat i)
 {
@@ -186,11 +186,11 @@ void draw3DScene()
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
-	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4 + desp, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp), 0);
 
 	glBindTexture(GL_TEXTURE_2D, atlas_3);
 
-	glColor3f(0.4f, 0.4f, 0.4f);
+	//glColor3f(0.4f, 0.4f, 0.4f);
 	// glutSolidSphere(radius_joints, 50, 50);
 
 	gluSphere(sphere_7, radius_joints, 50, 50);
@@ -239,7 +239,7 @@ void draw3DScene()
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
-	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4 + desp, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp), 0);
 
 	glBindTexture(GL_TEXTURE_2D, atlas_1);
 
@@ -284,9 +284,12 @@ void draw3DScene()
 	glPushMatrix();
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
+	
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
-	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + desp, sin(toRadians(fAngulo1)) * 0.4, 0);
+	//glTranslatef(cos(toRadians(fAngulo5)), sin(toRadians(fAngulo5)), 0);
+
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp), sin(toRadians(fAngulo1)) * (0.4+desp), 0);
 	glRotatef(fAngulo2, 0.0f, 0.0f, 1.0f);
 	glRotatef(90, 0.0f, 1.0f, 0.0f);
 
@@ -312,14 +315,13 @@ void draw3DScene()
 
 	// glColor3f(0.4f, 0.4f, 0.4f);
 	// glutSolidSphere(radius_joints, 50, 50);
+	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
+	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
 
 	gluSphere(sphere_5, radius_joints, 50, 50);
 
 	//glTranslatef(-0.4f, -0.2f, -1.5f);
-	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 	glTranslatef(desp, 0.0f, 0.0f);
-
-	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
 	glRotatef(90, 0.0f, 1.0f, 0.0f);
 
 	// glColor3f(1.0f, 0.0f, 0.0f);
@@ -386,7 +388,7 @@ void draw3DScene()
 	// glEnd();
 
 	// plano
-	glColor3f(0.4f, 0.4f, 0.4f);
+	//glColor3f(0.4f, 0.4f, 0.4f);
 
 	glBindTexture(GL_TEXTURE_2D, atlas_1);
 
@@ -429,20 +431,14 @@ void Display(void)
 	//Habilitamos renderizado con luz
 	glEnable(GL_LIGHTING);
 	// efecto de luz en materiales por color
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
+	//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+	//si se activa el color afecta al color de la textura de objetos
+	//glEnable(GL_COLOR_MATERIAL);
 
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, param_mat_SHINE);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, param_mat_AMB);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, param_mat_SPEC);
-
-	// glEnable(GL_LIGHT1);
-	// glEnable(GL_LIGHT2);
-	// glEnable(GL_LIGHT3);
-	// glEnable(GL_LIGHT4);
-	// glEnable(GL_LIGHT5);
-	// glEnable(GL_LIGHT6);
-	// glEnable(GL_LIGHT7);
 
 	//glLightfv(GL_LIGHT0, GL_POSITION, static_array);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, param_AMB);
@@ -793,14 +789,14 @@ void Timer(GLint t)
 	// Control Angulo1 teclas Q - W
 	if ((GetKeyState(0x51) & 0x8000) != 0)
 	{
-		if (fAngulo1 < 100)
+		if (fAngulo1 < 90)
 		{
 			fAngulo1 += 1.0f;
 		}
 	}
 	if ((GetKeyState(0x57) & 0x8000) != 0)
 	{
-		if (fAngulo1 > -45)
+		if (fAngulo1 > 0)
 		{
 			fAngulo1 -= 1.0f;
 		}
@@ -903,6 +899,24 @@ int main(int argc, char **argv)
 
 	//cargado texturas
 	stbi_set_flip_vertically_on_load(1);
+
+	cyl_0 = gluNewQuadric();
+	cyl_1 = gluNewQuadric();
+	cyl_2 = gluNewQuadric();
+	cyl_3 = gluNewQuadric();
+	cyl_4 = gluNewQuadric();
+	cyl_5 = gluNewQuadric();
+	cyl_6 = gluNewQuadric();
+	cyl_7 = gluNewQuadric();
+
+	sphere_1 = gluNewQuadric();
+	sphere_2 = gluNewQuadric();
+	sphere_3 = gluNewQuadric();
+	sphere_4 = gluNewQuadric();
+
+	sphere_5 = gluNewQuadric();
+	sphere_6 = gluNewQuadric();
+	sphere_7 = gluNewQuadric();
 
 	gluQuadricTexture(cyl_0, GL_TRUE);
 	gluQuadricTexture(cyl_1, GL_TRUE);
