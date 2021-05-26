@@ -7,6 +7,13 @@
 #include <math.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "AL/al.h"
+#include "AL/alc.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <string>
+using namespace std;
 
 GLfloat fAngulo1 = 0.0f;  //Subir y Bajar el Brazo.
 GLfloat fAngulo2 = 0.0f;  //Subir y bajar Antebrazo.
@@ -87,6 +94,8 @@ GLboolean light_up_2 = false;
 //Button checks
 bool light = false;
 bool shadow = false;
+
+//texture variables
 
 GLuint atlas_1;
 GLuint atlas_2;
@@ -870,6 +879,28 @@ void Timer(GLint t)
 	glutTimerFunc(tiempo, Timer, 0.0f);
 }
 
+//EXTRACTED
+
+bool isBigEndian()
+{
+    int a = 1;
+    return !((char*)&a)[0];
+}
+
+//EXTRACTED
+
+int convertToInt(char* buffer, int len)
+{
+    int a = 0;
+    if (!isBigEndian())
+        for (int i = 0; i<len; i++)
+            ((char*)&a)[i] = buffer[i];
+    else
+        for (int i = 0; i<len; i++)
+            ((char*)&a)[3 - i] = buffer[i];
+    return a;
+}
+
 // Función principal
 int main(int argc, char **argv)
 {
@@ -986,6 +1017,127 @@ int main(int argc, char **argv)
 
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
+	//SOUND
+
+	//sound variables
+	ALCdevice *device;
+	ALCcontext *context;
+	ALuint audio_source_1;
+	ALuint audio_buffer_1;
+
+	ALsizei audio_size_1, audio_freq_1;
+	ALenum audio_format_1;
+	ALvoid *audio_data_1;
+	ALboolean audio_loop_1 = AL_FALSE;
+
+	device = alcOpenDevice(NULL);
+	context = alcCreateContext(device,NULL);
+
+    alcMakeContextCurrent(context);
+
+	//1 source
+	alGenSources((ALuint)1, &audio_source_1);
+
+	//source parameters
+	alSourcef(audio_source_1, AL_PITCH, 1);
+	alSourcef(audio_source_1, AL_GAIN, 10);
+	alSource3f(audio_source_1, AL_POSITION, 0.0f, 0.0f, 0.0f);
+	alSource3f(audio_source_1, AL_VELOCITY, 0.0f, 0.0f, 0.0f);
+	alSourcei(audio_source_1, AL_LOOPING, AL_TRUE);
+
+	//listener parameters
+	alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f );
+	//alListenerfv(AL_ORIENTATION, {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f});
+
+	//buffer generation
+	alGenBuffers((ALuint)1, &audio_buffer_1);
+
+	//load file
+	FILE * audio_file;
+	FILE * test_file;
+	char * bit_per_sample = (char*) malloc(sizeof(char)*2);
+	char * num_channels= (char*) malloc(sizeof(char)*2);
+	char * sample_rate= (char*) malloc(sizeof(char)*4);
+	char * sub_chunk_2_size= (char*) malloc(sizeof(char)*4);
+	char * audio_file_1;
+	//long * size_of_file = (long*) malloc(sizeof(long));
+	int64_t audio_file_size = 0;
+	string size_append = "";
+	int sample_rate_1 = 0;
+
+	audio_file = fopen("./test.wav", "r");
+	test_file = fopen("./test.txt", "w");
+
+	//file size
+	// fseek(audio_file, 0, SEEK_END);
+	// size_of_file = ftell(audio_file);
+	// fwrite(size_of_file, sizeof(long), 1, stdout);
+
+	//num channels and so the format
+	fseek(audio_file, 22, SEEK_SET);
+	fread(num_channels, sizeof(char)*2, 1, audio_file);
+
+	//sample rate
+	fseek(audio_file, 24, SEEK_SET);
+	fread(sample_rate, sizeof(char), 4, audio_file);
+	sample_rate_1 = convertToInt(sample_rate, 4);
+
+	//bits per sample
+	fseek(audio_file, 34, SEEK_SET);
+	fread(bit_per_sample, sizeof(char)*2, 1, audio_file);
+	//fwrite(bit_per_sample, sizeof(char)*2, 1, test_file);
+
+	if(device) fprintf(test_file, "device exit\n");
+	if(context) fprintf(test_file, "context exit\n");
+
+
+	if(bit_per_sample[0] == 16){
+		if (num_channels[0] == 1){
+    		audio_format_1 = AL_FORMAT_MONO16;
+		} else {
+    		audio_format_1 = AL_FORMAT_STEREO16;
+		}
+	} else {
+		if (num_channels[0] == 1){
+    		audio_format_1 = AL_FORMAT_MONO8;
+		} else {
+    		audio_format_1 = AL_FORMAT_STEREO8;
+		}
+	}
+
+	//size of data -> posición 732 en test.wav // DATA = 64 61 74 61
+	fseek(audio_file, 732, SEEK_SET);
+	fread(sub_chunk_2_size, sizeof(char)*4, 1, audio_file);
+	//fwrite(sub_chunk_2_size, sizeof(char)*4, 1, test_file);
+
+	audio_file_size = 2229537289;
+
+	audio_data_1 = (ALvoid*) malloc(sizeof(char)*audio_file_size);
+
+	fseek(audio_file, 732 + 4, SEEK_SET);
+	//fread(audio_data_1, sizeof(char)*audio_file_size, 1, audio_file);
+	//fwrite(audio_data_1, sizeof(char)*audio_file_size, 1, test_file);
+
+	//memcpy(audio_buffer_1, &audio_file_1, audio_file_size);
+
+	fclose(audio_file);
+	fclose(test_file);
+
+	//free(bit_per_sample);
+	//free(num_channels);
+	//free(sample_rate);
+	// free(sub_chunk_2_size);
+	// free(size_of_data);
+
+	//link audio fileto buffer
+	alBufferData(audio_buffer_1,audio_format_1, audio_data_1, sizeof(audio_data_1), sample_rate_1);
+
+	//link buffer to source
+	alSourcei(audio_source_1, AL_BUFFER, audio_buffer_1);
+	//play audio
+	alSourcePlay(audio_source_1);
+	
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
 	return 0;
