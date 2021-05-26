@@ -4,10 +4,19 @@ const int W_WIDTH = 500; // Tamaño incial de la ventana
 const int W_HEIGHT = 500;
 const float W_RATIO = W_WIDTH/W_HEIGHT; // Aspect Ratio de la proyeccion.
 GLfloat fAngulo; // Variable que indica el angulo de rotacion de los ejes. 
+GLfloat aux = 0.0f;
+GLdouble new_ratio = 0.0;
 
 // Funcion que visualiza la escena OpenGL
 void Display(void)
 {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0* aux, 1.0 * aux, -1.0);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -57,20 +66,21 @@ void Reshape(int width, int height) {
 		new_ratio = width;
 	}
 
-	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
-	glLoadIdentity();
+	if (height != 0)
+	{
+		new_ratio = (GLdouble)width / (GLdouble)height;
+	}
+	else
+	{
+		new_ratio = width;
+	}
 
 	// Cambio de aspect ratio.
-	if (new_ratio >= W_RATIO) {
-		glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, 1.0, -1.0);
-	}
-	else {
-		float aux = 1 / new_ratio;
-		glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, 1.0, -1.0);
+	if (!(new_ratio >= W_RATIO)) {
+		aux = 1 / new_ratio;
 	}
 
-	glMatrixMode(GL_MODELVIEW);
+	glViewport(0, 0, width, height);
 }
 
 // Funcion que se ejecuta cuando el sistema no esta ocupado
@@ -81,11 +91,11 @@ void Idle(void)
 	// Si es mayor que dos pi la decrementamos
 	if (fAngulo > 360)
 		fAngulo -= 360;
+
 	// Indicamos que es necesario repintar la pantalla
-	
-	glutReshapeFunc(Reshape); // Etapa 2 nuevo subprograma.
 	glutPostRedisplay();
-	glutSwapBuffers(); // Etapa  2 añade la instruccion.
+
+	glutSwapBuffers();
 }
 
 // Funcion principal
@@ -105,6 +115,9 @@ int main(int argc, char** argv)
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
+
+	//Ajuste de proporciones
+	glutReshapeFunc(Reshape);
 
 	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

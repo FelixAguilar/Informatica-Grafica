@@ -27,6 +27,8 @@ GLboolean sentido_horario4 = GL_FALSE;
 const GLint W_WIDTH = 800;
 const GLint W_HEIGHT = 800;
 const GLint W_RATIO = W_WIDTH / W_HEIGHT;
+GLfloat aux = 1.0f;
+GLdouble new_ratio = 1.0;
 
 
 // Función que visualiza la escena OpenGL.
@@ -248,8 +250,13 @@ void Display(void)
 {
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT);
-	glLoadIdentity();
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0* aux, 1.0 * aux, -1.0);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	drawScene();
 
 	glFlush();
@@ -258,29 +265,21 @@ void Display(void)
 
 void MyReshape(GLint width, GLint height)
 {
-	GLfloat new_ratio;
-	if (height != 0) {
-		new_ratio = (GLfloat)width / (GLfloat)height;
+	if (height != 0)
+	{
+		new_ratio = (GLdouble)width / (GLdouble)height;
 	}
-	else {
+	else
+	{
 		new_ratio = width;
 	}
 
-	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
-	glLoadIdentity();
-
 	// Cambio de aspect ratio.
-	if (new_ratio >= W_RATIO) {
-		glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, 1.0, -1.0);
-	}
-	else {
-		GLfloat aux = 1 / new_ratio;
-		glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, 1.0, -1.0);
+	if (!(new_ratio >= W_RATIO)) {
+		aux = 1 / new_ratio;
 	}
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glViewport(0, 0, width, height);
 }
 
 void Timer(GLint t) {
@@ -349,7 +348,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
 	// Creamos la nueva ventana
-	glutCreateWindow("Mi primera Ventana");
+	glutCreateWindow("Etapa_2_brazo_robot");
 
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);

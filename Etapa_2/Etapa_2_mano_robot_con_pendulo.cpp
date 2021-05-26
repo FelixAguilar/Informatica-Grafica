@@ -36,6 +36,8 @@ GLboolean sentido_horario4 = GL_FALSE;
 const GLint W_WIDTH = 800;
 const GLint W_HEIGHT = 800;
 const GLint W_RATIO = W_WIDTH / W_HEIGHT;
+GLfloat aux = 0.0f;
+GLdouble new_ratio = 0.0;
 
 
 // Función que visualiza la escena OpenGL.
@@ -70,8 +72,6 @@ void drawScene() {
 
 	//Pendulo.
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	glTranslatef(
 		-(0.52 - cos(toRadians(fAngulo1)) * 0.52) + (cos(toRadians(fAngulo2)) * 0.52) + (cos(toRadians(fAngulo3)) * 0.17f),
@@ -104,8 +104,6 @@ void drawScene() {
 
 	// Mano superior.
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	glTranslatef(
 		-(0.52 - cos(toRadians(fAngulo1)) * 0.52) + (cos(toRadians(fAngulo2)) * 0.52),
@@ -161,8 +159,6 @@ void drawScene() {
 
 	// Mano inferior.
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	glTranslatef(
 		-(0.52 - cos(toRadians(fAngulo1)) * 0.52) + (cos(toRadians(fAngulo2)) * 0.52),
@@ -218,8 +214,6 @@ void drawScene() {
 
 	// Antebrazo.
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	glTranslatef(-(0.52 - cos(toRadians(fAngulo1)) * 0.52), sin(toRadians(fAngulo1)) * 0.52, 0.0f);
 
@@ -249,8 +243,6 @@ void drawScene() {
 	// Brazo.
 
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	glTranslatef(-0.8f, -0.2f, 0.0f);
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
@@ -291,8 +283,13 @@ void Display(void)
 {
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT);
-	glLoadIdentity();
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0* aux, 1.0 * aux, -1.0);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	drawScene();
 
 	glFlush();
@@ -301,29 +298,21 @@ void Display(void)
 
 void MyReshape(GLint width, GLint height)
 {
-	GLfloat new_ratio;
-	if (height != 0) {
-		new_ratio = (GLfloat)width / (GLfloat)height;
+	if (height != 0)
+	{
+		new_ratio = (GLdouble)width / (GLdouble)height;
 	}
-	else {
+	else
+	{
 		new_ratio = width;
 	}
 
-	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
-	glLoadIdentity();
-
 	// Cambio de aspect ratio.
-	if (new_ratio >= W_RATIO) {
-		glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, 1.0, -1.0);
-	}
-	else {
-		GLfloat aux = 1 / new_ratio;
-		glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, 1.0, -1.0);
+	if (!(new_ratio >= W_RATIO)) {
+		aux = 1 / new_ratio;
 	}
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glViewport(0, 0, width, height);
 }
 
 
@@ -392,19 +381,6 @@ void Timer(GLint t) {
 
 	}
 
-
-	//// Control Angulo4
-	//if (fAngulo4 <= 0)
-	//	sentido_horario4 = GL_TRUE;
-	//if (fAngulo4 >= 45)
-	//	sentido_horario4 = GL_FALSE;
-	//if (sentido_horario4) {
-	//	fAngulo4 += 2.0f;
-	//}
-	//else {
-	//	fAngulo4 -= 2.0f;
-	//}
-
 	glutPostRedisplay();
 	glutTimerFunc(tiempo, Timer, 0.0f);
 }
@@ -421,7 +397,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
 	// Creamos la nueva ventana
-	glutCreateWindow("Mi primera Ventana");
+	glutCreateWindow("Etapa_2_mano_robot_con_pendulo");
 
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);

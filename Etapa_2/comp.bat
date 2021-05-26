@@ -1,0 +1,1 @@
+g++ Etapa_6.cpp -I"C:\Program Files\Common Files\MinGW\freeglut\include" -L"C:\Program Files\Common Files\MinGW\freeglut\lib" -lfreeglut -lopengl32 -lglu32 -Wl,--subsystem,windows
