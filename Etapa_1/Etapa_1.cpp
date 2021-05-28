@@ -1,5 +1,5 @@
-// Etapa1.cpp
-// Fichero principal 
+// Etapa_1.cpp
+// Félix Aguilar y Antonio Pujol
 ////////////////////////////////////////////////////
 #include <GL/freeglut.h>
 const int W_WIDTH = 500; // Tamaño incial de la ventana

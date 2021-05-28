@@ -1,24 +1,35 @@
-﻿#include <GL/freeglut.h>
+﻿// Etapa_2_reshape.cpp
+// Félix Aguilar y Antonio Pujol
+////////////////////////////////////////////////////
+#include <GL/freeglut.h>
 
 const int W_WIDTH = 500; // Tamaño incial de la ventana
 const int W_HEIGHT = 500;
 const float W_RATIO = W_WIDTH/W_HEIGHT; // Aspect Ratio de la proyeccion.
 GLfloat fAngulo; // Variable que indica el angulo de rotacion de los ejes. 
-GLfloat aux = 0.0f;
-GLdouble new_ratio = 0.0;
+GLfloat aux = 1.0f;
+GLdouble new_ratio = 1.0;
 
 // Funcion que visualiza la escena OpenGL
 void Display(void)
 {
+	// Borramos la escena
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0* aux, 1.0 * aux, -1.0);
+
+	// Cambio de aspect ratio.
+	if (new_ratio >= W_RATIO) {
+		glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, 1.0, -1.0);
+	}
+	else {
+		GLfloat aux = 1 / new_ratio;
+		glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, 1.0, -1.0);
+	}
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	// Borramos la escena
-	glClear(GL_COLOR_BUFFER_BIT);
 
 	glPushMatrix();
 	// Rotamos las proximas primitivas
@@ -58,14 +69,6 @@ void Display(void)
 // Subprograma para evitar la distorsion.
 void Reshape(int width, int height) {
 
-	float new_ratio;
-	if (height != 0) {
-		 new_ratio = (float)width / (float)height;
-	}
-	else {
-		new_ratio = width;
-	}
-
 	if (height != 0)
 	{
 		new_ratio = (GLdouble)width / (GLdouble)height;
@@ -73,11 +76,6 @@ void Reshape(int width, int height) {
 	else
 	{
 		new_ratio = width;
-	}
-
-	// Cambio de aspect ratio.
-	if (!(new_ratio >= W_RATIO)) {
-		aux = 1 / new_ratio;
 	}
 
 	glViewport(0, 0, width, height);
@@ -110,7 +108,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE); // Etapa 2 Modificaciones Single -> Double
 
 	// Creamos la nueva ventana
-	glutCreateWindow("Mi primera Ventana");
+	glutCreateWindow("Etapa_2_reshape");
 
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);

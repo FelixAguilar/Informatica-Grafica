@@ -1,5 +1,5 @@
 // Etapa_5.cpp
-// Fichero principal.
+// Félix Aguilar y Antonio Pujol
 ////////////////////////////////////////////////////
 #include <GL/freeglut.h>
 #define _USE_MATH_DEFINES
@@ -126,7 +126,6 @@ void draw3DScene()
 
 	// Dibujamos los ejes.
 	glPushMatrix();
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 
 	glDisable(GL_LIGHTING);
 
@@ -152,10 +151,22 @@ void draw3DScene()
 
 	glPopMatrix();
 
+	//Teapot
+    glPushMatrix();
+    glTranslatef(0.7f, -0.842f,-0.6f);
+    glutSolidTeapot(0.2);
+    glPopMatrix();
+
+    //Donut
+    glPushMatrix();
+    glTranslatef(-0.7f, -0.85f, 0.8f);
+    glRotatef(90, 1.0, 0.0, 0.0);
+    glutSolidTorus(0.2,0.3,50,50);
+    glPopMatrix();
+
 	// Mano Superior
 	glPushMatrix();
 
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -188,7 +199,6 @@ void draw3DScene()
 	// Mano inferior.
 	glPushMatrix();
 
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -218,7 +228,6 @@ void draw3DScene()
 	// Antebrazo
 	glPushMatrix();
 
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4, sin(toRadians(fAngulo1)) * 0.4, 0);
@@ -236,7 +245,6 @@ void draw3DScene()
 	// Brazo
 	glPushMatrix();
 
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
@@ -255,27 +263,7 @@ void draw3DScene()
 
 	glTranslatef(0.0f, -1.0f, 0.0f);
 
-	//borde del plano
-	// glEnable(GL_LINE_SMOOTH);
-	// glBegin(GL_LINES);
-	// glLineWidth(2);
-	// glColor3f(0.0f, 0.0f, 0.0f);
-
-	// glVertex3f(-2.0f, 0.0f, -2.0f);
-	// glVertex3f(2.0f, 0.0f, -2.0f);
-
-	// glVertex3f(2.0f, 0.0f, -2.0f);
-	// glVertex3f(2.0f, 0.0f, 2.0f);
-
-	// glVertex3f(2.0f, 0.0f, 2.0f);
-	// glVertex3f(-2.0f, 0.0f, 2.0f);
-
-	// glVertex3f(-2.0f, 0.0f, 2.0f);
-	// glVertex3f(-2.0f, 0.0f, -2.0f);
-
-	// glEnd();
-
-	// plano
+	// Plano
 	glColor3f(0.4f, 0.4f, 0.4f);
 
 	GLfloat inc = 0.02;

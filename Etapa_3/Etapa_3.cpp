@@ -31,6 +31,9 @@ const GLint W_WIDTH = 600;
 const GLint W_HEIGHT = 600;
 const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 
+GLfloat aux = 1.0f;
+GLdouble new_ratio = 1.0;
+
 GLfloat toRadians(GLfloat i)
 {
 	GLfloat r = i * (pi / 180);
@@ -42,7 +45,7 @@ void draw3DScene() {
 	// Dibujamos los ejes.
 	glPushMatrix();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	glTranslatef(-0.4f, -0.2f, -1.75f);
 
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINES);
@@ -61,12 +64,12 @@ void draw3DScene() {
 
 	glEnd();
 
+	glPopMatrix();
+
 	// Mano Superior
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	glTranslatef(-0.4f, -0.2f, -1.75f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -99,10 +102,8 @@ void draw3DScene() {
 
 	// Mano inferior.
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	glTranslatef(-0.4f, -0.2f, -1.75f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -132,10 +133,8 @@ void draw3DScene() {
 
 	// Antebrazo
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	glTranslatef(-0.4f, -0.2f, -1.75f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4, sin(toRadians(fAngulo1)) * 0.4, 0);
@@ -152,10 +151,8 @@ void draw3DScene() {
 
 	// Brazo
 	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
-	glTranslatef(-0.4f, -0.2f, -1.5f);
+	glTranslatef(-0.4f, -0.2f, -1.75f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
@@ -178,8 +175,23 @@ void Display(void)
 	glEnable(GL_DEPTH_TEST);
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
 	glLoadIdentity();
 
+	// Cambio de aspect ratio.
+	if (new_ratio >= W_RATIO) {
+		//glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, -5.0, 500.0);
+		glFrustum(-1.5 * new_ratio, 1.5 * new_ratio, -1.5, 1.5, 0.65, 1500.0);
+	}
+	else {
+		GLfloat aux = 1 / new_ratio;
+		//glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, -5.0, 500.0);
+		glFrustum(-1.5, 1.5, -1.5 * aux, 1.5 * aux, 0.65, 1500.0);
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	draw3DScene();
 
 	glFlush();
@@ -188,7 +200,6 @@ void Display(void)
 
 void MyReshape(GLint width, GLint height)
 {
-	GLfloat new_ratio;
 	if (height != 0) {
 		new_ratio = (GLfloat)width / (GLfloat)height;
 	}
@@ -197,22 +208,6 @@ void MyReshape(GLint width, GLint height)
 	}
 
 	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
-	glLoadIdentity();
-
-	// Cambio de aspect ratio.
-	if (new_ratio >= W_RATIO) {
-		//glOrtho(-1.0 * new_ratio, 1.0 * new_ratio, -1.0, 1.0, -5.0, 500.0);
-		glFrustum(-1.5 * new_ratio, 1.5 * new_ratio, -1.5, 1.5, 0.6, 150.0);
-	}
-	else {
-		GLfloat aux = 1 / new_ratio;
-		//glOrtho(-1.0, 1.0, -1.0 * aux, 1.0 * aux, -5.0, 500.0);
-		glFrustum(-1.5, 1.5, -1.5 * aux, 1.5 * aux, 0.6, 150.0);
-	}
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 }
 
 void Timer(GLint t) {

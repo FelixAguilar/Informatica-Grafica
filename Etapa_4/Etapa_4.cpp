@@ -1,5 +1,5 @@
-// Etapa_3.cpp
-// Fichero principal.
+// Etapa_4.cpp
+// Félix Aguilar y Antonio Pujol
 ////////////////////////////////////////////////////
 #include <GL/freeglut.h>
 #define _USE_MATH_DEFINES
@@ -55,31 +55,30 @@ GLfloat toRadians(GLfloat i)
 
 void draw3DScene()
 {
-
 	// Dibujamos los ejes.
 	glPushMatrix();
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINES);
 	glLineWidth(1);
-	glColor3f(0.0f, 0.0f, 0.0f);
 
-	glVertex3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 0.0f); 	//amarillo - Z
+	glVertex3f(-2.0f, 0.0f, 0.0f);
+	glVertex3f(2.0f, 0.0f, 0.0f);
 
-	glVertex3f(0.0f, -1.0f, 0.0f);
+	glColor3f(0.0f, 0.6f, 0.0f);	//verde - Y
+	glVertex3f(0.0f, -0.99f, 0.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 
-	glVertex3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(0.0f, 0.0f, 1.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);	//azul - X
+	glVertex3f(0.0f, 0.0f, -2.0f);
+	glVertex3f(0.0f, 0.0f, 2.0f);
 
 	glEnd();
 
 	// Mano Superior
 	glPushMatrix();
 
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -112,7 +111,6 @@ void draw3DScene()
 	// Mano inferior.
 	glPushMatrix();
 
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4 + cos(toRadians(fAngulo2)) * 0.4, sin(toRadians(fAngulo1)) * 0.4 + sin(toRadians(fAngulo2)) * 0.4, 0);
@@ -142,7 +140,6 @@ void draw3DScene()
 	// Antebrazo
 	glPushMatrix();
 
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glTranslatef(cos(toRadians(fAngulo1)) * 0.4, sin(toRadians(fAngulo1)) * 0.4, 0);
@@ -160,7 +157,6 @@ void draw3DScene()
 	// Brazo
 	glPushMatrix();
 
-	//glTranslatef(-0.4f, -0.2f, -1.5f);
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
 
 	glRotatef(fAngulo1, 0.0f, 0.0f, 1.0f);
@@ -171,6 +167,41 @@ void draw3DScene()
 
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glutSolidSphere(radius_arm, 50, 50);
+
+	glPopMatrix();
+
+	// Plano
+	glPushMatrix();
+
+	glTranslatef(0.0f, -1.0f, 0.0f);
+
+	//borde del plano
+	glEnable(GL_LINE_SMOOTH);
+	glBegin(GL_LINES);
+	glLineWidth(2);
+	glColor3f(0.0f, 0.0f, 0.0f);
+
+	glVertex3f(-2.0f, 0.0f, -2.0f);
+	glVertex3f(2.0f, 0.0f, -2.0f);
+
+	glVertex3f(2.0f, 0.0f, -2.0f);
+	glVertex3f(2.0f, 0.0f, 2.0f);
+
+	glVertex3f(2.0f, 0.0f, 2.0f);
+	glVertex3f(-2.0f, 0.0f, 2.0f);
+
+	glVertex3f(-2.0f, 0.0f, 2.0f);
+	glVertex3f(-2.0f, 0.0f, -2.0f);
+
+	glEnd();
+
+	glColor3f(0.4f, 0.4f, 0.4f);
+	glBegin(GL_QUADS);
+	glVertex3f(-2.0f, 0.0f, -2.0f);
+	glVertex3f(2.0f, 0.0f, -2.0f);
+	glVertex3f(2.0f, 0.0f, 2.0f);
+	glVertex3f(-2.0f, 0.0f, 2.0f);
+	glEnd();
 
 	glPopMatrix();
 }
