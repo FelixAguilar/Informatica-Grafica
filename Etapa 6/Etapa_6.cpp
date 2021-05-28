@@ -30,6 +30,7 @@ const GLdouble radius_hand = 0.025;
 const GLdouble base_radius = 0.1;
 const GLdouble desp = 0.05;
 GLfloat lcuerda = 0.4f;
+GLfloat lextension = 0.1f;
 
 // aspect ratio
 GLdouble new_ratio;
@@ -203,7 +204,7 @@ void draw3DScene()
 
 	// Colocacion de la primitiva en la figura y rotacion de la figura completa.
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp) - lcuerda, 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) - lcuerda, 0);
 
 	// Añade la base de la garra.
 	glBindTexture(GL_TEXTURE_2D, atlas_3);
@@ -242,7 +243,7 @@ void draw3DScene()
 
 	// Colocacion de la primitiva en la figura y rotacion de la figura completa.
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp) - lcuerda, 0);
+	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) - lcuerda, 0);
 
 	// Rota y coloca el dedo en la posicion adecuada dentro de la garra.
 	glTranslatef(0.0f, 0.013f, 0.0f);
@@ -278,7 +279,7 @@ void draw3DScene()
 
 	// Colocacion de la primitiva en la figura y rotacion de la figura completa.
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp) - lcuerda, 0);
+	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) - lcuerda, 0);
 
 	// Rota y coloca el dedo en la posicion adecuada dentro de la garra.
 	glTranslatef(0.0f, 0.013f, 0.0f);
@@ -314,7 +315,7 @@ void draw3DScene()
 
 	// Coloca la primitiva dentro de la figura en la posicion adecuada.
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp), 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), 0);
 
 	// Coloca esta bocaabajo en el escenario.
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
@@ -322,6 +323,40 @@ void draw3DScene()
 	// Dibuja la cuerda.
 	glBindTexture(GL_TEXTURE_2D, atlas_1);
 	gluCylinder(cyl_2, 0.01, 0.01, lcuerda, 50, 50); // Cambiar textura.
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	glPopMatrix();
+
+	// Extensor.
+	glPushMatrix();
+	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
+	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp), 0);
+
+	glRotatef(90, 0.0f, 1.f, 0.f);
+	glRotatef(-fAngulo2, 1.0f, 0.0f, 0.0f);
+
+	// Dibuja el extensor.
+	glBindTexture(GL_TEXTURE_2D, atlas_1); // Textura de metal.
+	gluCylinder(cyl_2, 0.03, 0.03, lextension, 50, 50);
+
+	// Dibuja la union con la garra.
+	glTranslatef(0.0f, 0.0f, lextension + desp);
+	glBindTexture(GL_TEXTURE_2D, atlas_3); // Textura de metal para esferas.
+	gluSphere(sphere_6, radius_joints, 50, 50);
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	glPopMatrix();
+
+	// Conexion entre el extensor y el brazo
+	glPushMatrix();
+
+	// Coloca la primitiva en su posicion correspondiente dentro de la figura.
+	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
+	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4), 0);
+	glRotatef(90, 0.0f, 1.f, 0.f);
+	glRotatef(-fAngulo2, 1.0f, 0.0f, 0.0f);
+
+	// Dibuja el brazo.
+	glBindTexture(GL_TEXTURE_2D, atlas_2); // Textura de goma.
+	gluCylinder(cyl_2, radius_arm, 0.03, desp, 50, 50);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 	glPopMatrix();
 
@@ -341,11 +376,6 @@ void draw3DScene()
 	// Dibuja el brazo.
 	glBindTexture(GL_TEXTURE_2D, atlas_1); // Textura de metal.
 	gluCylinder(cyl_2, radius_arm, radius_arm, .4f, 50, 50);
-
-	// Dibuja la union con la garra.
-	glTranslatef(0.0f, 0.0f, 0.4f + desp);
-	glBindTexture(GL_TEXTURE_2D, atlas_3); // Textura de metal para esferas.
-	gluSphere(sphere_6, radius_joints, 50, 50);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 	glPopMatrix();
 
@@ -832,14 +862,14 @@ void Timer(GLint t)
 	{
 		if (fAngulo3 < 30)
 		{
-			fAngulo3 += 1.0f;
+			lextension += 0.01;
 		}
 	}
 	if ((GetKeyState(0x47) & 0x8000) != 0)
 	{
 		if (fAngulo3 > -30)
 		{
-			fAngulo3 -= 1.0f;
+			lextension -= 0.01;
 		}
 	}
 
