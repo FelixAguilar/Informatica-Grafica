@@ -2,6 +2,7 @@
 // Félix Aguilar y Antonio Pujol
 ////////////////////////////////////////////////////
 #include <GL/freeglut.h>
+#include <GL/glu.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -52,19 +53,20 @@ GLfloat param_AMB[4] = {0.4f, 0.4f, 0.4f, 1.0f};   //GL_AMBIENT				[-1,1]
 GLfloat param_DIFF[4] = {.8f, .8f, .8f, 1.0f};  //GL_DIFFUSE				[-1,1]
 GLfloat param_SPEC[4] = {1.0f, 1.0f, 1.0f, 1.0f};  //GL_SPECULAR				[-1,1]
 GLfloat param_POSIT_1[4] = {0.0f, 1.0f, 0.0f, 1.0f}; 	//GL_POSITION				?
-GLfloat param_POSIT_2[4] = {-1.0f, 1.0f, -1.0f, 1.0f};
 GLfloat static_param_POSIT[4]  = {0.,0.,0.,1.};		//GL_POSITION en el origen
-GLfloat param_SPOT_DIR[3] = {0.0f, 0.0f, -1.0f};   //GL_SPOT_DIRECTION			?
-GLfloat param_SPOT_EXP = 0.0f;					   //GL_SPOT_EXPONENT			[0,128]
-GLfloat param_SPOT_CUT = 45.0f;					   //SPOT_CUTOFF				[0,90]U{180}
-GLfloat param_CONST_ATT = 0.0f;					   //GL_CONSTANT_ATTENUATION	[0,1]
-GLfloat param_LIN_ATT = 0.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
-GLfloat param_QUAD_ATT = 0.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
 
 // Light2 params values
 GLfloat param_AMB_2[4] = {1.0f, 1.0f, 0.0f, 1.0f};
 GLfloat param_DIFF_2[4] = {1.0f, 1.0f, 0.0f, 1.0f}; 	
 GLfloat param_SPEC_2[4] = {1.0f, 1.0f, 0.0f, 1.0f}; 
+GLfloat param_POSIT_2[4] = {-1.5f, 1.01f, 1.5f};
+
+GLfloat param_SPOT_DIR[3] = {1.5f, -1.01f, -1.5f};   //GL_SPOT_DIRECTION			?
+GLfloat param_SPOT_EXP = 20.0f;					   //GL_SPOT_EXPONENT			[0,128]
+GLfloat param_SPOT_CUT = 25.0f;					   //SPOT_CUTOFF				[0,90]U{180}
+GLfloat param_CONST_ATT = 1.0f;					   //GL_CONSTANT_ATTENUATION	[0,1]
+GLfloat param_LIN_ATT = 1.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
+GLfloat param_QUAD_ATT = 1.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
 
 // material param values
 GLfloat param_mat_AMB[4] = {0.2f, 0.2f, 0.2f, 1.0f};   //GL_AMBIENT				[-1,1]
@@ -82,6 +84,8 @@ GLboolean light_up_2 = true;
 bool light = false;
 bool shadow = false;
 
+GLUquadric *cyl_0;
+
 GLfloat toRadians(GLfloat i)
 {
 	GLfloat r = i * (pi / 180);
@@ -93,15 +97,22 @@ void draw3DScene()
 	//Luz 2
 	glPushMatrix();
 	
-	glTranslatef(param_POSIT_2[0], param_POSIT_2[1], param_POSIT_2[2]);
+	glTranslatef(param_POSIT_2[0] + sin(toRadians(60.0f))*0.18, param_POSIT_2[1] - sin(toRadians(25.0f))*0.17, param_POSIT_2[2] - cos(toRadians(60.0f))*0.20);
 	
+	//segmento direccion de foco con longitud = longitud poste/sin(angulo inclinacion del foco)
+	//segmento para ejeX y ejeZ = sin(angulo opuesto de inclinacion del foco) * segmento direccion de foco
+
+	param_SPOT_DIR[0] = sin(toRadians(60.0f))* (sin(toRadians(25.0f))*2/sin(toRadians(65.0f)));
+	param_SPOT_DIR[1] = -sin(toRadians(25.0f))* ((sin(toRadians(25.0f))*2/sin(toRadians(65.0f)))) /cos(toRadians(65.0f));
+	param_SPOT_DIR[2] = -cos(toRadians(60.0f))* ((sin(toRadians(25.0f))*2/sin(toRadians(65.0f))));
+
 	glLightfv(GL_LIGHT2, GL_POSITION, static_param_POSIT);
 
 	glDisable(GL_LIGHTING);
 	
-	//imagen foco
+	//objeto lumínico
 	glColor3f(1.0f, 1.0f, 0.0f);
-	glutSolidSphere(radius_arm, 50, 50);
+	glutSolidSphere(0.04, 50, 50);
 
 	glEnable(GL_LIGHTING);
 
@@ -116,7 +127,7 @@ void draw3DScene()
 
 	glDisable(GL_LIGHTING);
 	
-	//imagen foco
+	//objeto lumínico
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glutSolidSphere(radius_arm, 50, 50);
 
@@ -133,7 +144,7 @@ void draw3DScene()
 	glBegin(GL_LINES);
 	glLineWidth(1);
 
-	glColor3f(1.0f, 1.0f, 0.0f); 	//amarillo - Z
+	glColor3f(1.0f, 1.0f, 0.0f); 	//amarillo - X
 	glVertex3f(-2.0f, 0.0f, 0.0f);
 	glVertex3f(2.0f, 0.0f, 0.0f);
 
@@ -141,7 +152,7 @@ void draw3DScene()
 	glVertex3f(0.0f, -0.9f, 0.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 
-	glColor3f(0.0f, 0.0f, 1.0f);	//azul - X
+	glColor3f(0.0f, 0.0f, 1.0f);	//azul - Z
 	glVertex3f(0.0f, 0.0f, -2.0f);
 	glVertex3f(0.0f, 0.0f, 2.0f);
 
@@ -150,19 +161,6 @@ void draw3DScene()
 	glEnable(GL_LIGHTING);
 
 	glPopMatrix();
-
-	//Teapot
-    glPushMatrix();
-    glTranslatef(0.7f, -0.842f,-0.6f);
-    glutSolidTeapot(0.2);
-    glPopMatrix();
-
-    //Donut
-    glPushMatrix();
-    glTranslatef(-0.7f, -0.85f, 0.8f);
-    glRotatef(90, 1.0, 0.0, 0.0);
-    glutSolidTorus(0.2,0.3,50,50);
-    glPopMatrix();
 
 	// Mano Superior
 	glPushMatrix();
@@ -258,12 +256,39 @@ void draw3DScene()
 
 	glPopMatrix();
 
+	// Cono de luz
+	glPushMatrix();
+
+	glTranslatef(-1.5f, 1.01f, 1.5f);
+
+	glRotatef(-25.0f, 0.0f, 0.0f, 1.0f);
+	glRotatef(120.0f, 0.0f, 1.0f, 0.0f);
+
+	cyl_0 = gluNewQuadric();
+
+	gluCylinder(cyl_0, 0.01, radius_arm, 0.2f, 50, 50);
+
+	glPopMatrix();
+
+	// Poste de luz
+	glPushMatrix();
+
+	glTranslatef(-1.5f, 1.01f, 1.5f);
+
+	glColor3f(0.4f, 0.4f, 0.4f);
+	glutSolidSphere(0.01, 50, 50);
+
+	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+
+	glutSolidCylinder(0.01, 2.0f, 50, 50);
+
+	glPopMatrix();
+
 	// Plano
 	glPushMatrix();
 
 	glTranslatef(0.0f, -1.0f, 0.0f);
 
-	// Plano
 	glColor3f(0.4f, 0.4f, 0.4f);
 
 	GLfloat inc = 0.02;
@@ -304,28 +329,21 @@ void Display(void)
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, param_mat_AMB);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, param_mat_SPEC);
 
-	// glEnable(GL_LIGHT1);
-	// glEnable(GL_LIGHT2);
-	// glEnable(GL_LIGHT3);
-	// glEnable(GL_LIGHT4);
-	// glEnable(GL_LIGHT5);
-	// glEnable(GL_LIGHT6);
-	// glEnable(GL_LIGHT7);
-
-	//glLightfv(GL_LIGHT0, GL_POSITION, static_array);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, param_AMB);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, param_DIFF);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, param_SPEC);
-	// glLightf(GL_LIGHT0, GL_SPOT_DIRECTION, *param_SPOT_DIR);
-	// glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, param_SPOT_EXP);
-	// glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, param_SPOT_CUT);
-	// glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, param_CONST_ATT);
-	// glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, param_LIN_ATT);
-	// glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT);
 
 	glLightfv(GL_LIGHT2, GL_AMBIENT, param_AMB_2);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, param_DIFF_2);
 	glLightfv(GL_LIGHT2, GL_SPECULAR, param_SPEC_2);
+
+	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, param_SPOT_DIR);
+
+	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, param_SPOT_EXP);
+	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, param_SPOT_CUT);
+	glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, param_CONST_ATT);
+	glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, param_LIN_ATT);
+	glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT);
 
 	//Apagado/Encendido Luz 1
 	if (light_up_1)
@@ -767,6 +785,9 @@ int main(int argc, char **argv)
 
 	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	//param_SPOT_DIR[0] = param_SPOT_DIR[0] + sin(toRadians(25.0f))*0.17;
+	param_SPOT_DIR[3] = param_SPOT_DIR[3] - cos(toRadians(60.0f))*0.20;
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
