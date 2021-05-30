@@ -771,12 +771,16 @@ void key_set(unsigned char key, int x , int y) {
 		tilt_vector[0] -= 0.01; // Tiltea la camara a la derecha
 		break;
 	}
+	GLfloat aux = sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension);
 
-
-
-	if (lcuerda - (sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension)) > 0.70) {
-		lcuerda = (sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension)) + 0.70;
+	if ((lcuerda - aux) > 0.70 && lcuerda > 0.2) {
+		lcuerda = aux + 0.70;
 	}
+
+	//while ((lcuerda - aux) > 0.70 && lextension != 0) {
+	//	lextension -= 0.01;
+	//	aux = sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension);
+	//}
 }
 
 void Timer(GLint t)
