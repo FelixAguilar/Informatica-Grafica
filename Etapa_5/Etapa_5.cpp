@@ -162,6 +162,19 @@ void draw3DScene()
 
 	glPopMatrix();
 
+	//Teapot
+    glPushMatrix();
+    glTranslatef(0.7f, -0.842f,-0.6f);
+    glutSolidTeapot(0.2);
+    glPopMatrix();
+
+    //Donut
+    glPushMatrix();
+    glTranslatef(-0.7f, -0.80f, 0.8f);
+    glRotatef(90, 1.0, 0.0, 0.0);
+    glutSolidTorus(0.2,0.3,50,50);
+    glPopMatrix();
+
 	// Mano Superior
 	glPushMatrix();
 
@@ -374,22 +387,17 @@ void Display(void)
 		glShadeModel(GL_FLAT);
 	}
 
-	//cambio normal de superficie definida
-	//glNormal();
-
-	//glutKeyboardFunc();
-
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glMatrixMode(GL_PROJECTION); // Selecciona la matriz del dibujado
+	glMatrixMode(GL_PROJECTION); // Selecciona la matriz de proyección
 	glLoadIdentity();
 
 	// Cambio de aspect ratio.
 	gluPerspective(55.0, new_ratio, 0.2, 100.0);
 	
 
-	glMatrixMode(GL_MODELVIEW);
+	glMatrixMode(GL_MODELVIEW); // Selecciona la matriz de modelado
 	glLoadIdentity();
 	gluLookAt(eye_vector[0], eye_vector[1], eye_vector[2],
 			  center_vector[0], center_vector[1], center_vector[2],
@@ -414,237 +422,8 @@ void MyReshape(GLint width, GLint height)
 	glViewport(0, 0, width, height);
 }
 
-void light_set()
-{
-	//Eleción de sombreado -SPACEBAR
-	if ((GetKeyState(0x20) & 0x8000) != 0 && !shadow)
-	{
-		shadow = true;
-		if (smooth_shade)
-		{
-			smooth_shade = false;
-		}
-		else
-		{
-			smooth_shade = true;
-		}
-	}
-
-	if ((GetKeyState(0x20) & 0x8000) == 0) {
-		shadow = false;
-	}
-
-	if(!(GetKeyState(0x10) & 0x8000) != 0){
-		// switch luz on/off -L
-		if ((GetKeyState(0x4C) & 0x8000) != 0 && !light)
-		{
-			light = true;
-			if (light_up_1)
-			{
-				light_up_1 = false;
-			}
-			else
-			{
-				light_up_1 = true;
-			}
-		}
-
-		if ((GetKeyState(0x4C) & 0x8000) == 0) {
-			light = false;
-		}
-
-		// movimiento de luz
-		if ((GetKeyState(0x41) & 0x8000) != 0)
-		{ //A
-			param_POSIT_1[0] -= 0.01;
-		}
-		if ((GetKeyState(0x5A) & 0x8000) != 0)
-		{ //Z
-			param_POSIT_1[0] += 0.01;
-		}
-		if ((GetKeyState(0x53) & 0x8000) != 0)
-		{ //S
-			param_POSIT_1[2] -= 0.01;
-		}
-		if ((GetKeyState(0x58) & 0x8000) != 0)
-		{ //X
-			param_POSIT_1[2] += 0.01;
-		}
-		if ((GetKeyState(0x44) & 0x8000) != 0)
-		{ //D
-			param_POSIT_1[1] -= 0.01;
-		}
-		if ((GetKeyState(0x43) & 0x8000) != 0)
-		{ //C
-			param_POSIT_1[1] += 0.01;
-		}
-	}else if((GetKeyState(0x10) & 0x8000) != 0){ //SHIFT luz 2
-		// switch luz on/off -L
-		if ((GetKeyState(0x4C) & 0x8000) != 0 && !light)
-		{
-			light = true;
-			if (light_up_2)
-			{
-				light_up_2 = false;
-			}
-			else
-			{
-				light_up_2 = true;
-			}
-		}
-
-		if ((GetKeyState(0x4C) & 0x8000) == 0) {
-			light = false;
-		}
-
-		// movimiento de luz
-		if ((GetKeyState(0x41) & 0x8000) != 0)
-		{ //A
-			param_POSIT_2[0] -= 0.01;
-		}
-		if ((GetKeyState(0x5A) & 0x8000) != 0)
-		{ //Z
-			param_POSIT_2[0] += 0.01;
-		}
-		if ((GetKeyState(0x53) & 0x8000) != 0)
-		{ //S
-			param_POSIT_2[2] -= 0.01;
-		}
-		if ((GetKeyState(0x58) & 0x8000) != 0)
-		{ //X
-			param_POSIT_2[2] += 0.01;
-		}
-		if ((GetKeyState(0x44) & 0x8000) != 0)
-		{ //D
-			param_POSIT_2[1] -= 0.01;
-		}
-		if ((GetKeyState(0x43) & 0x8000) != 0)
-		{ //C
-			param_POSIT_2[1] += 0.01;
-		}
-
-	}
-}
-
 void camera_set()
 {
-
-	if ((GetKeyState(0x10) & 0x8000) != 0)
-	{
-		if ((GetKeyState(0x26) & 0x8000) != 0)
-		{ //Arrow_UP
-
-			movement_vector[0] -= 0.01;
-		}
-
-		if ((GetKeyState(0x28) & 0x8000) != 0)
-		{ //Arrow_Down
-
-			movement_vector[0] += 0.01;
-		}
-
-		if ((GetKeyState(0x27) & 0x8000) != 0)
-		{ //Arrow_Right
-
-			movement_vector[2] -= 0.01;
-		}
-
-		if ((GetKeyState(0x25) & 0x8000) != 0)
-		{ //Arrow_Left
-
-			movement_vector[2] += 0.01;
-		}
-
-		if ((GetKeyState(0x4E) & 0x8000) != 0)
-		{ //M
-
-			movement_vector[1] -= 0.01;
-		}
-
-		if ((GetKeyState(0x4D) & 0x8000) != 0)
-		{ //N
-
-			movement_vector[1] += 0.01;
-		}
-
-		if ((GetKeyState(0x50) & 0x8000) != 0)
-		{ //B
-
-			movement_vector[0] = 0;
-			movement_vector[1] = 0;
-			movement_vector[2] = 0;
-		}
-	}
-	else if ((GetKeyState(0x11) & 0x8000) != 0)
-	{
-		if ((GetKeyState(0x26) & 0x8000) != 0)
-		{ //Arrow_UP
-
-			tilt_vector[1] += 0.01;
-		}
-
-		if ((GetKeyState(0x28) & 0x8000) != 0)
-		{ //Arrow_Down
-			tilt_vector[1] -= 0.01;
-		}
-
-		if ((GetKeyState(0x27) & 0x8000) != 0)
-		{ //Arrow_Right
-			tilt_vector[0] -= 0.01;
-		}
-
-		if ((GetKeyState(0x25) & 0x8000) != 0)
-		{ //Arrow_Left
-			tilt_vector[0] += 0.01;
-		}
-
-		if ((GetKeyState(0x50) & 0x8000) != 0)
-		{ //B
-			tilt_vector[0] = 0;
-			tilt_vector[1] = 0;
-		}
-	}
-	else
-	{
-		if ((GetKeyState(0x26) & 0x8000) != 0)
-		{ //Arrow_UP
-
-			angulo_x += 0.5;
-		}
-
-		if ((GetKeyState(0x28) & 0x8000) != 0)
-		{ //Arrow_Down
-			angulo_x -= 0.5;
-		}
-
-		if ((GetKeyState(0x27) & 0x8000) != 0)
-		{ //Arrow_Right
-			angulo_y += 0.5;
-		}
-
-		if ((GetKeyState(0x25) & 0x8000) != 0)
-		{ //Arrow_Left
-			angulo_y -= 0.5;
-		}
-
-		if ((GetKeyState(0x4E) & 0x8000) != 0)
-		{ //M
-			radio += 0.01;
-		}
-
-		if ((GetKeyState(0x4D) & 0x8000) != 0)
-		{ //N
-			radio -= 0.01;
-		}
-
-		if ((GetKeyState(0x50) & 0x8000) != 0)
-		{ //P
-			angulo_y = 0;
-			angulo_x = 0;
-			radio = 2;
-		}
-	}
-
 	GLdouble eye_x = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y));
 	GLdouble eye_y = radio * sin(toRadians(angulo_x));
 	GLdouble eye_z = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y));
@@ -669,92 +448,202 @@ void camera_set()
 	eye_vector[2] = eye_z + center_z;
 }
 
-void Timer(GLint t)
-{
-	camera_set();
-
-	light_set();
-
-	// Control Angulo1 teclas Q - W
-	if ((GetKeyState(0x51) & 0x8000) != 0)
-	{
-		if (fAngulo1 < 100)
-		{
-			fAngulo1 += 1.0f;
-		}
+void arrow_set(int key, int x, int y) {
+	switch(key) {
+	case GLUT_KEY_UP: // Flecha arriba
+		angulo_x += 0.5;
+		break;
+	case GLUT_KEY_DOWN: // Flecha abajo
+		angulo_x -= 0.5;
+		break;
+	case GLUT_KEY_LEFT: // Flecha izquierda
+		angulo_y += 0.5;
+		break;
+	case GLUT_KEY_RIGHT: // Flecha derecha
+		angulo_y -= 0.5;
+		break;
 	}
-	if ((GetKeyState(0x57) & 0x8000) != 0)
-	{
-		if (fAngulo1 > -45)
-		{
-			fAngulo1 -= 1.0f;
-		}
-	}
+}
 
-	// Control Angulo2 teclas E - R
-	if ((GetKeyState(0x45) & 0x8000) != 0)
+void key_set(unsigned char key, int x , int y) {
+	switch (key)
 	{
+	case 32: // espacio
+		if (smooth_shade) // Activa o desactiva las sombras suaves por las sombras planas
+		{
+			smooth_shade = false;
+		}
+		else
+		{
+			smooth_shade = true;
+		}
+		break;
+	case 112: // p
+		if (light_up_1) // Enciede o paga la luz 1
+		{
+			light_up_1 = false;
+		}
+		else
+		{
+			light_up_1 = true;
+		}
+		break;
+	case 80: // P
+		if (light_up_2) // Enciede o paga la luz 2
+		{
+			light_up_2 = false;
+		}
+		else
+		{
+			light_up_2 = true;
+		}
+		break;
+	
+	//posicionamiento de la luz 1
+
+	//Eje X
+	case 97: // a (-)
+		param_POSIT_1[0] -= 0.01;
+		break;
+	case 122: // z (+)
+		param_POSIT_1[0] += 0.01;
+		break;
+
+	//Eje Z
+	case 115: // s (-)
+		param_POSIT_1[2] -= 0.01;
+		break;
+	case 120: // x (+)
+		param_POSIT_1[2] += 0.01;
+		break;
+
+	//Eje Y
+	case 100: // d (-)
+		param_POSIT_1[1] -= 0.01;
+		break;
+	case 99: // c (+)
+		param_POSIT_1[1] += 0.01;
+		break;
+	
+	//posicionamiento de la luz 2
+
+	//Eje X
+	case 65: // A (-)
+		param_POSIT_2[0] -= 0.01;
+		break;
+	case 90: // Z (+)
+		param_POSIT_2[0] += 0.01;
+		break;
+
+	//Eje Z
+	case 83: // S (-)
+		param_POSIT_2[2] -= 0.01;
+		break;
+	case 88: // X (+)
+		param_POSIT_2[2] += 0.01;
+		break;
+
+	//Eje Y
+	case 68: // D (-)
+		param_POSIT_2[1] -= 0.01;
+		break;
+	case 67: // C (+)
+		param_POSIT_2[1] += 0.01;
+		break;
+
+	case 114: // r
+		fAngulo5 += 1.0f; // Rotacion de la grua (+)
+		break;
+	case 102: // f
+		fAngulo5 -= 1.0f; // Rotacion de la grua (-)
+		break;
+
+	case 116: // t
+		if (fAngulo1 < 90)
+		{
+			fAngulo1 += 1.0f; // Angulo del brazo inferior (+)
+		}
+		break;
+	case 103: // g
+		if (fAngulo1 > 0)
+		{
+			fAngulo1 -= 1.0f; // Angulo del brazo inferior (-)
+		}
+		break;
+
+	case 121: // y
 		if (fAngulo2 < 45)
 		{
-			fAngulo2 += 1.0f;
+			fAngulo2 += 1.0f; // Angulo del brazo superior (+)
 		}
-	}
-	if ((GetKeyState(0x52) & 0x8000) != 0)
-	{
+		break;
+	case 104: // h
 		if (fAngulo2 > -50)
 		{
-			fAngulo2 -= 1.0f;
+			fAngulo2 -= 1.0f; // Angulo del brazo superior (-)
 		}
-	}
+		break;
 
-	// Control Angulo3 teclas T - G
-	if ((GetKeyState(0x54) & 0x8000) != 0)
-	{
-		if (fAngulo3 < 30)
-		{
-			fAngulo3 += 1.0f;
+	case 110: // n
+		if (radio > 0.1) {
+			radio -= 0.01; // Realiza zoom de la camara (-)
 		}
+		break;
+	case 109: // m
+		radio += 0.01; // Realiza zoom de la camara (+)
+		break;
+	case 78: // N
+		movement_vector[1] -= 0.01; // Mueve la camara hacia abajo (-)
+		break;
+	case 77: // M
+		movement_vector[1] += 0.01; // Mueve la camara hacia arriba (-)
+		break;
+	case 84: // T
+		movement_vector[0] -= 0.01; // Mueve la camara hacia delante (+)
+		break;
+	case 71: // G
+		movement_vector[0] += 0.01; // Mueve la camara hacia delante (+)
+		break;
+	case 70: // F
+		movement_vector[2] += 0.01; // Mueve la camara hacia la izquierda
+		break;
+	case 72: // H
+		movement_vector[2] -= 0.01; // Mueve la camara hacia la derecha
+		break;
+	case 73: // I
+		tilt_vector[1] += 0.01; // Cabecea la camara (+)
+		break;
+	case 75: // K
+		tilt_vector[1] -= 0.01; // Cabecea la camara (-)
+		break;
+	case 74: // J
+		tilt_vector[0] += 0.01; // Tiltea la camara a la izquierda
+		break;
+	case 76: // L
+		tilt_vector[0] -= 0.01; // Tiltea la camara a la derecha
+		break;
+	case 113: // q resetea los valores de visión esférica
+		angulo_y = 0;
+		angulo_x = 0;
+		radio = 2;
+		break;
+	case 119: // w resetea los valores de visión posicionada
+		movement_vector[0] = 0;
+		movement_vector[1] = 0;
+		movement_vector[2] = 0;
+		break;
+	case 101: // e resetea los valores de tilteo
+		tilt_vector[0] = 0;
+		tilt_vector[1] = 0;
+		break;
 	}
-	if ((GetKeyState(0x47) & 0x8000) != 0)
-	{
-		if (fAngulo3 > -30)
-		{
-			fAngulo3 -= 1.0f;
-		}
-	}
+}
 
-	// Control Angulo4 teclas Y - H
-	if ((GetKeyState(0x59) & 0x8000) != 0)
-	{
-		if (fAngulo4 < 45)
-		{
-			fAngulo4 += 1.0f;
-		}
-	}
-	if ((GetKeyState(0x48) & 0x8000) != 0)
-	{
-		if (fAngulo4 > 0)
-		{
-			fAngulo4 -= 1.0f;
-		}
-	}
-
-	// Control Angulo5 teclas U - J
-	if ((GetKeyState(0x55) & 0x8000) != 0)
-	{
-		if (fAngulo5 < 100)
-		{
-			fAngulo5 += 1.0f;
-		}
-	}
-	if ((GetKeyState(0x4A) & 0x8000) != 0)
-	{
-		if (fAngulo5 > -100)
-		{
-			fAngulo5 -= 1.0f;
-		}
-	}
-
+void Timer(GLint t)
+{
+	glutKeyboardFunc(key_set);
+	glutSpecialFunc(arrow_set);
+	camera_set();
 	glutPostRedisplay();
 	glutTimerFunc(tiempo, Timer, 0.0f);
 }
@@ -777,17 +666,11 @@ int main(int argc, char **argv)
 	glutDisplayFunc(Display);
 	glutTimerFunc(tiempo, Timer, 0.0f);
 
-	// función de direccionamiento d cámara
-	//glutSpecialFunc(camera_set);
-
 	//Ajuste de proporciones
 	glutReshapeFunc(MyReshape);
 
 	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-	//param_SPOT_DIR[0] = param_SPOT_DIR[0] + sin(toRadians(25.0f))*0.17;
-	param_SPOT_DIR[3] = param_SPOT_DIR[3] - cos(toRadians(60.0f))*0.20;
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
