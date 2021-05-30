@@ -773,13 +773,12 @@ void key_set(unsigned char key, int x , int y) {
 	}
 	GLfloat aux = sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension);
 
-	if (lcuerda - aux > 0.70 && lcuerda > 0.2) {
+	if ((lcuerda - aux) > 0.70 && lcuerda > 0.2) {
 		lcuerda = aux + 0.70;
 	}
 
-	while (lcuerda - aux > 0.70 && lextension != 0) {
-		lextension -= 0.01;
-		aux = sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension);
+	if ((lcuerda - aux) > 0.70 && lextension != 0) {
+		lextension = (lcuerda - 0.7 - sin(toRadians(fAngulo1)) * (0.4 + desp)) / sin(toRadians(fAngulo2)) - (0.4 + desp * 2);
 	}
 }
 
