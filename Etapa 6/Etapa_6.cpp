@@ -18,8 +18,8 @@ using namespace std;
 GLfloat fAngulo1 = 0.0f;  //Subir y Bajar el Brazo.
 GLfloat fAngulo2 = 0.0f;  //Subir y bajar Antebrazo.
 GLfloat fAngulo3 = 0.0f;  // Subir y bajar Muñeca.
-GLfloat fAngulo4 = 0.0f;  //Abrir y cerrar Mano.
-GLfloat fAngulo5 = 0.0f; //Giro de la Mano.
+GLfloat fAngulo4 = 5.0f;  //Abrir y cerrar Mano.
+GLfloat fAngulo5 = 45.0f; //Giro de la Mano.
 
 // Constantes y variables para dibujar el brazo entero.
 const GLfloat pi = M_PI;
@@ -46,7 +46,7 @@ GLdouble angulo_y = 0;
 GLdouble angulo_x = 0;
 GLdouble angulo_t = 0;
 GLdouble angulo_p = 0;
-GLdouble radio = 2;
+GLdouble radio = 3;
 GLdouble x = 0;
 GLdouble y = 0;
 GLdouble eye_vector[3] = {0.0, 0.0, 1.0};
@@ -712,6 +712,26 @@ void key_set(unsigned char key, int x , int y) {
 			lextension -= 0.01; // Longitud del extensor (-)
 		}
 		break;
+	case 105: // i
+		if (lcuerda > 0.2) {
+			lcuerda -= 0.01; // Sube la garra (+)
+		}
+		break;
+	case 107: // k
+		if (lcuerda - (sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension)) < 0.70) {
+			lcuerda += 0.01; // Baja la garra (+)
+		}
+		break;
+	case 111: // o
+		if (fAngulo4 < 50) {
+			fAngulo4 += 1.0f; // Abre la garra (+)
+		}
+		break;
+	case 108: // l
+		if (fAngulo4 > 5) {
+			fAngulo4 -= 1.0f; // Cierra la garra (-)
+		}
+		break;
 	case 110: // n
 		if (radio > 0.1) {
 			radio -= 0.01; // Realiza zoom de la camara (-)
@@ -721,10 +741,10 @@ void key_set(unsigned char key, int x , int y) {
 		radio += 0.01; // Realiza zoom de la camara (+)
 		break;
 	case 78: // N
-		movement_vector[1] -= 0.01; // Mueve la camara hacia arriba (-)
+		movement_vector[1] -= 0.01; // Mueve la camara hacia arriba (+)
 		break;
 	case 77: // N
-		movement_vector[1] += 0.01; // Mueve la camara hacia arriba (-)
+		movement_vector[1] += 0.01; // Mueve la camara hacia abajo (-)
 		break;
 	case 84: // T
 		movement_vector[0] -= 0.01; // Mueve la camara hacia delante (+)
@@ -751,6 +771,12 @@ void key_set(unsigned char key, int x , int y) {
 		tilt_vector[0] -= 0.01; // Tiltea la camara a la derecha
 		break;
 	}
+
+
+
+	if (lcuerda - (sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension)) > 0.70) {
+		lcuerda = (sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension)) + 0.70;
+	}
 }
 
 void Timer(GLint t)
@@ -759,22 +785,6 @@ void Timer(GLint t)
 	glutKeyboardFunc(key_set);
 	glutSpecialFunc(arrow_set);
 	camera_set();
-
-	//// Control Angulo4 teclas Y - H
-	//if ((GetKeyState(0x59) & 0x8000) != 0)
-	//{
-	//	if (fAngulo4 < 45)
-	//	{
-	//		fAngulo4 += 1.0f;
-	//	}
-	//}
-	//if ((GetKeyState(0x48) & 0x8000) != 0)
-	//{
-	//	if (fAngulo4 > 0)
-	//	{
-	//		fAngulo4 -= 1.0f;
-	//	}
-	//}
 
 	glutPostRedisplay();
 	glutTimerFunc(tiempo, Timer, 0.0f);
