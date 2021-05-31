@@ -625,7 +625,7 @@ void key_set(unsigned char key, int x , int y) {
 	case 113: // q resetea los valores de visión esférica
 		angulo_y = 0;
 		angulo_x = 0;
-		radio = 2;
+		radio = 3;
 		break;
 	case 119: // w resetea los valores de visión posicionada
 		movement_vector[0] = 0;
