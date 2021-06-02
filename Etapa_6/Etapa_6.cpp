@@ -6,9 +6,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#include "AL/al.h"
-#include "AL/alc.h"
+#include "./components/include/stb_image.h"
+#include "./components/include/AL/al.h"
+#include "./components/include/AL/alc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -32,6 +32,9 @@ const GLdouble desp = 0.05;
 GLfloat lcuerda = 0.4f;
 GLfloat lextension = 0.1f;
 
+GLfloat pcuadrados[8] = {0.02,0.04,0.08,0.10,0.20,0.25,0.5,1};
+GLint pind = 0;
+
 // aspect ratio
 GLdouble new_ratio;
 
@@ -42,6 +45,8 @@ const GLint W_RATIO = W_WIDTH / W_HEIGHT;
 const GLint tiempo = 10;
 
 // Vector for camera.
+GLboolean fija = false;
+
 GLdouble angulo_y = 0;
 GLdouble angulo_x = 0;
 GLdouble angulo_t = 0;
@@ -75,6 +80,19 @@ GLfloat param_CONST_ATT = 1.0f;					   //GL_CONSTANT_ATTENUATION	[0,1]
 GLfloat param_LIN_ATT = 1.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
 GLfloat param_QUAD_ATT = 1.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
 
+// Light3 params values
+GLfloat param_AMB_3[4] = { 5.0f, 0.0f, 0.0f, 1.0f };
+GLfloat param_DIFF_3[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+GLfloat param_SPEC_3[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+GLfloat param_POSIT_3[4] = { -1.5f, 1.01f, 1.5f };
+
+GLfloat param_SPOT_DIR_3[3] = { 0.0f, -1.0f, 0.0f };	//GL_SPOT_DIRECTION			?
+GLfloat param_SPOT_EXP_3 = 25.0f;					//GL_SPOT_EXPONENT			[0,128]
+GLfloat param_SPOT_CUT_3 = 25.0f;					//SPOT_CUTOFF				[0,90]U{180}
+GLfloat param_CONST_ATT_3 = 1.0f;					//GL_CONSTANT_ATTENUATION	[0,1]
+GLfloat param_LIN_ATT_3 = 1.0f;						//GL_LINEAR_ATTENUATION		[0,1]
+GLfloat param_QUAD_ATT_3 = 1.0f;					//GL_QUADRATIC_ATTENUATION	[0,1]
+
 
 // material param values
 GLfloat param_mat_AMB[4] = {0.2f, 0.2f, 0.2f, 1.0f};   //GL_AMBIENT				[-1,1]
@@ -87,6 +105,7 @@ GLfloat param_mat_COL_INDX[3] = {0.0f, 0.0f, 0.0f};	   //GL_COLOR_INDEXES		?
 GLboolean smooth_shade = true;
 GLboolean light_up_1 = true;
 GLboolean light_up_2 = false;
+GLboolean light_up_3 = false;
 
 //Button checks
 bool light = false;
@@ -125,6 +144,25 @@ GLfloat toRadians(GLfloat i)
 
 void draw3DScene()
 {
+	//Luz 3
+	glPushMatrix();
+
+	glRotatef(fAngulo5, 0, 1, 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) - lcuerda - 0.05, 0);
+
+	glLightfv(GL_LIGHT3, GL_POSITION, static_param_POSIT);
+
+	if (light_up_3)
+		glDisable(GL_LIGHTING);
+
+	// foco
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glutSolidSphere(0.04, 50, 50);
+
+	glEnable(GL_LIGHTING);
+
+	glPopMatrix();
+
 	//Luz 2
 	glPushMatrix();
 	
@@ -435,8 +473,6 @@ void draw3DScene()
 
 	glPopMatrix();
 
-	glPopMatrix();
-
 	// Cono de luz
 	glPushMatrix();
 
@@ -471,7 +507,7 @@ void draw3DScene()
 
 	glBindTexture(GL_TEXTURE_2D, atlas_1);
 
-	GLfloat inc = 0.02;
+	GLfloat inc = pcuadrados[pind];;
 
 	for (GLfloat i = -2.0; i < 2; i = i + inc){
 		for (GLfloat j = -2.0; j < 2; j = j + inc) {
@@ -519,10 +555,12 @@ void Display(void)
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, param_mat_AMB);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, param_mat_SPEC);
 
+	// configuración luz 1 (blanca)
 	glLightfv(GL_LIGHT0, GL_AMBIENT, param_AMB);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, param_DIFF);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, param_SPEC);
 
+	//configuración luz 2 (amarilla)
 	glLightfv(GL_LIGHT2, GL_AMBIENT, param_AMB_2);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, param_DIFF_2);
 	glLightfv(GL_LIGHT2, GL_SPECULAR, param_SPEC_2);
@@ -533,6 +571,19 @@ void Display(void)
 	glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, param_CONST_ATT);
 	glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, param_LIN_ATT);
 	glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT);
+
+	// configuración luz 3 (luz roja)
+	glLightfv(GL_LIGHT3, GL_AMBIENT, param_AMB_3);
+	glLightfv(GL_LIGHT3, GL_DIFFUSE, param_DIFF_3);
+	glLightfv(GL_LIGHT3, GL_SPECULAR, param_SPEC_3);
+
+	glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, param_SPOT_DIR_3);
+	glLightf(GL_LIGHT3, GL_SPOT_EXPONENT, param_SPOT_EXP_3);
+	glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, param_SPOT_CUT_3);
+	glLightf(GL_LIGHT3, GL_CONSTANT_ATTENUATION, param_CONST_ATT_3);
+	glLightf(GL_LIGHT3, GL_LINEAR_ATTENUATION, param_LIN_ATT_3);
+	glLightf(GL_LIGHT3, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT_3);
+
 
 	//Apagado/Encendido Luz 1
 	if (light_up_1)
@@ -552,6 +603,16 @@ void Display(void)
 	else
 	{
 		glDisable(GL_LIGHT2);
+	}
+
+	//Apagado/Encendido luz 3
+	if (light_up_3)
+	{
+		glEnable(GL_LIGHT3);
+	}
+	else
+	{
+		glDisable(GL_LIGHT3);
 	}
 
 	if (smooth_shade)
@@ -600,28 +661,38 @@ void MyReshape(GLint width, GLint height)
 
 void camera_set()
 {
-	GLdouble eye_x = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y));
-	GLdouble eye_y = radio * sin(toRadians(angulo_x));
-	GLdouble eye_z = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y));
+	if (fija) {
+		eye_vector[0] = -1.49f;
+		eye_vector[1] = 1.01f;
+		eye_vector[2] = 1.49f;
+		center_vector[0] = 0;
+		center_vector[1] = 0;
+		center_vector[2] = 0;
+	}
+	else {
+		GLdouble eye_x = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y));
+		GLdouble eye_y = radio * sin(toRadians(angulo_x));
+		GLdouble eye_z = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y));
 
-	GLdouble center_x = movement_vector[0] * cos(toRadians(angulo_y)) - movement_vector[2] * sin(toRadians(angulo_y));
-	GLdouble center_y = movement_vector[1];
-	GLdouble center_z = movement_vector[2] * cos(toRadians(angulo_y)) + movement_vector[0] * sin(toRadians(angulo_y));
+		GLdouble center_x = movement_vector[0] * cos(toRadians(angulo_y)) - movement_vector[2] * sin(toRadians(angulo_y));
+		GLdouble center_y = movement_vector[1];
+		GLdouble center_z = movement_vector[2] * cos(toRadians(angulo_y)) + movement_vector[0] * sin(toRadians(angulo_y));
 
-	GLdouble camera_x = -tilt_vector[0] * sin(toRadians(angulo_y));
-	GLdouble camera_y = tilt_vector[1];
-	GLdouble camera_z = tilt_vector[0] * cos(toRadians(angulo_y));
+		GLdouble camera_x = -tilt_vector[0] * sin(toRadians(angulo_y));
+		GLdouble camera_y = tilt_vector[1];
+		GLdouble camera_z = tilt_vector[0] * cos(toRadians(angulo_y));
 
-	camera_y = camera_z * sin(toRadians(angulo_x)) + camera_y * cos(toRadians(angulo_x));
-	camera_z = camera_z * cos(toRadians(angulo_x)) - camera_y * sin(toRadians(angulo_x));
+		camera_y = camera_z * sin(toRadians(angulo_x)) + camera_y * cos(toRadians(angulo_x));
+		camera_z = camera_z * cos(toRadians(angulo_x)) - camera_y * sin(toRadians(angulo_x));
 
-	center_vector[0] = camera_x + center_x;
-	center_vector[1] = camera_y + center_y;
-	center_vector[2] = camera_z + center_z;
+		center_vector[0] = camera_x + center_x;
+		center_vector[1] = camera_y + center_y;
+		center_vector[2] = camera_z + center_z;
 
-	eye_vector[0] = eye_x + center_x;
-	eye_vector[1] = eye_y + center_y;
-	eye_vector[2] = eye_z + center_z;
+		eye_vector[0] = eye_x + center_x;
+		eye_vector[1] = eye_y + center_y;
+		eye_vector[2] = eye_z + center_z;
+	}
 }
 
 void arrow_set(int key, int x, int y) {
@@ -736,7 +807,7 @@ void key_set(unsigned char key, int x , int y) {
 		break;
 
 	case 116: // t
-		if (fAngulo1 < 90)
+		if (fAngulo1 < 100)
 		{
 			fAngulo1 += 1.0f; // Angulo del brazo inferior (+)
 		}
@@ -755,7 +826,7 @@ void key_set(unsigned char key, int x , int y) {
 		}
 		break;
 	case 104: // h
-		if (fAngulo2 > -50)
+		if (fAngulo2 > -40)
 		{
 			fAngulo2 -= 1.0f; // Angulo del brazo superior (-)
 		}
@@ -776,18 +847,22 @@ void key_set(unsigned char key, int x , int y) {
 		}
 		break;
 	case 107: // k
-		if (lcuerda - (sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension)) < 0.70) {
+		if (lcuerda < sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) + 0.7) {
 			lcuerda += 0.01; // Baja la garra (+)
 		}
 		break;
 	case 111: // o
 		if (fAngulo4 < 50) {
 			fAngulo4 += 1.0f; // Abre la garra (+)
+		} else {
+			light_up_3 = true;
 		}
 		break;
 	case 108: // l
 		if (fAngulo4 > 5) {
 			fAngulo4 -= 1.0f; // Cierra la garra (-)
+		} else {
+			light_up_3 = 3;
 		}
 		break;
 	case 110: // n
@@ -842,15 +917,32 @@ void key_set(unsigned char key, int x , int y) {
 		tilt_vector[0] = 0;
 		tilt_vector[1] = 0;
 		break;
+	case 118: // v disminuir los cuadrados del plano.
+		if (pind < 7) {
+			pind += 1;
+		}
+		break;
+	case 98: // b augmentar los cuadrados del plano
+		if (pind > 0) {
+			pind -= 1;
+		}
+		break;
+
+	case 82: //R camara fija
+		if (fija) {
+			fija = false;
+		}
+		else {
+			fija = true;
+		}
+		break;
 	}
 
 	GLfloat aux = sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension);
 
 	if ((lcuerda - aux) > 0.70 && lcuerda > 0.2) {
 		lcuerda = aux + 0.70;
-	}
-
-	if ((lcuerda - aux) > 0.70 && lextension != 0) {
+	} else if((lcuerda - aux) > 0.70 && lextension != 0) {
 		lextension = (lcuerda - 0.7 - sin(toRadians(fAngulo1)) * (0.4 + desp)) / sin(toRadians(fAngulo2)) - (0.4 + desp * 2);
 	}
 }
@@ -864,16 +956,16 @@ void Timer(GLint t)
 	glutTimerFunc(tiempo, Timer, 0.0f);
 }
 
-//EXTRACTED
 
+
+//EXTRACTED-SOUND
 bool isBigEndian()
 {
     int a = 1;
     return !((char*)&a)[0];
 }
 
-//EXTRACTED
-
+//EXTRACTED-SOUND
 int convertToInt(char* buffer, int len)
 {
     int a = 0;
