@@ -20,6 +20,8 @@ GLfloat fAngulo2 = 0.0f;  //Subir y bajar Antebrazo.
 GLfloat fAngulo3 = 0.0f;  // Subir y bajar Muñeca.
 GLfloat fAngulo4 = 5.0f;  //Abrir y cerrar Mano.
 GLfloat fAngulo5 = 45.0f; //Giro de la Mano.
+GLfloat lcuerda = 0.4f;
+GLfloat lextension = 0.1f;
 
 // Constantes y variables para dibujar el brazo entero.
 const GLfloat pi = M_PI;
@@ -29,8 +31,6 @@ const GLdouble radius_joints = 0.072;
 const GLdouble radius_hand = 0.025;
 const GLdouble base_radius = 0.1;
 const GLdouble desp = 0.05;
-GLfloat lcuerda = 0.4f;
-GLfloat lextension = 0.1f;
 
 GLfloat pcuadrados[8] = {0.02, 0.04, 0.08, 0.10, 0.20, 0.25, 0.5, 1};
 GLint pind = 0;
@@ -66,6 +66,14 @@ GLfloat param_DIFF[4] = {.8f, .8f, .8f, 1.0f};		 //GL_DIFFUSE				[-1,1]
 GLfloat param_SPEC[4] = {1.0f, 1.0f, 1.0f, 1.0f};	 //GL_SPECULAR				[-1,1]
 GLfloat param_POSIT_1[4] = {0.0f, 1.0f, 0.0f, 1.0f}; //GL_POSITION				?
 GLfloat static_param_POSIT[4] = {0., 0., 0., 1.};	 //GL_POSITION en el origen
+
+GLfloat param_SPOT_DIR_1[3] = {0.0f, -1.0f, 0.0f};
+GLfloat param_SPOT_DIR_1_def[3] = {0.0f, 0.0f, -1.0f};
+GLfloat param_SPOT_EXP_1 = 10.0f;					   //GL_SPOT_EXPONENT			[0,128]
+GLfloat param_SPOT_CUT_1 = 30.0f;					   //SPOT_CUTOFF				[0,90]U{180}
+GLfloat param_CONST_ATT_1 = 1.0f;					   //GL_CONSTANT_ATTENUATION	[0,1]
+GLfloat param_LIN_ATT_1 = 1.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
+GLfloat param_QUAD_ATT_1 = 1.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
 
 // Light2 params values
 GLfloat param_AMB_2[4] = {1.0f, 1.0f, 0.0f, 1.0f};
@@ -105,6 +113,7 @@ GLboolean smooth_shade = true;
 GLboolean light_up_1 = true;
 GLboolean light_up_2 = false;
 GLboolean light_up_3 = false;
+GLboolean spot_dir = false;
 
 //Button checks
 GLboolean light = false;
@@ -563,6 +572,20 @@ void Display(void)
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, param_DIFF);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, param_SPEC);
 
+	if(spot_dir){
+		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, param_SPOT_DIR_1);
+		glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, param_SPOT_EXP_1);
+		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, param_SPOT_CUT_1);
+	} else {
+		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, param_SPOT_DIR_1_def);
+		glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 0);
+		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
+	}
+
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, param_CONST_ATT_1);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, param_LIN_ATT_1);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT_1);
+
 	//configuración luz 2 (amarilla)
 	glLightfv(GL_LIGHT2, GL_AMBIENT, param_AMB_2);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, param_DIFF_2);
@@ -722,8 +745,6 @@ void key_set(unsigned char key, int x, int y)
 	switch (key)
 	{
 	// case 32: // espacio
-	// case 112: // p
-	// case 80: // P
 
 	//posicionamiento de la luz 1
 	//Eje X
@@ -750,29 +771,129 @@ void key_set(unsigned char key, int x, int y)
 		param_POSIT_1[1] += 0.01;
 		break;
 
-	//posicionamiento de la luz 2
-	//Eje X
-	case 65: // A (-)
-		param_POSIT_2[0] -= 0.01;
+	//parámetros luz 1
+	//luz Ambiental
+	case 65: // A (+)
+		if(param_AMB[0] < 1)
+			param_AMB[0] += 0.1;
+		if(param_AMB[1] < 1)
+			param_AMB[1] += 0.1;
+		if(param_AMB[2] < 1)
+			param_AMB[2] += 0.1;
 		break;
-	case 90: // Z (+)
-		param_POSIT_2[0] += 0.01;
+	case 90: // Z (-)
+		if(param_AMB[0] > -1)
+			param_AMB[0] -= 0.1;
+		if(param_AMB[1] > -1)
+			param_AMB[1] -= 0.1;
+		if(param_AMB[2] > -1)
+			param_AMB[2] -= 0.1;
 		break;
 
-	//Eje Z
-	case 83: // S (-)
-		param_POSIT_2[2] -= 0.01;
+	//luz Especular
+	case 83: // S (+)
+		if(param_SPEC[0] < 1)
+			param_SPEC[0] += 0.1;
+		if(param_SPEC[1] < 1)
+			param_SPEC[1] += 0.1;
+		if(param_SPEC[2] < 1)
+			param_SPEC[2] += 0.1;
 		break;
-	case 88: // X (+)
-		param_POSIT_2[2] += 0.01;
+	case 88: // X (-)
+		if(param_SPEC[0] > -1)
+			param_SPEC[0] -= 0.1;
+		if(param_SPEC[1] > -1)
+			param_SPEC[1] -= 0.1;
+		if(param_SPEC[2] > -1)
+			param_SPEC[2] -= 0.1;
 		break;
 
-	//Eje Y
-	case 68: // D (-)
-		param_POSIT_2[1] -= 0.01;
+	//luz Difusa
+	case 68: // D (+)
+		if(param_DIFF[0] < 1)
+			param_DIFF[0] += 0.1;
+		if(param_DIFF[1] < 1)
+			param_DIFF[1] += 0.1;
+		if(param_DIFF[2] < 1)
+			param_DIFF[2] += 0.1;
 		break;
-	case 67: // C (+)
-		param_POSIT_2[1] += 0.01;
+	case 67: // C (-)
+		if(param_DIFF[0] > -1)
+			param_DIFF[0] -= 0.1;
+		if(param_DIFF[1] > -1)
+			param_DIFF[1] -= 0.1;
+		if(param_DIFF[2] > -1)
+			param_DIFF[2] -= 0.1;
+		break;
+
+	//atenuación constante
+	case 113: // q (+))
+		if(param_CONST_ATT_1 < 1)
+		param_CONST_ATT_1 += 0.1;
+		break;
+	case 81: // Q (-)
+		if(param_CONST_ATT_1 > 0)
+		param_CONST_ATT_1 -= 0.1;
+		break;
+
+	// atenuación lineal
+	case 119: // w (+)
+		if(param_LIN_ATT_1 < 1)
+		param_LIN_ATT_1 += 0.1;
+		break;
+	case 87: // W (-)
+		if(param_LIN_ATT_1 > 0)
+		param_LIN_ATT_1 -= 0.1;
+		break;
+
+	// atenuación quadrática
+	case 101: // e (+)
+		if(param_QUAD_ATT_1 < 1)
+		param_QUAD_ATT_1 += 0.1;
+		break;
+	case 69: // E (-)
+		if(param_QUAD_ATT_1 > 0)
+		param_QUAD_ATT_1 -= 0.1;
+		break;
+
+	// ángulo de apertura de luz focal
+	case 112: // p (+)
+		if(param_SPOT_CUT_1 < 90)
+		param_SPOT_CUT_1 += 5;
+		break;
+	case 80: // P (-)
+		if(param_SPOT_CUT_1 > 0)
+		param_SPOT_CUT_1 -= 5;
+		break;
+	
+	//exponente de luz focal
+	case 62: //">" (+)
+		if(param_SPOT_EXP_1 < 128)
+		param_SPOT_EXP_1 += 5;
+		break;
+	case 60: //"<" (-)
+		if(param_SPOT_EXP_1 > 0)
+		param_SPOT_EXP_1 -= 5;
+		break;
+
+	//dirección de luz focal
+	case 44: //"," (+)
+		param_SPOT_DIR_1[0] += 1;
+		break;
+	case 59: //"." (-)
+		param_SPOT_DIR_1[0] -= 1;
+		break;
+	case 46: //"." (+)
+		param_SPOT_DIR_1[1] += 1;
+		break;
+	case 58: //":" (-)
+		param_SPOT_DIR_1[1] -= 1;
+		break;
+	case 45: //"-" (+)
+		param_SPOT_DIR_1[2] += 1;
+		break;
+	case 95: //"_" (-)
+		param_SPOT_DIR_1[2] -= 1;
 		break;
 
 	// controles de la grua
@@ -849,7 +970,7 @@ void key_set(unsigned char key, int x, int y)
 		}
 		else
 		{
-			light_up_3 = 3;
+			light_up_3 = false;
 		}
 		break;
 	case 110: // n
@@ -891,9 +1012,6 @@ void key_set(unsigned char key, int x, int y)
 	case 76:					// L
 		tilt_vector[0] -= 0.01; // Tiltea la camara a la derecha
 		break;
-	// case 113: // q resetea los valores de visión esférica
-	// case 119: // w resetea los valores de visión posicionada
-	// case 101: // e resetea los valores de tilteo
 	case 118: // v disminuir los cuadrados del plano.
 		if (pind < 7)
 		{
@@ -932,6 +1050,15 @@ void Timer(GLint t)
 
 void reset(void)
 {
+	//resetea los valores del brazo
+	fAngulo1 = 0.0f;  //Subir y Bajar el Brazo.
+	fAngulo2 = 0.0f;  //Subir y bajar Antebrazo.
+	fAngulo3 = 0.0f;  // Subir y bajar Muñeca.
+	fAngulo4 = 5.0f;  //Abrir y cerrar Mano.
+	fAngulo5 = 45.0f; //Giro de la Mano.
+	lcuerda = 0.4f;
+	lextension = 0.1f;
+
 	//resetea los valores de visión esférica
 	angulo_y = 0;
 	angulo_x = 0;
@@ -1096,6 +1223,18 @@ void shade_mode_menu(int i)
 	}
 }
 
+void spot_light_menu(int i)
+{
+	switch (i)
+	{
+	case 1:
+		spot_dir = false;
+		break;
+	case 2:
+		spot_dir = true;
+	}
+}
+
 void create_menus(void)
 {
 	GLint axis_change = glutCreateMenu(axis_menu);
@@ -1118,8 +1257,13 @@ void create_menus(void)
 	GLint light_3 = glutCreateMenu(light_3_menu);
 	glutAddMenuEntry("On/Off", -1);
 
+	GLint spot_light = glutCreateMenu(spot_light_menu);
+	glutAddMenuEntry("Uniform", 1);
+	glutAddMenuEntry("Spotlight", 2);
+
 	GLint main = glutCreateMenu(main_menu);
 	glutAddSubMenu("Light 1", light_1);
+	glutAddSubMenu("Light 1 mode", spot_light);
 	glutAddMenuEntry("-----------", -1);
 	glutAddSubMenu("Light 2", light_2);
 	glutAddMenuEntry("-----------", -1);
