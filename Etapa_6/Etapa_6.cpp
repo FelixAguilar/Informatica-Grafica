@@ -32,7 +32,7 @@ const GLdouble desp = 0.05;
 GLfloat lcuerda = 0.4f;
 GLfloat lextension = 0.1f;
 
-GLfloat pcuadrados[8] = {0.02,0.04,0.08,0.10,0.20,0.25,0.5,1};
+GLfloat pcuadrados[8] = {0.02, 0.04, 0.08, 0.10, 0.20, 0.25, 0.5, 1};
 GLint pind = 0;
 
 // aspect ratio
@@ -61,38 +61,37 @@ GLdouble movement_vector[3] = {0.0, 0.0, 0.0};
 GLdouble tilt_vector[2] = {0.0, 0.0};
 
 // Light1 params values
-GLfloat param_AMB[4] = {0.4f, 0.4f, 0.4f, 1.0f};   //GL_AMBIENT				[-1,1]
-GLfloat param_DIFF[4] = {.8f, .8f, .8f, 1.0f};  //GL_DIFFUSE				[-1,1]
-GLfloat param_SPEC[4] = {1.0f, 1.0f, 1.0f, 1.0f};  //GL_SPECULAR				[-1,1]
-GLfloat param_POSIT_1[4] = {0.0f, 1.0f, 0.0f, 1.0f}; 	//GL_POSITION				?
-GLfloat static_param_POSIT[4]  = {0.,0.,0.,1.};		//GL_POSITION en el origen
+GLfloat param_AMB[4] = {0.4f, 0.4f, 0.4f, 1.0f};	 //GL_AMBIENT				[-1,1]
+GLfloat param_DIFF[4] = {.8f, .8f, .8f, 1.0f};		 //GL_DIFFUSE				[-1,1]
+GLfloat param_SPEC[4] = {1.0f, 1.0f, 1.0f, 1.0f};	 //GL_SPECULAR				[-1,1]
+GLfloat param_POSIT_1[4] = {0.0f, 1.0f, 0.0f, 1.0f}; //GL_POSITION				?
+GLfloat static_param_POSIT[4] = {0., 0., 0., 1.};	 //GL_POSITION en el origen
 
 // Light2 params values
 GLfloat param_AMB_2[4] = {1.0f, 1.0f, 0.0f, 1.0f};
-GLfloat param_DIFF_2[4] = {1.0f, 1.0f, 0.0f, 1.0f}; 	
-GLfloat param_SPEC_2[4] = {1.0f, 1.0f, 0.0f, 1.0f}; 
+GLfloat param_DIFF_2[4] = {1.0f, 1.0f, 0.0f, 1.0f};
+GLfloat param_SPEC_2[4] = {1.0f, 1.0f, 0.0f, 1.0f};
 GLfloat param_POSIT_2[4] = {-1.5f, 1.01f, 1.5f};
 
-GLfloat param_SPOT_DIR[3] = {1.5f, -1.01f, -1.5f};   //GL_SPOT_DIRECTION			?
-GLfloat param_SPOT_EXP = 20.0f;					   //GL_SPOT_EXPONENT			[0,128]
-GLfloat param_SPOT_CUT = 25.0f;					   //SPOT_CUTOFF				[0,90]U{180}
+GLfloat param_SPOT_DIR[3] = {1.5f, -1.01f, -1.5f}; //GL_SPOT_DIRECTION			?
+GLfloat param_SPOT_EXP = 10.0f;					   //GL_SPOT_EXPONENT			[0,128]
+GLfloat param_SPOT_CUT = 15.0f;					   //SPOT_CUTOFF				[0,90]U{180}
 GLfloat param_CONST_ATT = 1.0f;					   //GL_CONSTANT_ATTENUATION	[0,1]
 GLfloat param_LIN_ATT = 1.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
 GLfloat param_QUAD_ATT = 1.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
 
 // Light3 params values
-GLfloat param_AMB_3[4] = { 5.0f, 0.0f, 0.0f, 1.0f };
-GLfloat param_DIFF_3[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-GLfloat param_SPEC_3[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-GLfloat param_POSIT_3[4] = { -1.5f, 1.01f, 1.5f };
+GLfloat param_AMB_3[4] = {5.0f, 0.0f, 0.0f, 1.0f};
+GLfloat param_DIFF_3[4] = {1.0f, 0.0f, 0.0f, 1.0f};
+GLfloat param_SPEC_3[4] = {1.0f, 0.0f, 0.0f, 1.0f};
+GLfloat param_POSIT_3[4] = {-1.5f, 1.01f, 1.5f};
 
-GLfloat param_SPOT_DIR_3[3] = { 0.0f, -1.0f, 0.0f };	//GL_SPOT_DIRECTION			?
-GLfloat param_SPOT_EXP_3 = 25.0f;					//GL_SPOT_EXPONENT			[0,128]
-GLfloat param_SPOT_CUT_3 = 25.0f;					//SPOT_CUTOFF				[0,90]U{180}
-GLfloat param_CONST_ATT_3 = 1.0f;					//GL_CONSTANT_ATTENUATION	[0,1]
-GLfloat param_LIN_ATT_3 = 1.0f;						//GL_LINEAR_ATTENUATION		[0,1]
-GLfloat param_QUAD_ATT_3 = 1.0f;					//GL_QUADRATIC_ATTENUATION	[0,1]
-
+GLfloat param_SPOT_DIR_3[3] = {0.0f, -1.0f, 0.0f}; //GL_SPOT_DIRECTION			?
+GLfloat param_SPOT_EXP_3 = 25.0f;				   //GL_SPOT_EXPONENT			[0,128]
+GLfloat param_SPOT_CUT_3 = 25.0f;				   //SPOT_CUTOFF				[0,90]U{180}
+GLfloat param_CONST_ATT_3 = 1.0f;				   //GL_CONSTANT_ATTENUATION	[0,1]
+GLfloat param_LIN_ATT_3 = 1.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
+GLfloat param_QUAD_ATT_3 = 1.0f;				   //GL_QUADRATIC_ATTENUATION	[0,1]
 
 // material param values
 GLfloat param_mat_AMB[4] = {0.2f, 0.2f, 0.2f, 1.0f};   //GL_AMBIENT				[-1,1]
@@ -108,8 +107,9 @@ GLboolean light_up_2 = false;
 GLboolean light_up_3 = false;
 
 //Button checks
-bool light = false;
-bool shadow = false;
+GLboolean light = false;
+GLboolean shadow = false;
+GLboolean axis_set = false;
 
 //texture variables
 
@@ -165,21 +165,21 @@ void draw3DScene()
 
 	//Luz 2
 	glPushMatrix();
-	
-	glTranslatef(param_POSIT_2[0] + sin(toRadians(60.0f))*0.18, param_POSIT_2[1] - sin(toRadians(25.0f))*0.17, param_POSIT_2[2] - cos(toRadians(60.0f))*0.20);
-	
+
+	glTranslatef(param_POSIT_2[0] + sin(toRadians(60.0f)) * 0.18, param_POSIT_2[1] - sin(toRadians(25.0f)) * 0.17, param_POSIT_2[2] - cos(toRadians(60.0f)) * 0.20);
+
 	//segmento direccion de foco con longitud = longitud poste/sin(angulo inclinacion del foco)
 	//segmento para ejeX y ejeZ = sin(angulo opuesto de inclinacion del foco) * segmento direccion de foco
 
-	param_SPOT_DIR[0] = sin(toRadians(60.0f))* (sin(toRadians(25.0f))*2/sin(toRadians(65.0f)));
-	param_SPOT_DIR[1] = -sin(toRadians(25.0f))* ((sin(toRadians(25.0f))*2/sin(toRadians(65.0f)))) /cos(toRadians(65.0f));
-	param_SPOT_DIR[2] = -cos(toRadians(60.0f))* ((sin(toRadians(25.0f))*2/sin(toRadians(65.0f))));
+	param_SPOT_DIR[0] = sin(toRadians(60.0f)) * (sin(toRadians(25.0f)) * 2 / sin(toRadians(65.0f)));
+	param_SPOT_DIR[1] = -sin(toRadians(25.0f)) * ((sin(toRadians(25.0f)) * 2 / sin(toRadians(65.0f)))) / cos(toRadians(65.0f));
+	param_SPOT_DIR[2] = -cos(toRadians(60.0f)) * ((sin(toRadians(25.0f)) * 2 / sin(toRadians(65.0f))));
 
 	glLightfv(GL_LIGHT2, GL_POSITION, static_param_POSIT);
 
-	if(light_up_2)
-	glDisable(GL_LIGHTING);
-	
+	if (light_up_2)
+		glDisable(GL_LIGHTING);
+
 	// foco
 	glColor3f(1.0f, 1.0f, 0.0f);
 	glutSolidSphere(0.04, 50, 50);
@@ -190,14 +190,14 @@ void draw3DScene()
 
 	//Luz 1
 	glPushMatrix();
-	
+
 	glTranslatef(param_POSIT_1[0], param_POSIT_1[1], param_POSIT_1[2]);
-	
+
 	glLightfv(GL_LIGHT0, GL_POSITION, static_param_POSIT);
 
-	if(light_up_1)
-	glDisable(GL_LIGHTING);
-	
+	if (light_up_1)
+		glDisable(GL_LIGHTING);
+
 	// foco
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glutSolidSphere(radius_arm, 50, 50);
@@ -207,46 +207,47 @@ void draw3DScene()
 	glPopMatrix();
 
 	// Dibujamos los ejes.
-	glPushMatrix();
+	if (axis_set)
+	{
+		glPushMatrix();
 
-	glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHTING);
 
-	glEnable(GL_LINE_SMOOTH);
-	glBegin(GL_LINES);
-	glLineWidth(1);
+		glEnable(GL_LINE_SMOOTH);
+		glBegin(GL_LINES);
+		glLineWidth(1);
 
-	glColor3f(1.0f, 1.0f, 0.0f); 	//amarillo - X
-	glVertex3f(-2.0f, 0.0f, 0.0f);
-	glVertex3f(2.0f, 0.0f, 0.0f);
+		glColor3f(1.0f, 1.0f, 0.0f); //amarillo - X
+		glVertex3f(-2.0f, 0.0f, 0.0f);
+		glVertex3f(2.0f, 0.0f, 0.0f);
 
-	glColor3f(0.0f, 0.6f, 0.0f);	//verde - Y
-	glVertex3f(0.0f, -0.9f, 0.0f);
-	glVertex3f(0.0f, 1.0f, 0.0f);
+		glColor3f(0.0f, 0.6f, 0.0f); //verde - Y
+		glVertex3f(0.0f, -0.9f, 0.0f);
+		glVertex3f(0.0f, 1.0f, 0.0f);
 
-	glColor3f(0.0f, 0.0f, 1.0f);	//azul - Z
-	glVertex3f(0.0f, 0.0f, -2.0f);
-	glVertex3f(0.0f, 0.0f, 2.0f);
+		glColor3f(0.0f, 0.0f, 1.0f); //azul - Z
+		glVertex3f(0.0f, 0.0f, -2.0f);
+		glVertex3f(0.0f, 0.0f, 2.0f);
 
-	glEnd();
+		glEnd();
 
-	glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHTING);
 
-	glPopMatrix();
+		glPopMatrix();
+	}
 
 	//Teapot
-    glPushMatrix();
-    glTranslatef(0.7f, -0.842f,-0.6f);
-    glutSolidTeapot(0.2);
-    glPopMatrix();
+	glPushMatrix();
+	glTranslatef(0.7f, -0.842f, -0.6f);
+	glutSolidTeapot(0.2);
+	glPopMatrix();
 
-    //Donut
-    glPushMatrix();
-    glTranslatef(-0.7f, -0.80f, 0.8f);
-    glRotatef(90, 1.0, 0.0, 0.0);
-    glutSolidTorus(0.2,0.3,50,50);
-    glPopMatrix();
-
-		//Boxes
+	//Donut
+	glPushMatrix();
+	glTranslatef(-0.7f, -0.80f, 0.8f);
+	glRotatef(90, 1.0, 0.0, 0.0);
+	glutSolidTorus(0.2, 0.3, 50, 50);
+	glPopMatrix();
 
 	// Dedo 1.
 	glPushMatrix();
@@ -292,7 +293,7 @@ void draw3DScene()
 
 	// Colocacion de la primitiva en la figura y rotacion de la figura completa.
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) - lcuerda, 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) - lcuerda, 0);
 
 	// Rota y coloca el dedo en la posicion adecuada dentro de la garra.
 	glTranslatef(0.0f, 0.013f, 0.0f);
@@ -328,7 +329,7 @@ void draw3DScene()
 
 	// Colocacion de la primitiva en la figura y rotacion de la figura completa.
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) - lcuerda, 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) - lcuerda, 0);
 
 	// Rota y coloca el dedo en la posicion adecuada dentro de la garra.
 	glTranslatef(0.0f, 0.013f, 0.0f);
@@ -364,7 +365,7 @@ void draw3DScene()
 
 	// Coloca la primitiva dentro de la figura en la posicion adecuada.
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension), 0);
 
 	// Coloca esta bocaabajo en el escenario.
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
@@ -378,7 +379,7 @@ void draw3DScene()
 	// Extensor.
 	glPushMatrix();
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp), 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4 + desp), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp), 0);
 
 	glRotatef(90, 0.0f, 1.f, 0.f);
 	glRotatef(-fAngulo2, 1.0f, 0.0f, 0.0f);
@@ -399,7 +400,7 @@ void draw3DScene()
 
 	// Coloca la primitiva en su posicion correspondiente dentro de la figura.
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1))* (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4), sin(toRadians(fAngulo1))* (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4), 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp) + cos(toRadians(fAngulo2)) * (0.4), sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4), 0);
 	glRotatef(90, 0.0f, 1.f, 0.f);
 	glRotatef(-fAngulo2, 1.0f, 0.0f, 0.0f);
 
@@ -414,7 +415,7 @@ void draw3DScene()
 
 	// Coloca la primitiva en su posicion correspondiente dentro de la figura.
 	glRotatef(fAngulo5, 0.0f, 1.f, 0.f);
-	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp), sin(toRadians(fAngulo1)) * (0.4+desp), 0);
+	glTranslatef(cos(toRadians(fAngulo1)) * (0.4 + desp), sin(toRadians(fAngulo1)) * (0.4 + desp), 0);
 	glRotatef(90, 0.0f, 1.f, 0.f);
 	glRotatef(-fAngulo2, 1.0f, 0.0f, 0.0f);
 
@@ -499,7 +500,6 @@ void draw3DScene()
 
 	glPopMatrix();
 
-
 	// Plano
 	glPushMatrix();
 
@@ -507,33 +507,36 @@ void draw3DScene()
 
 	glBindTexture(GL_TEXTURE_2D, atlas_1);
 
-	GLfloat inc = pcuadrados[pind];;
+	GLfloat inc = pcuadrados[pind];
+	;
 
-	for (GLfloat i = -2.0; i < 2; i = i + inc){
-		for (GLfloat j = -2.0; j < 2; j = j + inc) {
+	for (GLfloat i = -2.0; i < 2; i = i + inc)
+	{
+		for (GLfloat j = -2.0; j < 2; j = j + inc)
+		{
 			glBegin(GL_QUADS);
 
 			glNormal3f(.0f, 1.0f, .0f);
-			glTexCoord2f((j+2.)/4, (i+2.)/4);
+			glTexCoord2f((j + 2.) / 4, (i + 2.) / 4);
 			glVertex3f(j, 0.0f, i);
 
 			glNormal3f(.0f, 1.0f, .0f);
-			glTexCoord2f((j+2.+inc)/4, (i+2.)/4);
+			glTexCoord2f((j + 2. + inc) / 4, (i + 2.) / 4);
 			glVertex3f(j + inc, 0.0f, i);
 
 			glNormal3f(.0f, 1.0f, .0f);
-			glTexCoord2f((j+2.+inc)/4, (i+2.+inc)/4);
+			glTexCoord2f((j + 2. + inc) / 4, (i + 2. + inc) / 4);
 			glVertex3f(j + inc, 0.0f, i + inc);
 
 			glNormal3f(.0f, 1.0f, .0f);
-			glTexCoord2f((j+2.)/4, (i+2.+inc)/4);
+			glTexCoord2f((j + 2.) / 4, (i + 2. + inc) / 4);
 			glVertex3f(j, 0.0f, i + inc);
 			glEnd();
 		}
 	}
 
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
-	
+
 	glPopMatrix();
 }
 
@@ -584,7 +587,6 @@ void Display(void)
 	glLightf(GL_LIGHT3, GL_LINEAR_ATTENUATION, param_LIN_ATT_3);
 	glLightf(GL_LIGHT3, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT_3);
 
-
 	//Apagado/Encendido Luz 1
 	if (light_up_1)
 	{
@@ -632,7 +634,6 @@ void Display(void)
 
 	// Cambio de aspect ratio.
 	gluPerspective(55.0, new_ratio, 0.2, 100.0);
-	
 
 	glMatrixMode(GL_MODELVIEW); // Selecciona la matriz de modelado
 	glLoadIdentity();
@@ -661,15 +662,17 @@ void MyReshape(GLint width, GLint height)
 
 void camera_set()
 {
-	if (fija) {
-		eye_vector[0] = -1.49f;
-		eye_vector[1] = 1.01f;
-		eye_vector[2] = 1.49f;
-		center_vector[0] = 0;
-		center_vector[1] = 0;
-		center_vector[2] = 0;
+	if (fija)
+	{
+		eye_vector[0] = param_POSIT_2[0] + 0.06;
+		eye_vector[1] = param_POSIT_2[1];
+		eye_vector[2] = param_POSIT_2[2];
+		center_vector[0] = param_SPOT_DIR[0];
+		center_vector[1] = param_SPOT_DIR[1];
+		center_vector[2] = param_SPOT_DIR[2];
 	}
-	else {
+	else
+	{
 		GLdouble eye_x = radio * cos(toRadians(angulo_x)) * cos(toRadians(angulo_y));
 		GLdouble eye_y = radio * sin(toRadians(angulo_x));
 		GLdouble eye_z = radio * cos(toRadians(angulo_x)) * sin(toRadians(angulo_y));
@@ -695,8 +698,10 @@ void camera_set()
 	}
 }
 
-void arrow_set(int key, int x, int y) {
-	switch(key) {
+void arrow_set(int key, int x, int y)
+{
+	switch (key)
+	{
 	case GLUT_KEY_UP: // Flecha arriba
 		angulo_x += 0.5;
 		break;
@@ -712,42 +717,15 @@ void arrow_set(int key, int x, int y) {
 	}
 }
 
-void key_set(unsigned char key, int x , int y) {
+void key_set(unsigned char key, int x, int y)
+{
 	switch (key)
 	{
-	case 32: // espacio
-		if (smooth_shade) // Activa o desactiva las sombras suaves por las sombras planas
-		{
-			smooth_shade = false;
-		}
-		else
-		{
-			smooth_shade = true;
-		}
-		break;
-	case 112: // p
-		if (light_up_1) // Enciede o paga la luz 1
-		{
-			light_up_1 = false;
-		}
-		else
-		{
-			light_up_1 = true;
-		}
-		break;
-	case 80: // P
-		if (light_up_2) // Enciede o paga la luz 2
-		{
-			light_up_2 = false;
-		}
-		else
-		{
-			light_up_2 = true;
-		}
-		break;
-	
-	//posicionamiento de la luz 1
+	// case 32: // espacio
+	// case 112: // p
+	// case 80: // P
 
+	//posicionamiento de la luz 1
 	//Eje X
 	case 97: // a (-)
 		param_POSIT_1[0] -= 0.01;
@@ -771,9 +749,8 @@ void key_set(unsigned char key, int x , int y) {
 	case 99: // c (+)
 		param_POSIT_1[1] += 0.01;
 		break;
-	
-	//posicionamiento de la luz 2
 
+	//posicionamiento de la luz 2
 	//Eje X
 	case 65: // A (-)
 		param_POSIT_2[0] -= 0.01;
@@ -799,10 +776,10 @@ void key_set(unsigned char key, int x , int y) {
 		break;
 
 	// controles de la grua
-	case 114: // r
+	case 114:			  // r
 		fAngulo5 += 1.0f; // Rotacion de la grua (+)
 		break;
-	case 102: // f
+	case 102:			  // f
 		fAngulo5 -= 1.0f; // Rotacion de la grua (-)
 		break;
 
@@ -831,118 +808,115 @@ void key_set(unsigned char key, int x , int y) {
 			fAngulo2 -= 1.0f; // Angulo del brazo superior (-)
 		}
 		break;
-		case 117: // u
-		if (lextension < 1) {
+	case 117: // u
+		if (lextension < 1)
+		{
 			lextension += 0.01; // Longitud del extensor (+)
 		}
 		break;
 	case 106: // j
-		if (lextension > 0) {
+		if (lextension > 0)
+		{
 			lextension -= 0.01; // Longitud del extensor (-)
 		}
 		break;
 	case 105: // i
-		if (lcuerda > 0.2) {
+		if (lcuerda > 0.2)
+		{
 			lcuerda -= 0.01; // Sube la garra (+)
 		}
 		break;
 	case 107: // k
-		if (lcuerda < sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) + 0.7) {
+		if (lcuerda < sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension) + 0.7)
+		{
 			lcuerda += 0.01; // Baja la garra (+)
 		}
 		break;
 	case 111: // o
-		if (fAngulo4 < 50) {
+		if (fAngulo4 < 50)
+		{
 			fAngulo4 += 1.0f; // Abre la garra (+)
-		} else {
+		}
+		else
+		{
 			light_up_3 = true;
 		}
 		break;
 	case 108: // l
-		if (fAngulo4 > 5) {
+		if (fAngulo4 > 5)
+		{
 			fAngulo4 -= 1.0f; // Cierra la garra (-)
-		} else {
+		}
+		else
+		{
 			light_up_3 = 3;
 		}
 		break;
 	case 110: // n
-		if (radio > 0.1) {
+		if (radio > 0.1)
+		{
 			radio -= 0.01; // Realiza zoom de la camara (-)
 		}
 		break;
-	case 109: // m
+	case 109:		   // m
 		radio += 0.01; // Realiza zoom de la camara (+)
 		break;
-	case 78: // N
+	case 78:						// N
 		movement_vector[1] -= 0.01; // Mueve la camara hacia abajo (-)
 		break;
-	case 77: // M
+	case 77:						// M
 		movement_vector[1] += 0.01; // Mueve la camara hacia arriba (-)
 		break;
-	case 84: // T
+	case 84:						// T
 		movement_vector[0] -= 0.01; // Mueve la camara hacia delante (+)
 		break;
-	case 71: // G
+	case 71:						// G
 		movement_vector[0] += 0.01; // Mueve la camara hacia delante (+)
 		break;
-	case 70: // F
+	case 70:						// F
 		movement_vector[2] += 0.01; // Mueve la camara hacia la izquierda
 		break;
-	case 72: // H
+	case 72:						// H
 		movement_vector[2] -= 0.01; // Mueve la camara hacia la derecha
 		break;
-	case 73: // I
+	case 73:					// I
 		tilt_vector[1] += 0.01; // Cabecea la camara (+)
 		break;
-	case 75: // K
+	case 75:					// K
 		tilt_vector[1] -= 0.01; // Cabecea la camara (-)
 		break;
-	case 74: // J
+	case 74:					// J
 		tilt_vector[0] += 0.01; // Tiltea la camara a la izquierda
 		break;
-	case 76: // L
+	case 76:					// L
 		tilt_vector[0] -= 0.01; // Tiltea la camara a la derecha
 		break;
-	case 113: // q resetea los valores de visión esférica
-		angulo_y = 0;
-		angulo_x = 0;
-		radio = 2;
-		break;
-	case 119: // w resetea los valores de visión posicionada
-		movement_vector[0] = 0;
-		movement_vector[1] = 0;
-		movement_vector[2] = 0;
-		break;
-	case 101: // e resetea los valores de tilteo
-		tilt_vector[0] = 0;
-		tilt_vector[1] = 0;
-		break;
+	// case 113: // q resetea los valores de visión esférica
+	// case 119: // w resetea los valores de visión posicionada
+	// case 101: // e resetea los valores de tilteo
 	case 118: // v disminuir los cuadrados del plano.
-		if (pind < 7) {
+		if (pind < 7)
+		{
 			pind += 1;
 		}
 		break;
 	case 98: // b augmentar los cuadrados del plano
-		if (pind > 0) {
+		if (pind > 0)
+		{
 			pind -= 1;
 		}
 		break;
-
-	case 82: //R camara fija
-		if (fija) {
-			fija = false;
-		}
-		else {
-			fija = true;
-		}
-		break;
+		// case 82: //R camara fija
 	}
 
 	GLfloat aux = sin(toRadians(fAngulo1)) * (0.4 + desp) + sin(toRadians(fAngulo2)) * (0.4 + desp * 2 + lextension);
 
-	if ((lcuerda - aux) > 0.70 && lcuerda > 0.2) {
+	if ((lcuerda - aux) > 0.70 && lcuerda > 0.2)
+	{
 		lcuerda = aux + 0.70;
-	} else if((lcuerda - aux) > 0.70 && lextension != 0) {
+	}
+	else if ((lcuerda - aux) > 0.70 && lextension != 0)
+	{
 		lextension = (lcuerda - 0.7 - sin(toRadians(fAngulo1)) * (0.4 + desp)) / sin(toRadians(fAngulo2)) - (0.4 + desp * 2);
 	}
 }
@@ -956,26 +930,232 @@ void Timer(GLint t)
 	glutTimerFunc(tiempo, Timer, 0.0f);
 }
 
+void reset(void)
+{
+	//resetea los valores de visión esférica
+	angulo_y = 0;
+	angulo_x = 0;
+	radio = 3;
+	//resetea los valores de visión posicionada
+	movement_vector[0] = 0;
+	movement_vector[1] = 0;
+	movement_vector[2] = 0;
+	//resetea los valores de tilteo
+	tilt_vector[0] = 0;
+	tilt_vector[1] = 0;
 
+	GLfloat param_AMB_2_default[4] = {1.0f, 1.0f, 0.0f, 1.0f};
+	GLfloat param_DIFF_2_default[4] = {1.0f, 1.0f, 0.0f, 1.0f};
+	GLfloat param_SPEC_2_default[4] = {1.0f, 1.0f, 0.0f, 1.0f};
+	GLfloat param_POSIT_2_default[4] = {-1.5f, 1.01f, 1.5f};
+
+	GLfloat param_SPOT_EXP_default = 20.0f; //GL_SPOT_EXPONENT			[0,128]
+	GLfloat param_SPOT_CUT_default = 25.0f; //SPOT_CUTOFF				[0,90]U{180}
+	GLfloat param_CONST_ATT_default = 1.0f; //GL_CONSTANT_ATTENUATION	[0,1]
+	GLfloat param_LIN_ATT_default = 1.0f;	//GL_LINEAR_ATTENUATION		[0,1]
+	GLfloat param_QUAD_ATT_default = 1.0f;	//GL_QUADRATIC_ATTENUATION	[0,1]
+
+	// configuración luz 1 (blanca)
+	light_up_1 = true;
+
+	param_POSIT_1[0] = 0.0f;
+	param_POSIT_1[1] = 1.0f;
+	param_POSIT_1[2] = 0.0f;
+
+	//configuración luz 2 (amarilla)
+	light_up_2 = false;
+
+	glLightfv(GL_LIGHT2, GL_AMBIENT, param_AMB_2_default);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, param_DIFF_2_default);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, param_SPEC_2_default);
+
+	param_POSIT_2[0] = -1.5f;
+	param_POSIT_2[1] = 1.01f;
+	param_POSIT_2[2] = 1.5f;
+
+	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, param_SPOT_EXP_default);
+	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, param_SPOT_CUT_default);
+	glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, param_CONST_ATT_default);
+	glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, param_LIN_ATT_default);
+	glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, param_QUAD_ATT_default);
+
+	// configuración luz 3 (luz roja)
+	light_up_3 = false;
+
+	pind = 0;
+}
+
+void main_menu(int i)
+{
+	switch (i)
+	{
+	case 1:
+		reset();
+		break;
+	case 2:
+		exit(0);
+		break;
+	case 3:
+		//resetea los valores de visión esférica
+		angulo_y = 0;
+		angulo_x = 0;
+		radio = 3;
+		//resetea los valores de visión posicionada
+		movement_vector[0] = 0;
+		movement_vector[1] = 0;
+		movement_vector[2] = 0;
+		//resetea los valores de tilteo
+		tilt_vector[0] = 0;
+		tilt_vector[1] = 0;
+	}
+}
+
+void light_1_menu(int i)
+{
+	if (light_up_1)
+	{
+		light_up_1 = false;
+	}
+	else
+	{
+		light_up_1 = true;
+	}
+}
+
+void light_2_menu(int i)
+{
+	if (light_up_2)
+	{
+		light_up_2 = false;
+	}
+	else
+	{
+		light_up_2 = true;
+	}
+}
+
+void light_3_menu(int i)
+{
+	if (light_up_3)
+	{
+		light_up_3 = false;
+	}
+	else
+	{
+		light_up_3 = true;
+	}
+}
+
+void spotlight_values_reset_menu(int i)
+{
+	switch (i)
+	{
+	case 1:
+		reset();
+		break;
+	case 2:
+		exit(0);
+	}
+}
+
+void axis_menu(int i)
+{
+	if (axis_set)
+	{
+		axis_set = false;
+	}
+	else
+	{
+		axis_set = true;
+	}
+}
+
+void change_camera_menu(int i)
+{
+	switch (i)
+	{
+	case 1:
+		//camara usuario
+		fija = false;
+		break;
+	case 2:
+		//camara fija
+		fija = true;
+	}
+}
+
+void shade_mode_menu(int i)
+{
+	switch (i)
+	{
+	case 1:
+		smooth_shade = true;
+		break;
+	case 2:
+		smooth_shade = false;
+	}
+}
+
+void create_menus(void)
+{
+	GLint axis_change = glutCreateMenu(axis_menu);
+	glutAddMenuEntry("On/Off", -1);
+
+	GLint change_camera = glutCreateMenu(change_camera_menu);
+	glutAddMenuEntry("User Camera", 1);
+	glutAddMenuEntry("Lightspot", 2);
+
+	GLint shade_mode = glutCreateMenu(shade_mode_menu);
+	glutAddMenuEntry("Smooth", 1);
+	glutAddMenuEntry("Flat", 2);
+
+	GLint light_1 = glutCreateMenu(light_1_menu);
+	glutAddMenuEntry("On/Off", -1);
+
+	GLint light_2 = glutCreateMenu(light_2_menu);
+	glutAddMenuEntry("On/Off", -1);
+
+	GLint light_3 = glutCreateMenu(light_3_menu);
+	glutAddMenuEntry("On/Off", -1);
+
+	GLint main = glutCreateMenu(main_menu);
+	glutAddSubMenu("Light 1", light_1);
+	glutAddMenuEntry("-----------", -1);
+	glutAddSubMenu("Light 2", light_2);
+	glutAddMenuEntry("-----------", -1);
+	glutAddSubMenu("Light 3", light_3);
+	glutAddMenuEntry("-----------", -1);
+	glutAddSubMenu("Shade mode", shade_mode);
+	glutAddMenuEntry("-----------", -1);
+	glutAddSubMenu("Camera vision", change_camera);
+	glutAddMenuEntry("-----------", -1);
+	glutAddSubMenu("Axis", axis_change);
+	glutAddMenuEntry("-----------", -1);
+	glutAddMenuEntry("Reset camera", 3);
+	glutAddMenuEntry("Reset scene", 1);
+	glutAddMenuEntry("Quit", 2);
+
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
 
 //EXTRACTED-SOUND
 bool isBigEndian()
 {
-    int a = 1;
-    return !((char*)&a)[0];
+	int a = 1;
+	return !((char *)&a)[0];
 }
 
 //EXTRACTED-SOUND
-int convertToInt(char* buffer, int len)
+int convertToInt(char *buffer, int len)
 {
-    int a = 0;
-    if (!isBigEndian())
-        for (int i = 0; i<len; i++)
-            ((char*)&a)[i] = buffer[i];
-    else
-        for (int i = 0; i<len; i++)
-            ((char*)&a)[3 - i] = buffer[i];
-    return a;
+	int a = 0;
+	if (!isBigEndian())
+		for (int i = 0; i < len; i++)
+			((char *)&a)[i] = buffer[i];
+	else
+		for (int i = 0; i < len; i++)
+			((char *)&a)[3 - i] = buffer[i];
+	return a;
 }
 
 // Función principal
@@ -1047,12 +1227,12 @@ int main(int argc, char **argv)
 
 	{
 		int width, height, channels;
-    	unsigned char *data = stbi_load("./unknown.png", &width, &height, &channels,
-        	STBI_rgb);
+		unsigned char *data = stbi_load("./unknown.png", &width, &height, &channels,
+										STBI_rgb);
 		glGenTextures(1, &atlas_1);
 		glBindTexture(GL_TEXTURE_2D, atlas_1);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-			GL_UNSIGNED_BYTE, data);
+					 GL_UNSIGNED_BYTE, data);
 		stbi_image_free(data);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1063,12 +1243,12 @@ int main(int argc, char **argv)
 
 	{
 		int width, height, channels;
-    	unsigned char *data = stbi_load("./rubber.png", &width, &height, &channels,
-        	STBI_rgb);
+		unsigned char *data = stbi_load("./rubber.png", &width, &height, &channels,
+										STBI_rgb);
 		glGenTextures(1, &atlas_2);
 		glBindTexture(GL_TEXTURE_2D, atlas_2);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-			GL_UNSIGNED_BYTE, data);
+					 GL_UNSIGNED_BYTE, data);
 		stbi_image_free(data);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1079,12 +1259,12 @@ int main(int argc, char **argv)
 
 	{
 		int width, height, channels;
-    	unsigned char *data = stbi_load("./metal_sphere.png", &width, &height, &channels,
-        	STBI_rgb);
+		unsigned char *data = stbi_load("./metal_sphere.png", &width, &height, &channels,
+										STBI_rgb);
 		glGenTextures(1, &atlas_3);
 		glBindTexture(GL_TEXTURE_2D, atlas_3);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-			GL_UNSIGNED_BYTE, data);
+					 GL_UNSIGNED_BYTE, data);
 		stbi_image_free(data);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1094,7 +1274,7 @@ int main(int argc, char **argv)
 	}
 
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
-
+	create_menus();
 	//SOUND
 
 	// //sound variables
@@ -1111,7 +1291,7 @@ int main(int argc, char **argv)
 	// device = alcOpenDevice(NULL);
 	// context = alcCreateContext(device,NULL);
 
-    // alcMakeContextCurrent(context);
+	// alcMakeContextCurrent(context);
 
 	// //1 source
 	// alGenSources((ALuint)1, &audio_source_1);
@@ -1169,18 +1349,17 @@ int main(int argc, char **argv)
 	// if(device) fprintf(test_file, "device exit\n");
 	// if(context) fprintf(test_file, "context exit\n");
 
-
 	// if(bit_per_sample[0] == 16){
 	// 	if (num_channels[0] == 1){
-    // 		audio_format_1 = AL_FORMAT_MONO16;
+	// 		audio_format_1 = AL_FORMAT_MONO16;
 	// 	} else {
-    // 		audio_format_1 = AL_FORMAT_STEREO16;
+	// 		audio_format_1 = AL_FORMAT_STEREO16;
 	// 	}
 	// } else {
 	// 	if (num_channels[0] == 1){
-    // 		audio_format_1 = AL_FORMAT_MONO8;
+	// 		audio_format_1 = AL_FORMAT_MONO8;
 	// 	} else {
-    // 		audio_format_1 = AL_FORMAT_STEREO8;
+	// 		audio_format_1 = AL_FORMAT_STEREO8;
 	// 	}
 	// }
 
@@ -1215,7 +1394,7 @@ int main(int argc, char **argv)
 	// alSourcei(audio_source_1, AL_BUFFER, audio_buffer_1);
 	// //play audio
 	// alSourcePlay(audio_source_1);
-	
+
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
 	return 0;
