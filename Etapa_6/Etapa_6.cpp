@@ -38,6 +38,36 @@ const GLdouble desp = 0.05;
 GLfloat pcuadrados[8] = {0.02, 0.04, 0.08, 0.10, 0.20, 0.25, 0.5, 1};
 GLint pind = 0;
 
+
+// Constantes para dibujar cubos.
+GLfloat vertice_c[24][3] = {
+	{0.00,0.25,0.00}, {0.25,0.25,0.00}, {0.25,0.25,0.25}, {0.00,0.25,0.25}, // Superior
+	{0.25,0.00,0.00}, {0.25,0.25,0.00}, {0.25,0.25,0.25}, {0.25,0.00,0.25}, // Lateral izquierdo
+	{0.00,0.00,0.25}, {0.00,0.25,0.25}, {0.25,0.25,0.25}, {0.25,0.00,0.25}, // Frontal
+	{0.00,0.00,0.00}, {0.00,0.25,0.00}, {0.00,0.25,0.25}, {0.00,0.00,0.25}, // Lateral derecho
+	{0.00,0.00,0.00}, {0.00,0.25,0.00}, {0.25,0.25,0.00}, {0.25,0.00,0.00}, // Trasera
+	{0.00,0.00,0.00}, {0.00,0.00,0.25}, {0.25,0.00,0.25}, {0.25,0.00,0.00}, // Inferior
+};
+
+GLfloat normales_c[24][3] = {
+	{0.00,1.00,0.00}, {0.00,1.00,0.00}, {0.00,1.00,0.00}, {0.00,1.00,0.00}, // Superior
+	{1.00,0.00,0.00}, {1.00,0.00,0.00}, {1.00,0.00,0.00}, {1.00,0.00,0.00}, // Lateral izquierdo
+	{0.00,0.00,1.00}, {0.00,0.00,1.00}, {0.00,0.00,1.00}, {0.00,0.00,1.00}, // Frontal
+	{-1.0,0.00,0.00}, {-1.0,0.00,0.00}, {-1.0,0.00,0.00}, {-1.0,0.00,0.00}, // Lateral derecho
+	{0.00,0.00,-1.0}, {0.00,0.00,-1.0}, {0.00,0.00,-1.0}, {0.00,0.00,-1.0}, // Trasera
+	{0.00,-1.0,0.00}, {0.00,-1.0,0.00}, {0.00,-1.0,0.00}, {0.00,-1.0,0.00}, // Inferior
+};
+
+GLfloat texturas_c[24][2] = {
+	{0.00,0.00}, {0.00,1.00}, {1.00,1.00}, {1.00,0.00}, // Superior
+	{0.00,0.00}, {0.00,1.00}, {1.00,1.00}, {1.00,0.00}, // Lateral izquierdo
+	{0.00,0.00}, {0.00,1.00}, {1.00,1.00}, {1.00,0.00}, // Frontal
+	{0.00,0.00}, {0.00,1.00}, {1.00,1.00}, {1.00,0.00}, // Lateral derecho
+	{0.00,0.00}, {0.00,1.00}, {1.00,1.00}, {1.00,0.00}, // Trasera
+	{0.00,0.00}, {0.00,1.00}, {1.00,1.00}, {1.00,0.00}, // Inferior
+};
+
+
 // aspect ratio
 GLdouble new_ratio;
 
@@ -128,6 +158,9 @@ GLboolean axis_set = false;
 GLuint atlas_1;
 GLuint atlas_2;
 GLuint atlas_3;
+GLuint atlas_4;
+GLuint atlas_5;
+GLuint atlas_6;
 
 GLUquadric *cyl_0;
 GLUquadric *cyl_1;
@@ -272,15 +305,53 @@ void draw3DScene()
 
 	//Teapot
 	glPushMatrix();
-	glTranslatef(0.7f, -0.842f, -0.6f);
+	glTranslatef(-0.7f, -0.842f, -0.6f);
+	glBindTexture(GL_TEXTURE_2D, atlas_4);
 	glutSolidTeapot(0.2);
 	glPopMatrix();
 
-	//Donut
+	//Cubos
+
 	glPushMatrix();
-	glTranslatef(-0.7f, -0.80f, 0.8f);
+	glTranslatef(-0.7f, -0.499f, 0.8f);
 	glRotatef(90, 1.0, 0.0, 0.0);
-	glutSolidTorus(0.2, 0.3, 50, 50);
+
+	glBindTexture(GL_TEXTURE_2D, atlas_5);
+
+	glBegin(GL_QUADS);
+	glColor3f(0.55f, 0.27f, 0.07f);
+	for (size_t i = 0; i < 24; i++)
+	{
+		glNormal3f(normales_c[i][0], normales_c[i][1], normales_c[i][2]);
+		glTexCoord2f(texturas_c[i][0], texturas_c[i][1]);
+		glVertex3f(vertice_c[i][0], vertice_c[i][1], vertice_c[i][2]);
+	}
+	glEnd();
+
+	glTranslatef(0, 0, 0.25);
+
+	glBegin(GL_QUADS);
+	glColor3f(0.55f, 0.27f, 0.07f);
+	for (size_t i = 0; i < 24; i++)
+	{
+		glNormal3f(normales_c[i][0], normales_c[i][1], normales_c[i][2]);
+		glTexCoord2f(texturas_c[i][0], texturas_c[i][1]);
+		glVertex3f(vertice_c[i][0], vertice_c[i][1], vertice_c[i][2]);
+	}
+	glEnd();
+
+	glTranslatef(0.25, 0.025,0);
+
+	glBegin(GL_QUADS);
+	glColor3f(0.55f, 0.27f, 0.07f);
+	for (size_t i = 0; i < 24; i++)
+	{
+		glNormal3f(normales_c[i][0], normales_c[i][1], normales_c[i][2]);
+		glTexCoord2f(texturas_c[i][0], texturas_c[i][1]);
+		glVertex3f(vertice_c[i][0], vertice_c[i][1], vertice_c[i][2]);
+	}
+	glEnd();
+
 	glPopMatrix();
 
 	// Dedo 1.
@@ -405,7 +476,7 @@ void draw3DScene()
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
 
 	// Dibuja la cuerda.
-	glBindTexture(GL_TEXTURE_2D, atlas_1);
+	glBindTexture(GL_TEXTURE_2D, atlas_6);
 	gluCylinder(cyl_2, 0.01, 0.01, lcuerda, 50, 50); // Cambiar textura.
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 	glPopMatrix();
@@ -542,7 +613,6 @@ void draw3DScene()
 	glBindTexture(GL_TEXTURE_2D, atlas_1);
 
 	GLfloat inc = pcuadrados[pind];
-	;
 
 	for (GLfloat i = -2.0; i < 2; i = i + inc)
 	{
@@ -583,7 +653,7 @@ void Display(void)
 	//Habilitamos renderizado con luz
 	glEnable(GL_LIGHTING);
 	// efecto de luz en materiales por color
-	//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
 	//si se activa el color afecta al color de la textura de objetos
 	//glEnable(GL_COLOR_MATERIAL);
@@ -1482,7 +1552,7 @@ int main(int argc, char **argv)
 	// cargado de texturas y asiganción a variable
 	{
 		int width, height, channels;
-		unsigned char *data = stbi_load("./components/textures/unknown.png", &width, &height, &channels,
+		unsigned char *data = stbi_load("./components/textures/metal.png", &width, &height, &channels,
 										STBI_rgb);
 		glGenTextures(1, &atlas_1);
 		glBindTexture(GL_TEXTURE_2D, atlas_1);
@@ -1514,6 +1584,48 @@ int main(int argc, char **argv)
 										STBI_rgb);
 		glGenTextures(1, &atlas_3);
 		glBindTexture(GL_TEXTURE_2D, atlas_3);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+					 GL_UNSIGNED_BYTE, data);
+		stbi_image_free(data);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	}
+
+	{
+		int width, height, channels;
+		unsigned char *data = stbi_load("./components/textures/teapot.png", &width, &height, &channels,
+										STBI_rgb);
+		glGenTextures(1, &atlas_4);
+		glBindTexture(GL_TEXTURE_2D, atlas_4);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+					 GL_UNSIGNED_BYTE, data);
+		stbi_image_free(data);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	}
+
+	{
+		int width, height, channels;
+		unsigned char *data = stbi_load("./components/textures/wooden_box.png", &width, &height, &channels,
+										STBI_rgb);
+		glGenTextures(1, &atlas_5);
+		glBindTexture(GL_TEXTURE_2D, atlas_5);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+					 GL_UNSIGNED_BYTE, data);
+		stbi_image_free(data);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	}
+
+	{
+		int width, height, channels;
+		unsigned char *data = stbi_load("./components/textures/string.png", &width, &height, &channels,
+										STBI_rgb);
+		glGenTextures(1, &atlas_6);
+		glBindTexture(GL_TEXTURE_2D, atlas_6);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
 					 GL_UNSIGNED_BYTE, data);
 		stbi_image_free(data);
