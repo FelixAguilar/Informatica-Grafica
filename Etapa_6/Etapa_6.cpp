@@ -9,10 +9,13 @@
 #include "./components/include/stb_image.h"
 #include "./components/include/AL/al.h"
 #include "./components/include/AL/alc.h"
+#define DR_WAV_IMPLEMENTATION
+#include "dr_wav.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <string>
+#include <vector>
+#include <cstring>
 using namespace std;
 
 GLfloat fAngulo1 = 0.0f;  //Subir y Bajar el Brazo.
@@ -69,11 +72,11 @@ GLfloat static_param_POSIT[4] = {0., 0., 0., 1.};	 //GL_POSITION en el origen
 
 GLfloat param_SPOT_DIR_1[3] = {0.0f, -1.0f, 0.0f};
 GLfloat param_SPOT_DIR_1_def[3] = {0.0f, 0.0f, -1.0f};
-GLfloat param_SPOT_EXP_1 = 10.0f;					   //GL_SPOT_EXPONENT			[0,128]
-GLfloat param_SPOT_CUT_1 = 30.0f;					   //SPOT_CUTOFF				[0,90]U{180}
-GLfloat param_CONST_ATT_1 = 1.0f;					   //GL_CONSTANT_ATTENUATION	[0,1]
-GLfloat param_LIN_ATT_1 = 1.0f;					   //GL_LINEAR_ATTENUATION		[0,1]
-GLfloat param_QUAD_ATT_1 = 1.0f;					   //GL_QUADRATIC_ATTENUATION	[0,1]
+GLfloat param_SPOT_EXP_1 = 0.0f;  //GL_SPOT_EXPONENT			[0,128]
+GLfloat param_SPOT_CUT_1 = 30.0f; //SPOT_CUTOFF				[0,90]U{180}
+GLfloat param_CONST_ATT_1 = 1.0f; //GL_CONSTANT_ATTENUATION	[0,1]
+GLfloat param_LIN_ATT_1 = 0.0f;	  //GL_LINEAR_ATTENUATION		[0,1]
+GLfloat param_QUAD_ATT_1 = 0.0f;  //GL_QUADRATIC_ATTENUATION	[0,1]
 
 // Light2 params values
 GLfloat param_AMB_2[4] = {1.0f, 1.0f, 0.0f, 1.0f};
@@ -144,6 +147,28 @@ GLUquadric *sphere_4;
 GLUquadric *sphere_5;
 GLUquadric *sphere_6;
 GLUquadric *sphere_7;
+
+//sound variables
+struct ReadWavData
+{
+	unsigned int channels = 0;
+	unsigned int sampleRate = 0;
+	drwav_uint64 totalPCMFrameCount = 0;
+	std::vector<uint16_t> pcmData;
+	drwav_uint64 getTotalSamples() { return totalPCMFrameCount * channels; }
+};
+
+ReadWavData stereoData;
+
+ALCdevice *device;
+ALCcontext *context;
+ALuint audioSource;
+ALfloat orientationVector[6] = {/*forward*/ 1.0f, 0.0f, 0.0f, /*up*/ 0.0f, 1.0f, 0.0f};
+
+ALuint stereoSoundBuffer = AL_NONE;
+const ALCchar *defaultDeviceString;
+ALint sourceState;
+drwav_int16 *pSampleData;
 
 GLfloat toRadians(GLfloat i)
 {
@@ -572,11 +597,14 @@ void Display(void)
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, param_DIFF);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, param_SPEC);
 
-	if(spot_dir){
+	if (spot_dir)
+	{
 		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, param_SPOT_DIR_1);
 		glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, param_SPOT_EXP_1);
 		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, param_SPOT_CUT_1);
-	} else {
+	}
+	else
+	{
 		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, param_SPOT_DIR_1_def);
 		glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 0);
 		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
@@ -774,126 +802,126 @@ void key_set(unsigned char key, int x, int y)
 	//parámetros luz 1
 	//luz Ambiental
 	case 65: // A (+)
-		if(param_AMB[0] < 1)
+		if (param_AMB[0] < 1)
 			param_AMB[0] += 0.1;
-		if(param_AMB[1] < 1)
+		if (param_AMB[1] < 1)
 			param_AMB[1] += 0.1;
-		if(param_AMB[2] < 1)
+		if (param_AMB[2] < 1)
 			param_AMB[2] += 0.1;
 		break;
 	case 90: // Z (-)
-		if(param_AMB[0] > -1)
+		if (param_AMB[0] > -1)
 			param_AMB[0] -= 0.1;
-		if(param_AMB[1] > -1)
+		if (param_AMB[1] > -1)
 			param_AMB[1] -= 0.1;
-		if(param_AMB[2] > -1)
+		if (param_AMB[2] > -1)
 			param_AMB[2] -= 0.1;
 		break;
 
 	//luz Especular
 	case 83: // S (+)
-		if(param_SPEC[0] < 1)
+		if (param_SPEC[0] < 1)
 			param_SPEC[0] += 0.1;
-		if(param_SPEC[1] < 1)
+		if (param_SPEC[1] < 1)
 			param_SPEC[1] += 0.1;
-		if(param_SPEC[2] < 1)
+		if (param_SPEC[2] < 1)
 			param_SPEC[2] += 0.1;
 		break;
 	case 88: // X (-)
-		if(param_SPEC[0] > -1)
+		if (param_SPEC[0] > -1)
 			param_SPEC[0] -= 0.1;
-		if(param_SPEC[1] > -1)
+		if (param_SPEC[1] > -1)
 			param_SPEC[1] -= 0.1;
-		if(param_SPEC[2] > -1)
+		if (param_SPEC[2] > -1)
 			param_SPEC[2] -= 0.1;
 		break;
 
 	//luz Difusa
 	case 68: // D (+)
-		if(param_DIFF[0] < 1)
+		if (param_DIFF[0] < 1)
 			param_DIFF[0] += 0.1;
-		if(param_DIFF[1] < 1)
+		if (param_DIFF[1] < 1)
 			param_DIFF[1] += 0.1;
-		if(param_DIFF[2] < 1)
+		if (param_DIFF[2] < 1)
 			param_DIFF[2] += 0.1;
 		break;
 	case 67: // C (-)
-		if(param_DIFF[0] > -1)
+		if (param_DIFF[0] > -1)
 			param_DIFF[0] -= 0.1;
-		if(param_DIFF[1] > -1)
+		if (param_DIFF[1] > -1)
 			param_DIFF[1] -= 0.1;
-		if(param_DIFF[2] > -1)
+		if (param_DIFF[2] > -1)
 			param_DIFF[2] -= 0.1;
 		break;
 
 	//atenuación constante
 	case 113: // q (+))
-		if(param_CONST_ATT_1 < 1)
-		param_CONST_ATT_1 += 0.1;
+		if (param_CONST_ATT_1 < 1)
+			param_CONST_ATT_1 += 0.1;
 		break;
 	case 81: // Q (-)
-		if(param_CONST_ATT_1 > 0)
-		param_CONST_ATT_1 -= 0.1;
+		if (param_CONST_ATT_1 > 0)
+			param_CONST_ATT_1 -= 0.1;
 		break;
 
 	// atenuación lineal
 	case 119: // w (+)
-		if(param_LIN_ATT_1 < 1)
-		param_LIN_ATT_1 += 0.1;
+		if (param_LIN_ATT_1 < 1)
+			param_LIN_ATT_1 += 0.1;
 		break;
 	case 87: // W (-)
-		if(param_LIN_ATT_1 > 0)
-		param_LIN_ATT_1 -= 0.1;
+		if (param_LIN_ATT_1 > 0)
+			param_LIN_ATT_1 -= 0.1;
 		break;
 
 	// atenuación quadrática
 	case 101: // e (+)
-		if(param_QUAD_ATT_1 < 1)
-		param_QUAD_ATT_1 += 0.1;
+		if (param_QUAD_ATT_1 < 1)
+			param_QUAD_ATT_1 += 0.1;
 		break;
 	case 69: // E (-)
-		if(param_QUAD_ATT_1 > 0)
-		param_QUAD_ATT_1 -= 0.1;
+		if (param_QUAD_ATT_1 > 0)
+			param_QUAD_ATT_1 -= 0.1;
 		break;
 
 	// ángulo de apertura de luz focal
 	case 112: // p (+)
-		if(param_SPOT_CUT_1 < 90)
-		param_SPOT_CUT_1 += 5;
+		if (param_SPOT_CUT_1 < 90)
+			param_SPOT_CUT_1 += 1;
 		break;
 	case 80: // P (-)
-		if(param_SPOT_CUT_1 > 0)
-		param_SPOT_CUT_1 -= 5;
+		if (param_SPOT_CUT_1 > 0)
+			param_SPOT_CUT_1 -= 1;
 		break;
-	
+
 	//exponente de luz focal
 	case 62: //">" (+)
-		if(param_SPOT_EXP_1 < 128)
-		param_SPOT_EXP_1 += 5;
+		if (param_SPOT_EXP_1 < 128)
+			param_SPOT_EXP_1 += 2;
 		break;
 	case 60: //"<" (-)
-		if(param_SPOT_EXP_1 > 0)
-		param_SPOT_EXP_1 -= 5;
+		if (param_SPOT_EXP_1 > 0)
+			param_SPOT_EXP_1 -= 2;
 		break;
 
 	//dirección de luz focal
 	case 44: //"," (+)
-		param_SPOT_DIR_1[0] += 1;
+		param_SPOT_DIR_1[0] += 0.01;
 		break;
 	case 59: //"." (-)
-		param_SPOT_DIR_1[0] -= 1;
+		param_SPOT_DIR_1[0] -= 0.01;
 		break;
 	case 46: //"." (+)
-		param_SPOT_DIR_1[1] += 1;
+		param_SPOT_DIR_1[1] += 0.01;
 		break;
 	case 58: //":" (-)
-		param_SPOT_DIR_1[1] -= 1;
+		param_SPOT_DIR_1[1] -= 0.01;
 		break;
 	case 45: //"-" (+)
-		param_SPOT_DIR_1[2] += 1;
+		param_SPOT_DIR_1[2] += 0.01;
 		break;
 	case 95: //"_" (-)
-		param_SPOT_DIR_1[2] -= 1;
+		param_SPOT_DIR_1[2] -= 0.01;
 		break;
 
 	// controles de la grua
@@ -1112,6 +1140,72 @@ void reset(void)
 	pind = 0;
 }
 
+//sound functions
+void init_sound()
+{
+	defaultDeviceString = alcGetString(/*device*/ nullptr, ALC_DEFAULT_DEVICE_SPECIFIER);
+	device = alcOpenDevice(defaultDeviceString);
+	context = alcCreateContext(device, /*attrlist*/ nullptr);
+
+	alcMakeContextCurrent(context);
+
+	//listener parameters
+	alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+	alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f);
+	alListenerfv(AL_ORIENTATION, orientationVector);
+
+	//generate audio source
+	alGenSources((ALuint)1, &audioSource);
+
+	//source parameters
+	alSourcef(audioSource, AL_PITCH, 1.0f);
+	alSourcef(audioSource, AL_GAIN, 1.0f);
+	//alSource3f(audioSource, AL_POSITION, 1.0f, 0.0f, 0.0f); --not for stereo
+	//alSource3f(audioSource, AL_VELOCITY, 0.0f, 0.0f, 0.0f); --not for stereo
+	alSourcei(audioSource, AL_LOOPING, AL_TRUE);
+}
+
+void load_sound_file(const char *file)
+{
+	pSampleData = drwav_open_file_and_read_pcm_frames_s16(file, &stereoData.channels, &stereoData.sampleRate, &stereoData.totalPCMFrameCount, nullptr);
+
+	stereoData.pcmData.resize(size_t(stereoData.getTotalSamples()));
+	std::memcpy(stereoData.pcmData.data(), pSampleData, stereoData.pcmData.size() * 2 /*two bytes_in_s16*/);
+	drwav_free(pSampleData, nullptr);
+}
+
+void play_sound()
+{
+	if (stereoSoundBuffer != AL_NONE)
+		alDeleteBuffers(1, &stereoSoundBuffer);
+
+	alGenBuffers(1, &stereoSoundBuffer);
+	alBufferData(stereoSoundBuffer, stereoData.channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stereoData.pcmData.data(), stereoData.pcmData.size() * 2 /*two bytes per sample*/, stereoData.sampleRate);
+
+	alSourcei(audioSource, AL_BUFFER, stereoSoundBuffer);
+
+	alGetSourcei(audioSource, AL_SOURCE_STATE, &sourceState);
+    if(audioSource != AL_PLAYING)
+    alSourcePlay(audioSource);
+}
+
+void stop_sound()
+{
+	alGetSourcei(audioSource, AL_SOURCE_STATE, &sourceState);
+	if (audioSource != AL_STOPPED)
+		alSourceStop(audioSource);
+}
+
+void close_sound()
+{
+	alDeleteSources(1, &audioSource);
+	alDeleteBuffers(1, &stereoSoundBuffer);
+	alcMakeContextCurrent(nullptr);
+	alcDestroyContext(context);
+	alcCloseDevice(device);
+}
+
+//menu functions
 void main_menu(int i)
 {
 	switch (i)
@@ -1120,6 +1214,7 @@ void main_menu(int i)
 		reset();
 		break;
 	case 2:
+		close_sound();
 		exit(0);
 		break;
 	case 3:
@@ -1235,6 +1330,18 @@ void spot_light_menu(int i)
 	}
 }
 
+void sound_menu(int i)
+{
+	switch (i)
+	{
+	case 1:
+		play_sound();
+		break;
+	case 2:
+		stop_sound();
+	}
+}
+
 void create_menus(void)
 {
 	GLint axis_change = glutCreateMenu(axis_menu);
@@ -1261,6 +1368,10 @@ void create_menus(void)
 	glutAddMenuEntry("Uniform", 1);
 	glutAddMenuEntry("Spotlight", 2);
 
+	GLint sound = glutCreateMenu(sound_menu);
+	glutAddMenuEntry("Play bckg music", 1);
+	glutAddMenuEntry("Stop bckg music", 2);
+
 	GLint main = glutCreateMenu(main_menu);
 	glutAddSubMenu("Light 1", light_1);
 	glutAddSubMenu("Light 1 mode", spot_light);
@@ -1274,6 +1385,8 @@ void create_menus(void)
 	glutAddSubMenu("Camera vision", change_camera);
 	glutAddMenuEntry("-----------", -1);
 	glutAddSubMenu("Axis", axis_change);
+	glutAddMenuEntry("-----------", -1);
+	glutAddSubMenu("Sound", sound);
 	glutAddMenuEntry("-----------", -1);
 	glutAddMenuEntry("Reset camera", 3);
 	glutAddMenuEntry("Reset scene", 1);
@@ -1319,9 +1432,6 @@ int main(int argc, char **argv)
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutTimerFunc(tiempo, Timer, 0.0f);
-
-	// función de direccionamiento d cámara
-	//glutSpecialFunc(camera_set);
 
 	//Ajuste de proporciones
 	glutReshapeFunc(MyReshape);
@@ -1369,9 +1479,10 @@ int main(int argc, char **argv)
 	gluQuadricTexture(sphere_6, GL_TRUE);
 	gluQuadricTexture(sphere_7, GL_TRUE);
 
+	// cargado de texturas y asiganción a variable
 	{
 		int width, height, channels;
-		unsigned char *data = stbi_load("./unknown.png", &width, &height, &channels,
+		unsigned char *data = stbi_load("./components/textures/unknown.png", &width, &height, &channels,
 										STBI_rgb);
 		glGenTextures(1, &atlas_1);
 		glBindTexture(GL_TEXTURE_2D, atlas_1);
@@ -1381,13 +1492,11 @@ int main(int argc, char **argv)
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 
 	{
 		int width, height, channels;
-		unsigned char *data = stbi_load("./rubber.png", &width, &height, &channels,
+		unsigned char *data = stbi_load("./components/textures/rubber.png", &width, &height, &channels,
 										STBI_rgb);
 		glGenTextures(1, &atlas_2);
 		glBindTexture(GL_TEXTURE_2D, atlas_2);
@@ -1397,13 +1506,11 @@ int main(int argc, char **argv)
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 
 	{
 		int width, height, channels;
-		unsigned char *data = stbi_load("./metal_sphere.png", &width, &height, &channels,
+		unsigned char *data = stbi_load("./components/textures/metal_sphere.png", &width, &height, &channels,
 										STBI_rgb);
 		glGenTextures(1, &atlas_3);
 		glBindTexture(GL_TEXTURE_2D, atlas_3);
@@ -1413,131 +1520,21 @@ int main(int argc, char **argv)
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 
+	// limpiar el uso de textura
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+
+	//creado de menú
 	create_menus();
+
 	//SOUND
 
-	// //sound variables
-	// ALCdevice *device;
-	// ALCcontext *context;
-	// ALuint audio_source_1;
-	// ALuint audio_buffer_1;
+	init_sound();
 
-	// ALsizei audio_size_1, audio_freq_1;
-	// ALenum audio_format_1;
-	// ALvoid *audio_data_1;
-	// ALboolean audio_loop_1 = AL_FALSE;
+	load_sound_file("./test.wav");
 
-	// device = alcOpenDevice(NULL);
-	// context = alcCreateContext(device,NULL);
-
-	// alcMakeContextCurrent(context);
-
-	// //1 source
-	// alGenSources((ALuint)1, &audio_source_1);
-
-	// //source parameters
-	// alSourcef(audio_source_1, AL_PITCH, 1);
-	// alSourcef(audio_source_1, AL_GAIN, 10);
-	// alSource3f(audio_source_1, AL_POSITION, 0.0f, 0.0f, 0.0f);
-	// alSource3f(audio_source_1, AL_VELOCITY, 0.0f, 0.0f, 0.0f);
-	// alSourcei(audio_source_1, AL_LOOPING, AL_TRUE);
-
-	// //listener parameters
-	// alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
-	// alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f );
-	// //alListenerfv(AL_ORIENTATION, {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f});
-
-	// //buffer generation
-	// alGenBuffers((ALuint)1, &audio_buffer_1);
-
-	// //load file
-	// FILE * audio_file;
-	// FILE * test_file;
-	// char * bit_per_sample = (char*) malloc(sizeof(char)*2);
-	// char * num_channels= (char*) malloc(sizeof(char)*2);
-	// char * sample_rate= (char*) malloc(sizeof(char)*4);
-	// char * sub_chunk_2_size= (char*) malloc(sizeof(char)*4);
-	// char * audio_file_1;
-	// //long * size_of_file = (long*) malloc(sizeof(long));
-	// int64_t audio_file_size = 0;
-	// string size_append = "";
-	// int sample_rate_1 = 0;
-
-	// audio_file = fopen("./test.wav", "r");
-	// test_file = fopen("./test.txt", "w");
-
-	// //file size
-	// // fseek(audio_file, 0, SEEK_END);
-	// // size_of_file = ftell(audio_file);
-	// // fwrite(size_of_file, sizeof(long), 1, stdout);
-
-	// //num channels and so the format
-	// fseek(audio_file, 22, SEEK_SET);
-	// fread(num_channels, sizeof(char)*2, 1, audio_file);
-
-	// //sample rate
-	// fseek(audio_file, 24, SEEK_SET);
-	// fread(sample_rate, sizeof(char), 4, audio_file);
-	// sample_rate_1 = convertToInt(sample_rate, 4);
-
-	// //bits per sample
-	// fseek(audio_file, 34, SEEK_SET);
-	// fread(bit_per_sample, sizeof(char)*2, 1, audio_file);
-	// //fwrite(bit_per_sample, sizeof(char)*2, 1, test_file);
-
-	// if(device) fprintf(test_file, "device exit\n");
-	// if(context) fprintf(test_file, "context exit\n");
-
-	// if(bit_per_sample[0] == 16){
-	// 	if (num_channels[0] == 1){
-	// 		audio_format_1 = AL_FORMAT_MONO16;
-	// 	} else {
-	// 		audio_format_1 = AL_FORMAT_STEREO16;
-	// 	}
-	// } else {
-	// 	if (num_channels[0] == 1){
-	// 		audio_format_1 = AL_FORMAT_MONO8;
-	// 	} else {
-	// 		audio_format_1 = AL_FORMAT_STEREO8;
-	// 	}
-	// }
-
-	// //size of data -> posición 732 en test.wav // DATA = 64 61 74 61
-	// fseek(audio_file, 732, SEEK_SET);
-	// fread(sub_chunk_2_size, sizeof(char)*4, 1, audio_file);
-	// //fwrite(sub_chunk_2_size, sizeof(char)*4, 1, test_file);
-
-	// audio_file_size = 2229537289;
-
-	// audio_data_1 = (ALvoid*) malloc(sizeof(char)*audio_file_size);
-
-	// fseek(audio_file, 732 + 4, SEEK_SET);
-	// //fread(audio_data_1, sizeof(char)*audio_file_size, 1, audio_file);
-	// //fwrite(audio_data_1, sizeof(char)*audio_file_size, 1, test_file);
-
-	// //memcpy(audio_buffer_1, &audio_file_1, audio_file_size);
-
-	// fclose(audio_file);
-	// fclose(test_file);
-
-	// //free(bit_per_sample);
-	// //free(num_channels);
-	// //free(sample_rate);
-	// // free(sub_chunk_2_size);
-	// // free(size_of_data);
-
-	// //link audio fileto buffer
-	// alBufferData(audio_buffer_1,audio_format_1, audio_data_1, sizeof(audio_data_1), sample_rate_1);
-
-	// //link buffer to source
-	// alSourcei(audio_source_1, AL_BUFFER, audio_buffer_1);
-	// //play audio
-	// alSourcePlay(audio_source_1);
+	play_sound();
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
